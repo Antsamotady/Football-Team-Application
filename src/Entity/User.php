@@ -4,12 +4,20 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
+/**
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,6 +32,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string')]
     private $password;
+
+    #[ORM\Column(type: 'string', length: 64, nullable:true)]
+    private $name;
+
+    #[ORM\Column(type: 'string', length: 16, nullable:true)]
+    private $totpSecret;
 
     public function getId(): ?int
     {
@@ -93,5 +107,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function isTotpAuthenticationEnabled(): bool
+	{
+	    return $this->totpSecret ? true : false;
+	}
+	
+	public function getTotpAuthenticationUsername(): string
+	{
+	    return $this->getUserIdentifier();
+	}
+	
+	public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+	{
+	    return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA512, 30, 6);
+	}
+
+    /**
+     * Set the value of totpSecret
+     *
+     * @return  self
+     */ 
+    public function setTotpSecret($totpSecret)
+    {
+        $this->totpSecret = $totpSecret;
+
+        return $this;
     }
 }
