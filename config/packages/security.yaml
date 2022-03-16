@@ -14,13 +14,14 @@ security:
                 class: App\Entity\User
                 property: email
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        # dev:
+        #     pattern: ^/(_(profiler|wdt)|css|images|js)/
+        #     security: false
         main:
-            lazy: true
+            # anonymous: true
+            # pattern: ^/
+            # lazy: true
             provider: app_user_provider
-            
             custom_authenticator: App\Security\AppCustomAuthenticator
             logout:
                 path: app_logout
@@ -48,8 +49,11 @@ security:
         # cancel two-factor authentication, if they need to.
         # - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY }
         # This ensures that the form can only be accessed when two-factor authentication is in progress.
-        - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
+        # - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
         # Other rules may follow here...
+        # - { path: ^/registration-form-submission$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/(login|register)$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/, role: ROLE_USER }
         
 
 when@test:
