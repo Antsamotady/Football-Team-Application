@@ -54,7 +54,7 @@ class ManageUserController extends AbstractController
             $entityManager->flush();
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('list_users');
         }
 
         return $this->render('manage_user/add.html.twig', [
