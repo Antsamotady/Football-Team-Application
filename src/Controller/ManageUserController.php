@@ -6,14 +6,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+#[Route('/user')]
 class ManageUserController extends AbstractController
 {
-    #[Route('/up-user', name: 'up_user')]
+    #[Route('/', name: 'index_user', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('manage_user/index.html.twig', [
@@ -22,25 +24,17 @@ class ManageUserController extends AbstractController
         ]);
     }
 
-    #[Route('/list-users', name: 'list_users')]
-    public function list(): Response
+    #[Route('/list', name: 'list_users', methods: ['GET'])]
+    public function list(UserRepository $userRepository): Response
     {
         return $this->render('manage_user/list.html.twig', [
             'template_title' => 'Liste Utilisateurs',
             'meth_name' => 'list',
+            'items' => $userRepository->findAll(),
         ]);
     }
 
-    #[Route('/view-user', name: 'view_user')]
-    public function view(): Response
-    {
-        return $this->render('manage_user/view.html.twig', [
-            'template_title' => 'Compte Utilisateur',
-            'meth_name' => 'view',
-        ]);
-    }
-
-    #[Route('/add-user', name: 'add_user')]
+    #[Route('/add', name: 'add_user', methods: ['GET', 'POST'])]
     public function add(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -68,6 +62,46 @@ class ManageUserController extends AbstractController
             'meth_name' => 'up',
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/{id}', name: 'show_user', methods: ['GET'])]
+    public function show(User $user): Response
+    {
+        return $this->render('manage_user/show.html.twig', [
+            'template_title' => 'Compte Utilisateur',
+            'meth_name' => 'view',
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'edit_user', methods: ['GET', 'POST'])]
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('list_users', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('manage_user/edit.html.twig', [
+            'template_title' => 'Modification utilisateur',
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'delete_user', methods: ['POST'])]
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('list_users', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/user-logs', name: 'log')]
