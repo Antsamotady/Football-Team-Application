@@ -39,6 +39,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: 'string', length: 16, nullable:true)]
     private $totpSecret;
 
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    private $enabled;
+
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    private $locked;
+
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    private $expired;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private $updatedAt;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $keycompte_id;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $currency_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,14 +148,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 	}
 	
 	public function getTotpAuthenticationUsername(): string
-	{
-	    return $this->getUserIdentifier();
-	}
+    {
+        return $this->getUserIdentifier();
+    }
 	
 	public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
-	{
-	    return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA512, 30, 6);
-	}
+    {
+        return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA512, 30, 6);
+    }
 
     /**
      * Set the value of totpSecret
@@ -144,6 +165,90 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setTotpSecret($totpSecret)
     {
         $this->totpSecret = $totpSecret;
+
+        return $this;
+    }
+
+    public function getEnabled(): ?int
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(?int $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function getLocked(): ?int
+    {
+        return $this->locked;
+    }
+
+    public function setLocked(?int $locked): self
+    {
+        $this->locked = $locked;
+
+        return $this;
+    }
+
+    public function getExpired(): ?int
+    {
+        return $this->expired;
+    }
+
+    public function setExpired(?int $expired): self
+    {
+        $this->expired = $expired;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getKeycompteId(): ?int
+    {
+        return $this->keycompte_id;
+    }
+
+    public function setKeycompteId(?int $keycompte_id): self
+    {
+        $this->keycompte_id = $keycompte_id;
+
+        return $this;
+    }
+
+    public function getCurrencyId(): ?int
+    {
+        return $this->currency_id;
+    }
+
+    public function setCurrencyId(?int $currency_id): self
+    {
+        $this->currency_id = $currency_id;
 
         return $this;
     }

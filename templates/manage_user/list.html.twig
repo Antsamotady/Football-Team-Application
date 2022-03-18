@@ -1,5 +1,18 @@
 {% extends 'dashboard-base.html.twig' %}
 
+{% block favicon %}<link rel="shortcut icon" href="../assets/media/logos/PI-favicon.gif" />{% endblock %}
+
+{% block head_style %}
+	<!--begin::Page Vendor Stylesheets(used by this page)-->
+	<link href="{{ asset('../assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('../assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+	<!--end::Page Vendor Stylesheets-->
+	<!--begin::Global Stylesheets Bundle(used by all pages)-->
+	<link href="{{ asset('../assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('../assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+	<!--end::Global Stylesheets Bundle-->
+{% endblock %}
+
 {% block title %}{{ template_title }}{% endblock %}
 
 {% block body %}
@@ -7,6 +20,10 @@
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
+
+<div class="hide">
+	{% block logo %}<img alt="Logo" src="../assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
+</div>
 
 <!--begin::Container-->
 <div id="kt_content_container" class="container-xxl">
@@ -489,4 +506,11 @@
 </div>
 <!--end::Container-->
 
+{% endblock %}
+
+{% block foot_script %}
+	{{parent()}}
+	<script type="text/javascript">
+		$("#kt_table_users").DataTable();
+	</script>
 {% endblock %}
