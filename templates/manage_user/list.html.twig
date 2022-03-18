@@ -8,10 +8,11 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-
-
 <!--begin::Container-->
 <div id="kt_content_container" class="container-xxl">
+	{% for notice in app.flashes('success') %}
+		<div class="alert alert-success" role="alert">{{ notice }}</div>
+	{% endfor %}
 	<!--begin::Card-->
 	<div class="card">
 		<!--begin::Card header-->

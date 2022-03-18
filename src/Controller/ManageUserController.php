@@ -53,8 +53,11 @@ class ManageUserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
+            $this->addFlash('success', 'Utilisateur bien enregistrer');
 
             return $this->redirectToRoute('list_users');
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Email déjà existant');
         }
 
         return $this->render('manage_user/add.html.twig', [
