@@ -38,8 +38,7 @@
 								</div>
 								<div class="form-group mb-5">
 									<input id="inputPassword" class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required />
-                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"
-            >
+									<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
 								</div>
 								{# <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
 									<div class="checkbox-inline">
