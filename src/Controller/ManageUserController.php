@@ -11,10 +11,18 @@ use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/user')]
 class ManageUserController extends AbstractController
 {
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
     #[Route('/', name: 'index_user', methods: ['GET'])]
     public function index(): Response
     {
@@ -38,6 +46,8 @@ class ManageUserController extends AbstractController
     public function add(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
+        $listRoute = $this->urlGenerator->generate('list_users');
+
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
@@ -63,6 +73,7 @@ class ManageUserController extends AbstractController
         return $this->render('manage_user/add.html.twig', [
             'template_title' => 'Nouvel Utilisateur',
             'meth_name' => 'up',
+            'list_route' => $listRoute,
             'registrationForm' => $form->createView(),
         ]);
     }
@@ -80,6 +91,8 @@ class ManageUserController extends AbstractController
     #[Route('/{id}/edit', name: 'edit_user', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
+        $routeBack = $this->urlGenerator->generate('show_user', array("id" => $user->getId()));
+
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
@@ -92,6 +105,7 @@ class ManageUserController extends AbstractController
         return $this->renderForm('manage_user/edit.html.twig', [
             'template_title' => 'Modification utilisateur',
             'user' => $user,
+            'route_back' => $routeBack,
             'form' => $form,
         ]);
     }
