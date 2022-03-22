@@ -25,6 +25,31 @@ class ManageUserController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
+    #[Route('/export', name: 'export_user', methods: ['GET'])]
+    public function export(UserRepository $userRepository): Response
+    {
+        $items = $userRepository->findAll();
+
+        $handle = fopen('php://memory', 'r+');
+        $titre = array('Nom', 'Email');
+
+        fputs($handle, chr(239) . chr(187) . chr(191));
+        fputcsv($handle, $titre, ';');
+        foreach ($items as $item) {
+            $result = $item->getExport();
+            fputcsv($handle, $result, ';');
+        }
+
+        rewind($handle);
+        $content = stream_get_contents($handle);
+        fclose($handle);
+
+        return new Response($content, 200, array(
+            'Content-Type' => 'application/force-download; ',
+            'Content-Disposition' => 'attachment; filename="utilisateurs.csv"'
+        ));
+    }
+
     #[Route('/search', name: 'search_user', methods: ['GET', 'POST'])]
     public function searchUser(Request $request, UserRepository $userRepository): Response
     {
@@ -75,7 +100,9 @@ class ManageUserController extends AbstractController
                 $items = $userRepository->findAll();
             else
                 $items = $userRepository->findSearch($data);
-        }
+        } else
+            $items = $userRepository->findAll();
+
 
         return $this->render('manage_user/list.html.twig', [
             'template_title' => 'Liste Utilisateurs',
