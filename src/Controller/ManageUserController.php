@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Data\UserSearchData;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Form\RegistrationFormType;
+use App\Form\UserSearchFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -23,6 +25,30 @@ class ManageUserController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
+    #[Route('/search', name: 'search_user', methods: ['GET', 'POST'])]
+    public function searchUser(Request $request, UserRepository $userRepository): Response
+    {
+        $data = new UserSearchData();
+        $form = $this->createForm(UserSearchFormType::class, $data);
+
+        $form->handleRequest($request);
+
+        $items = [];
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $nom = $data->getName();
+            if ($nom == "")
+                $items = $userRepository->findAll();
+            else
+                $items = $userRepository->findSearch($data);
+        }
+
+        return $this->render('manage_user/search.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/', name: 'index_user', methods: ['GET'])]
     public function index(): Response
     {
@@ -33,12 +59,29 @@ class ManageUserController extends AbstractController
     }
 
     #[Route('/list', name: 'list_users', methods: ['GET'])]
-    public function list(UserRepository $userRepository): Response
+    public function list(Request $request, UserRepository $userRepository): Response
     {
+        $data = new UserSearchData();
+        $form = $this->createForm(UserSearchFormType::class, $data);
+
+        $form->handleRequest($request);
+
+        $items = [];
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $nom = $data->getName();
+            if ($nom == "" || $nom == null)
+                $items = $userRepository->findAll();
+            else
+                $items = $userRepository->findSearch($data);
+        }
+
         return $this->render('manage_user/list.html.twig', [
             'template_title' => 'Liste Utilisateurs',
             'meth_name' => 'list',
-            'items' => $userRepository->findAll(),
+            'form' => $form->createView(),
+            'items' => $items,
         ]);
     }
 
