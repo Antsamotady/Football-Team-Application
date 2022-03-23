@@ -2,13 +2,14 @@
 
 namespace App\Repository;
 
-use App\Data\UserSearchData;
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Data\UserFilterData;
+use App\Data\UserSearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -53,6 +54,37 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $qb = $qb
                 ->andWhere('UPPER(u.name) LIKE UPPER(:nom)')        // Doctrine LIKE case insensitive
                 ->setParameter('nom', "%{$search->getName()}%");
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+
+    }
+
+    /**
+     * User linked to search
+     *
+     * @return User[]
+     */
+    public function findFiltered(UserFilterData $search): array
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u');
+
+        if (!empty($search->getName()))
+        {
+            $qb = $qb
+                ->andWhere('UPPER(u.name) LIKE UPPER(:nom)')        // Doctrine LIKE case insensitive
+                ->setParameter('nom', "%{$search->getName()}%");
+        }
+
+        if (!empty($search->getEmail()))
+        {
+            $qb = $qb
+                ->andWhere('u.email = :email')        // Doctrine LIKE case insensitive
+                ->setParameter('email', $search->getEmail()->getEmail());
         }
 
         $result = $qb->getQuery()->getResult();

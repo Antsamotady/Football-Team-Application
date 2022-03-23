@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
-use App\Data\UserSearchData;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
-use App\Repository\UserRepository;
-use App\Form\RegistrationFormType;
+use App\Data\UserFilterData;
+use App\Data\UserSearchData;
+use App\Form\UserFilterFormType;
 use App\Form\UserSearchFormType;
+use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/user')]
 class ManageUserController extends AbstractController
@@ -83,11 +85,11 @@ class ManageUserController extends AbstractController
         ]);
     }
 
-    #[Route('/list', name: 'list_users', methods: ['GET'])]
-    public function list(Request $request, UserRepository $userRepository): Response
+    #[Route('/filter', name: 'filter_users', methods: ['GET'])]
+    public function filter(Request $request, UserRepository $userRepository): Response
     {
-        $data = new UserSearchData();
-        $form = $this->createForm(UserSearchFormType::class, $data);
+        $data = new UserFilterData();
+        $form = $this->createForm(UserFilterFormType::class, $data);
 
         $form->handleRequest($request);
 
@@ -99,7 +101,45 @@ class ManageUserController extends AbstractController
             if ($nom == "" || $nom == null)
                 $items = $userRepository->findAll();
             else
+                $items = $userRepository->findFiltered($data);
+        } else
+            $items = $userRepository->findAll();
+
+
+        return $this->render('manage_user/filter.html.twig', [
+            'filter_form' => $form->createView(),
+            'filtered_items' => $items,
+        ]);
+    }
+
+    #[Route('/list', name: 'list_users', methods: ['GET', 'POST'])]
+    public function list(Request $request, UserRepository $userRepository): Response
+    {
+        $data = new UserSearchData();
+        $form = $this->createForm(UserSearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $filtered_data = new UserFilterData();
+        $filter_form = $this->createForm(UserFilterFormType::class, $filtered_data);
+        $filter_form->handleRequest($request);
+
+        $items = [];
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $nom = $data->getName();
+            if ($nom == "" || $nom == null)
+                $items = $userRepository->findAll();
+            else
                 $items = $userRepository->findSearch($data);
+
+        } elseif ($filter_form->isSubmitted() && $filter_form->isValid()) {
+            $nom = $filtered_data->getName();
+            $email = $filtered_data->getEmail();
+            if ( ($nom == "" || $nom == null) && ($email == "" || $email == null) )
+                $items = $userRepository->findAll();
+            else
+                $items = $userRepository->findFiltered($filtered_data);
         } else
             $items = $userRepository->findAll();
 
@@ -108,6 +148,7 @@ class ManageUserController extends AbstractController
             'template_title' => 'Liste Utilisateurs',
             'meth_name' => 'list',
             'form' => $form->createView(),
+            'filter_form' => $filter_form->createView(),
             'items' => $items,
         ]);
     }
