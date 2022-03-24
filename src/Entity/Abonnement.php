@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AbonnementRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AbonnementRepository::class)]
@@ -25,6 +26,11 @@ class Abonnement
     #[ORM\Column(type: 'boolean')]
     private $flagActif;
 
+    /**
+     * Doit être un nombre positif ou null
+     *
+     * @Assert\PositiveOrZero(message="Nombre positif ou null")
+     */
     #[ORM\Column(type: 'integer')]
     private $nbTitres;
 
@@ -34,7 +40,7 @@ class Abonnement
     #[ORM\Column(type: 'integer', nullable: true)]
     private $nbEntities;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private $simulation;
 
     #[ORM\Column(type: 'integer', nullable: true)]
