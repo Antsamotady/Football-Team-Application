@@ -49,11 +49,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->createQueryBuilder('u')
             ->select('u');
 
-        if (!empty($search->getName()))
+        if (!empty($search->getNom()))
         {
             $qb = $qb
                 ->andWhere('UPPER(u.name) LIKE UPPER(:nom)')        // Doctrine LIKE case insensitive
-                ->setParameter('nom', "%{$search->getName()}%");
+                ->setParameter('nom', "%{$search->getNom()}%");
         }
 
         $result = $qb->getQuery()->getResult();

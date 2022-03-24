@@ -7,18 +7,16 @@ class UserSearchData
     /**
      * @var string
      */
-    public $q = '';
+    private $nom;
 
-    private $name;
-
-    public function getName(): ?string
+    public function getNom(): ?string
     {
-        return $this->name;
+        return $this->nom;
     }
 
-    public function setName(string $nom): self
+    public function setNom(string $s): self
     {
-        $this->name = $nom;
+        $this->nom = $s;
 
         return $this;
     }

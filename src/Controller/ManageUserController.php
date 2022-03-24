@@ -127,7 +127,7 @@ class ManageUserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            $nom = $data->getName();
+            $nom = $data->getNom();
             if ($nom == "" || $nom == null)
                 $items = $userRepository->findAll();
             else
