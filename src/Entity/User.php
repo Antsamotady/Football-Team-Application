@@ -253,7 +253,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    public function getExport() {
+    public function getExport() 
+    {
         $result = array();
         $result[] = $this->name;
         $result[] = $this->email;

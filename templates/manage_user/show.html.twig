@@ -1,5 +1,7 @@
 {% extends 'dashboard-base.html.twig' %}
 
+{% block favicon %}<link rel="shortcut icon" href="../assets/media/logos/PI-favicon.gif" />{% endblock %}
+
 {% block title %}{{ template_title }}{% endblock %}
 
 {% block body %}
@@ -8,6 +10,13 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
+<div hidden>
+	{% block logo %}<img alt="Logo" src="../assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
+</div>
+
+{% for notice in app.flashes('success') %}
+	<div class="alert alert-success" role="alert">{{ notice }}</div>
+{% endfor %}
 <!--begin::details View-->
 <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
 	<!--begin::Card header-->

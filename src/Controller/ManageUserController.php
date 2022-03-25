@@ -210,7 +210,11 @@ class ManageUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('list_users', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Utilisateur bien modifié');
+
+            return $this->redirectToRoute('show_user', [
+                'id' => $user->getId()
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('manage_user/edit.html.twig', [

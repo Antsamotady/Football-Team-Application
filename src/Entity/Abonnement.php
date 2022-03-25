@@ -158,4 +158,22 @@ class Abonnement
 
         return $this;
     }
+
+    public function getExport() 
+    {
+        $result = [];
+        $result[] = $this->nomClient;
+        $result[] = $this->flagActif;
+        $result[] = $this->cleAbo;
+        $result[] = $this->nbTitres;
+        $result[] = $this->getDateFin()->format('d-m-Y');
+
+        return $result;
+    }
+    
+    public function __toString()
+    {
+        return $this->nomClient;
+    }
+
 }

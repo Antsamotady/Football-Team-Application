@@ -15,7 +15,13 @@ class AbonnementFormType extends AbstractType
     {
         $builder
             ->add('nomClient')
-            ->add('dateFin', DateType::class)
+            ->add('dateFin', DateType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+                'attr' => [
+                    'placeholder' => 'Start year, e.g., 1980 ',
+                ]
+            ])
             ->add('flagActif', CheckboxType::class, [
                 'required' => false,
             ])
