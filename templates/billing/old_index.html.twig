@@ -9,6 +9,10 @@
 </style>
 
 
+{% for notice in app.flashes('error') %}
+	<div class="alert alert-danger" role="alert">{{ notice }}</div>
+{% endfor %}
+
 <!--begin::Billing History-->
 <div class="card">
 	<!--begin::Card header-->
