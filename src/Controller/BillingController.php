@@ -226,7 +226,6 @@ class BillingController extends AbstractController
 
 
     /* Import csv */
-
     protected function decrypteinutf8($datas) {
         $datas_return = array();
         foreach ($datas as $value) {
