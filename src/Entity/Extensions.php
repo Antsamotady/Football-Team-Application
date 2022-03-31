@@ -92,4 +92,21 @@ class Extensions
 
         return $this;
     }
+
+    public function getExport() 
+    {
+        $result = [];
+        $result[] = $this->pays;
+        $result[] = $this->periode;
+        $result[] = $this->montants;
+        $result[] = $this->region;
+
+        return $result;
+    }
+
+    public function __toString()
+    {
+        return $this->pays;
+    }
+
 }

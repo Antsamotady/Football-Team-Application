@@ -35,8 +35,8 @@ class ExtensionsRepository extends ServiceEntityRepository
         if (!empty($search->getNom()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.nomClient) LIKE UPPER(:nom)')        // Doctrine LIKE case insensitive
-                ->setParameter('nom', "%{$search->getNom()}%");
+                ->andWhere('UPPER(u.pays) LIKE UPPER(:pays)')        // Doctrine LIKE case insensitive
+                ->setParameter('pays', "%{$search->getNom()}%");
         }
 
         $result = $qb->getQuery()->getResult();
@@ -46,7 +46,7 @@ class ExtensionsRepository extends ServiceEntityRepository
     }
 
     /**
-    * User linked to search
+    * Extensions linked to search
     *
     * @return Extensions[]
     */
@@ -66,7 +66,7 @@ class ExtensionsRepository extends ServiceEntityRepository
         if (!empty($search->getPeriode()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.periode) LIKE UPPER(:periode)')        // Doctrine LIKE case insensitive
+                ->andWhere('UPPER(u.periode) LIKE UPPER(:periode)')
                 ->setParameter('periode', "%{$search->getPeriode()}%");
         }
 

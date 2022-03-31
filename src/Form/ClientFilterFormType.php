@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ClientFilterFormType extends AbstractType
@@ -29,12 +28,6 @@ class ClientFilterFormType extends AbstractType
                 'label' => false,
                 'choices' => [0,1],
             ])
-            // ->add('cleAbo', EntityType::class, [
-            //     'class' => Abonnement::class,
-            //     'required' => false,
-            //     'label' => false,
-            //     'choice_label' => 'cleAbo',
-            // ])
             ->add('nbTitre', IntegerType::class, [
                 'required' => false,
                 'label' => false,
@@ -51,11 +44,6 @@ class ClientFilterFormType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd'
             ])
-            // ->add('dateFin', DateType::class, [
-            //     'widget' => 'single_text',
-            //     // this is actually the default format for single_text
-            //     'format' => 'yyyy-MM-dd',
-            // ])
             ;
         }
 

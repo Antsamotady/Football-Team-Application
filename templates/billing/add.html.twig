@@ -1,0 +1,106 @@
+{% extends 'dashboard-base.html.twig' %}
+
+{% block favicon %}<link rel="shortcut icon" href="../assets/media/logos/PI-favicon.gif" />{% endblock %}
+
+{% block title %}{{ template_title }}{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div hidden>
+	{% block logo %}<img alt="Logo" src="../assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
+</div>
+
+{% for notice in app.flashes('error') %}
+	<div class="alert alert-danger" role="alert">{{ notice }}</div>
+{% endfor %}
+
+<!--begin::Basic info-->
+<div class="card mb-5 mb-xl-10">
+	<!--begin::Card header-->
+	<div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+		<!--begin::Card title-->
+		<div class="card-title m-0">
+			<h3 class="fw-bolder m-0">Profile client</h3>
+		</div>
+		<!--end::Card title-->
+	</div>
+	<!--begin::Card header-->
+	<!--begin::Content-->
+	<div id="kt_account_settings_profile_details" class="collapse show">
+		<!--begin::Form-->
+		{{ form_start(form) }}
+		<form id="kt_account_profile_details_form" class="form">
+			<!--begin::Card body-->
+			<div class="card-body border-top p-9">
+				<!--begin::Input group-->
+				<div class="row mb-6">
+					<!--begin::Label-->
+					<label class="col-lg-4 col-form-label required fw-bold fs-6">Pays</label>
+					<!--end::Label-->
+					<!--begin::Col-->
+					<div class="col-lg-8 fv-row">
+						{{ form_widget(form.pays, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+					</div>
+					<!--end::Col-->
+				</div>
+				<!--end::Input group-->
+				<!--begin::Input group-->
+				<div class="row mb-6">
+					<!--begin::Label-->
+					<label class="col-lg-4 col-form-label required fw-bold fs-6">Période</label>
+					<!--end::Label-->
+					<!--begin::Col-->
+					<div class="col-lg-8 fv-row">
+						{# {{ form_widget(form.dateFin, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }} #}
+						{{ form_widget(form.periode, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+					</div>
+					<!--end::Col-->
+				</div>
+				<!--end::Input group-->
+				<!--begin::Input group-->
+				<div class="row mb-6">
+					<!--begin::Label-->
+					<label class="col-lg-4 col-form-label required fw-bold fs-6">Montant</label>
+					<!--end::Label-->
+					<!--begin::Col-->
+					<div class="col-lg-8 fv-row">
+						{{ form_widget(form.montants, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+					</div>
+					<!--end::Col-->
+				</div>
+				<!--end::Input group-->
+				<!--begin::Input group-->
+				<div class="row mb-6">
+					<!--begin::Label-->
+					<label class="col-lg-4 col-form-label required fw-bold fs-6">Région</label>
+					<!--end::Label-->
+					<!--begin::Col-->
+					<div class="col-lg-8 fv-row">
+						{# {{ form_widget(form.dateFin, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }} #}
+						{{ form_widget(form.region, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+					</div>
+					<!--end::Col-->
+				</div>
+				<!--end::Input group-->
+
+			</div>
+			<!--end::Card body-->
+			<!--begin::Actions-->
+			<div class="card-footer d-flex justify-content-end py-6 px-9">
+				<a type="button" class="btn btn-light me-3" href="{{ list_route }}">Retour à la liste</a>
+				<button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">Enregistrer</button>
+			</div>
+			<!--end::Actions-->
+		{{ form_end(form) }}
+		</form>
+		<!--end::Form-->
+	</div>
+	<!--end::Content-->
+</div>
+<!--end::Basic info-->
+
+{% endblock %}

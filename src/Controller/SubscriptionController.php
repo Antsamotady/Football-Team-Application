@@ -63,7 +63,7 @@ class SubscriptionController extends AbstractController
     #[Route('/add', name: 'add_client', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $em): Response
     {
-        $listRoute = $this->urlGenerator->generate('subscription');
+        $listRoute = $this->urlGenerator->generate('list_client');
         // creates a task object and initializes some data for this example
         $client = new Abonnement();
         $client->setCleAbo($this->guidv4());
