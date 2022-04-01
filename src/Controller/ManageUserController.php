@@ -27,6 +27,12 @@ class ManageUserController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
+    #[Route('/', name: 'index')]
+    public function index0(): Response
+    {
+        return $this->redirectToRoute('list_users');
+    }
+
     #[Route('/export', name: 'export_user', methods: ['GET'])]
     public function export(UserRepository $userRepository): Response
     {
