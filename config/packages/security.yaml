@@ -18,9 +18,6 @@ security:
         #     pattern: ^/(_(profiler|wdt)|css|images|js)/
         #     security: false
         main:
-            # anonymous: true
-            # pattern: ^/
-            # lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\AppCustomAuthenticator
             logout:
@@ -32,29 +29,9 @@ security:
             #     auth_form_path: 2fa_login    # The route name you have used in the routes.yaml
             #     check_path: 2fa_login_check  # The route name you have used in the routes.yaml
 
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-        # - { path: ^/home, roles: ROLE_USER }
-        # This makes the logout route accessible during two-factor authentication. Allows the user to
-        # cancel two-factor authentication, if they need to.
-        # - { path: ^/logout, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        # This ensures that the form can only be accessed when two-factor authentication is in progress.
-        # - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
-        # Other rules may follow here...
-        # - { path: ^/registration-form-submission$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        # - { path: ^/(login|register)$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        # - { path: ^/, role: ROLE_USER }
-
         # No page available except for the login one if not authenticated
         - { path: ^(?!/login), roles: ROLE_USER }
         
