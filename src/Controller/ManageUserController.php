@@ -7,10 +7,12 @@ use App\Data\UserFilterData;
 use App\Data\UserSearchData;
 use App\Form\UserFilterFormType;
 use App\Form\UserSearchFormType;
+use Symfony\Component\Mime\Email;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -119,8 +121,22 @@ class ManageUserController extends AbstractController
     }
 
     #[Route('/list', name: 'list_users', methods: ['GET', 'POST'])]
-    public function list(Request $request, UserRepository $userRepository): Response
+    public function list(Request $request, UserRepository $userRepository, MailerInterface $mailer): Response
     {
+
+        $email = (new Email())
+            ->from('hello@example.com')
+            ->to('tsilavinarj02@gmail.com')
+            //->cc('cc@example.com')
+            //->bcc('bcc@example.com')
+            //->replyTo('fabien@example.com')
+            //->priority(Email::PRIORITY_HIGH)
+            ->subject('Time for Symfony Mailer!')
+            ->text('Sending emails is fun again!')
+            ->html('<p>See Twig integration for better HTML integration!</p>');
+            
+        $mailer->send($email);
+
         $data = new UserSearchData();
         $form = $this->createForm(UserSearchFormType::class, $data);
         $form->handleRequest($request);
