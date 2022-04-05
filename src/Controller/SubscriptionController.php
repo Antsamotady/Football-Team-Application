@@ -35,6 +35,20 @@ class SubscriptionController extends AbstractController
         ]);
     }
 
+
+    #[Route('/subsc/{uuid}', name: 'send_sub', methods: ['GET'])]
+    public function send(AbonnementRepository $clientRepo, $uuid)
+    {
+        $items = $clientRepo->findOneBy(['cleAbo' => $uuid]);
+        $dateFin = $items->getDateFin();
+        // $optionAbonnement = 
+        
+        return $this->json([
+            'dateFin' => $dateFin->format('Y-m-d'),
+        ], 200, []);
+    }
+
+
     #[Route('/export', name: 'export_client', methods: ['GET'])]
     public function export(AbonnementRepository $clientRepo): Response
     {
