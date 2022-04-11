@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Data\ClientFilterData;
 use App\Data\ClientSearchData;
 use App\Entity\Abonnement;
+use App\Entity\Journal;
 use App\Form\AbonnementFormType;
 use App\Form\ClientFilterFormType;
 use App\Form\ClientSearchFormType;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/client')]
 class SubscriptionController extends AbstractController
@@ -35,6 +38,27 @@ class SubscriptionController extends AbstractController
         ]);
     }
 
+    #[Route('/subsc/{uuid}', name: 'receive_sub', methods: ['POST'])]
+    public function receive(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, $uuid)
+    {
+        $receivedData = $request->getContent();
+
+        try {
+            $journal = $serializer->deserialize($receivedData, Journal::class, 'json');
+            $journal->setCleAbo($uuid);
+            
+            $em->persist($journal);
+            $em->flush();
+
+            return $this->json($journal, 201);
+
+        } catch (NotEncodableValueException $e) {
+            return $this->json([
+                "status" => 400,
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
 
     #[Route('/subsc/{uuid}', name: 'send_sub', methods: ['GET'])]
     public function send(AbonnementRepository $clientRepo, $uuid)
