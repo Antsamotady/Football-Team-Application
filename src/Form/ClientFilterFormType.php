@@ -9,8 +9,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class ClientFilterFormType extends AbstractType
 {
@@ -23,12 +24,33 @@ class ClientFilterFormType extends AbstractType
                 'label' => false,
                 'choice_label' => 'nomClient',
             ])
+            ->add('cleAbo', TextType::class, [
+                'label' => false,
+                'required' => false,
+            ])
             ->add('flagActif', ChoiceType::class, [
                 'required' => false,
                 'label' => false,
                 'choices' => [0,1],
             ])
             ->add('nbTitre', IntegerType::class, [
+                'required' => false,
+                'label' => false,
+            ])
+            ->add('nbUsers', IntegerType::class, [
+                'required' => false,
+                'label' => false,
+            ])
+            ->add('nbEntities', IntegerType::class, [
+                'required' => false,
+                'label' => false,
+            ])
+            ->add('simulation', ChoiceType::class, [
+                'required' => false,
+                'label' => false,
+                'choices' => [0,1],
+            ])
+            ->add('limitAnnonce', IntegerType::class, [
                 'required' => false,
                 'label' => false,
             ])

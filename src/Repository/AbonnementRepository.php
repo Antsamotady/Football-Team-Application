@@ -36,7 +36,7 @@ class AbonnementRepository extends ServiceEntityRepository
         if (!empty($search->getNom()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.nomClient) LIKE UPPER(:nom)')        // Doctrine LIKE case insensitive
+                ->andWhere('UPPER(u.nomClient) LIKE UPPER(:nom)')
                 ->setParameter('nom', "%{$search->getNom()}%");
         }
 
@@ -60,27 +60,64 @@ class AbonnementRepository extends ServiceEntityRepository
         if (!empty($search->getName()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.nomClient) LIKE UPPER(:nom)')        // Doctrine LIKE case insensitive
+                ->andWhere('UPPER(u.nomClient) LIKE UPPER(:nom)')
                 ->setParameter('nom', "%{$search->getName()}%");
+        }
+
+        if (!empty($search->getCleAbo()))
+        {
+            $qb = $qb
+                ->andWhere('UPPER(u.cleAbo) LIKE UPPER(:cleAbo)')
+                ->setParameter('cleAbo', "%{$search->getCleAbo()}%");
         }
 
         if (!empty($search->getNbTitre()))
         {
             $qb = $qb
-                ->andWhere('u.nbTitres = :nbT')        // Doctrine LIKE case insensitive
+                ->andWhere('u.nbTitres = :nbT')
                 ->setParameter('nbT', $search->getNbTitre());
+        }
+        if (!empty($search->getNbUsers()))
+        {
+            $qb = $qb
+                ->andWhere('u.nbUsers = :nbu')
+                ->setParameter('nbu', $search->getNbUsers());
+        }
+        if (!empty($search->getNbEntities()))
+        {
+            $qb = $qb
+                ->andWhere('u.nbEntities = :nbe')
+                ->setParameter('nbe', $search->getNbEntities());
+        }
+        if (!empty($search->getLimitAnnonce()))
+        {
+            $qb = $qb
+                ->andWhere('u.limitAnnonce = :lmt')
+                ->setParameter('lmt', $search->getLimitAnnonce());
         }
 
         if ( !is_null($search->getFlagActif()) && $search->getFlagActif() == 1 )
         {
             $qb = $qb
-                ->andWhere('u.flagActif = TRUE');        // Doctrine LIKE case insensitive
+                ->andWhere('u.flagActif = TRUE');
+        }
+
+        if ( !is_null($search->getSimulation()) && $search->getSimulation() == 1 )
+        {
+            $qb = $qb
+                ->andWhere('u.simulation = TRUE');
         }
 
         if ( !is_null($search->getFlagActif()) && $search->getFlagActif() == 0 )
         {
             $qb = $qb
-                ->andWhere('u.flagActif = FALSE');        // Doctrine LIKE case insensitive
+                ->andWhere('u.flagActif = FALSE');
+        }
+
+        if ( !is_null($search->getSimulation()) && $search->getSimulation() == 0 )
+        {
+            $qb = $qb
+                ->andWhere('u.simulation = FALSE');
         }
 
         // 0 1

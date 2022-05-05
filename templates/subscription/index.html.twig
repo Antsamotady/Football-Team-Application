@@ -70,35 +70,53 @@
 					<!--begin::Content-->
 					<div class="px-7 py-5" data-kt-subscription-table-filter="form">
 						<!--begin::Input group-->
-						<div class="mb-10">
+						<div class="mb-3">
 							<label class="form-label fs-6 fw-bold">Nom:</label>
 							{{ form_widget(filter_form.name, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
 						</div>
-						<!--end::Input group-->
-						<!--begin::Input group-->
-						{# <div class="mb-10">
-							<label class="form-label fs-6 fw-bold">cleAbo:</label>
+						<div class="mb-3">
+							<label class="form-label fs-6 fw-bold">Cle abonnement:</label>
 							{{ form_widget(filter_form.cleAbo, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
-						</div> #}
-						<!--end::Input group-->
-						<!--begin::Input group-->
-						<div class="mb-10">
-							<label class="form-label fs-6 fw-bold">flagActif:</label>
-							{{ form_widget(filter_form.flagActif, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
-							{# {{ form_widget(filter_form.flagActif, {'attr': {'class': 'form-check-input me-3'}}) }} #}
 						</div>
-						<!--end::Input group-->
-						<!--begin::Input group-->
-						<div class="mb-10">
-							<label class="form-label fs-6 fw-bold">Nombre titre:</label>
-							{{ form_widget(filter_form.nbTitre, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+						<div class="mb-3">
+							<div class="row g-9 mb-5">
+								<div class="col-6 fv-row">
+									<label class="form-label fs-6 fw-bold">Nombre titre:</label>
+									{{ form_widget(filter_form.nbTitre, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+								</div>
+								<div class="col-6 fv-row">
+									<label class="form-label fs-6 fw-bold">Nb utilisateurs:</label>
+									{{ form_widget(filter_form.nbUsers, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+								</div>
+							</div>
 						</div>
-						<!--end::Input group-->
-						<!--begin::Input group-->
-						<div class="mb-10">
+						<div class="mb-3">
+							<div class="row g-9 mb-5">
+								<div class="col-6 fv-row">
+									<label class="form-label fs-6 fw-bold">Nb entités:</label>
+									{{ form_widget(filter_form.nbEntities, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+								</div>
+								<div class="col-6 fv-row">
+									<label class="form-label fs-6 fw-bold">Limite annonce:</label>
+									{{ form_widget(filter_form.limitAnnonce, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+								</div>
+							</div>
+						</div>
+						<div class="mb-3">
+							<div class="row g-9 mb-5">
+								<div class="col-6 fv-row">
+									<label class="form-label fs-6 fw-bold">flagActif:</label>
+									{{ form_widget(filter_form.flagActif, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+								</div>
+								<div class="col-6 fv-row">
+									<label class="form-label fs-6 fw-bold">Simulation:</label>
+									{{ form_widget(filter_form.simulation, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+								</div>
+							</div>
+						</div>
+						<div class="mb-6">
 							<label class="form-label fs-6 fw-bold">Date de fin comprise entre:</label>
-
-							<div class="row g-9 mb-7">
+							<div class="row g-9 mb-5">
 								<!--begin::Col-->
 								<div class="col-6 fv-row">
 									{{ form_widget(filter_form.dateMin, {'attr': {'class': 'form-control form-select-solid'}}) }}
@@ -110,10 +128,6 @@
 								</div>
 								<!--end::Col-->
 							</div>
-
-							{# {{ form_widget(filter_form.dateFin, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }} #}
-								{# <span>{{ form_widget(filter_form.dateMin, {'attr': {'class': 'form-select-solid'}}) }}</span>
-                        		<span>{{ form_widget(filter_form.dateMax) }}</span> #}
 						</div>
 						<!--end::Input group-->
 						<!--begin::Actions-->
@@ -178,11 +192,15 @@
 							<input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_subscriptions_table .form-check-input" value="1" />
 						</div>
 					</th> #}
-					<th class="min-w-125px">Nom</th>
-					<th class="min-w-125px">Flag Actif</th>
+					<th class="min-w-120px">Nom</th>
+					<th class="min-w-115px">Flag Actif</th>
 					<th class="min-w-125px">Cle Abonnement</th>
-					<th class="min-w-125px">Nombre titres</th>
-					<th class="min-w-125px">Date de fin</th>
+					<th class="min-w-65px">Nb titres</th>
+					<th class="min-w-65px">Nb utilisateurs</th>
+					<th class="min-w-65px">Nb entités</th>
+					<th class="min-w-65px">Simulation</th>
+					<th class="min-w-65px">Limit Annonce</th>
+					<th class="min-w-100px">Date de fin</th>
 					<th class="text-end min-w-70px">Actions</th>
 				</tr>
 				<!--end::Table row-->
@@ -211,14 +229,12 @@
 					<td>
 						<div class="badge badge-light">{{ item.cleAbo }}</div>
 					</td>
-					<!--end::Billing=-->
-					<!--begin::Product=-->
 					<td>{{ item.nbTitres }}</td>
-					<!--end::Product=-->
-					<!--begin::Date=-->
+					<td>{{ item.nbUsers }}</td>
+					<td>{{ item.nbEntities }}</td>
+					<td>{{ item.simulation }}</td>
+					<td>{{ item.limitAnnonce }}</td>
 					<td>{{ item.dateFin|date('d-m-Y') }}</td>
-					<!--end::Date=-->
-					<!--begin::Action=-->
 					<td class="text-end">
 						<a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
 						<!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->

@@ -9,6 +9,10 @@ class ClientFilterData
     private $dateFin;
     private $flagActif;
     private $nbTitre;
+    private $nbUsers;
+    private $nbEntities;
+    private $simulation;
+    private $limitAnnonce;
     private $dateMin;
     private $dateMax;
 
@@ -140,6 +144,86 @@ class ClientFilterData
     public function setDateMin($dateMin)
     {
         $this->dateMin = $dateMin;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nbUsers
+     */ 
+    public function getNbUsers()
+    {
+        return $this->nbUsers;
+    }
+
+    /**
+     * Set the value of nbUsers
+     *
+     * @return  self
+     */ 
+    public function setNbUsers($nbUsers)
+    {
+        $this->nbUsers = $nbUsers;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nbEntities
+     */ 
+    public function getNbEntities()
+    {
+        return $this->nbEntities;
+    }
+
+    /**
+     * Set the value of nbEntities
+     *
+     * @return  self
+     */ 
+    public function setNbEntities($nbEntities)
+    {
+        $this->nbEntities = $nbEntities;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of simulation
+     */ 
+    public function getSimulation()
+    {
+        return $this->simulation;
+    }
+
+    /**
+     * Set the value of simulation
+     *
+     * @return  self
+     */ 
+    public function setSimulation($simulation)
+    {
+        $this->simulation = $simulation;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of limitAnnonce
+     */ 
+    public function getLimitAnnonce()
+    {
+        return $this->limitAnnonce;
+    }
+
+    /**
+     * Set the value of limitAnnonce
+     *
+     * @return  self
+     */ 
+    public function setLimitAnnonce($limitAnnonce)
+    {
+        $this->limitAnnonce = $limitAnnonce;
 
         return $this;
     }

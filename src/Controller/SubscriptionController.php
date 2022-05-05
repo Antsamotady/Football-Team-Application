@@ -50,7 +50,10 @@ class SubscriptionController extends AbstractController
             $em->persist($journal);
             $em->flush();
 
-            return $this->json($journal, 201);
+            return $this->json([
+                "status" => 201,
+                "message" => "Received and stored"
+            ], 201);
 
         } catch (NotEncodableValueException $e) {
             return $this->json([
@@ -71,7 +74,6 @@ class SubscriptionController extends AbstractController
             'dateFin' => $dateFin->format('Y-m-d'),
         ], 200, []);
     }
-
 
     #[Route('/export', name: 'export_client', methods: ['GET'])]
     public function export(AbonnementRepository $clientRepo): Response
