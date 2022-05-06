@@ -38,7 +38,7 @@ class SubscriptionController extends AbstractController
         ]);
     }
 
-    #[Route('/subsc/{uuid}/test', name: 'receive_sub', methods: ['POST'])]
+    #[Route('/post-subsc/{uuid}', name: 'receive_sub', methods: ['POST'])]
     public function receive(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, $uuid)
     {
         $receivedData = $request->getContent();
