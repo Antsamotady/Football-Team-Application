@@ -96,6 +96,7 @@ class Extensions
     public function getExport() 
     {
         $result = [];
+        $result[] = $this->id;
         $result[] = $this->pays;
         $result[] = $this->periode;
         $result[] = $this->montants;

@@ -25,6 +25,22 @@ class BillingController extends AbstractController
     {
         $this->urlGenerator = $urlGenerator;
     }
+
+    #[Route('/annuite', name: 'send_annuite', methods: ['GET'])]
+    public function send(ExtensionsRepository $extensionsRepo)
+    {
+        $items = $extensionsRepo->findAll();
+
+        foreach ($items as $item) {
+            $data[] = $item->getExport();
+        }
+
+        return $this->json([
+            $data,
+        ], 200, []);
+    }
+
+
     
     #[Route('/billing', name: 'billing')]
     public function index(): Response
@@ -223,7 +239,6 @@ class BillingController extends AbstractController
             'form' => $form,
         ]);
     }
-
 
     /* Import csv */
     protected function decrypteinutf8($datas) {
