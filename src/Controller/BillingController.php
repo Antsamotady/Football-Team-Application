@@ -40,7 +40,6 @@ class BillingController extends AbstractController
         ], 200, []);
     }
 
-
     
     #[Route('/billing', name: 'billing')]
     public function index(): Response
@@ -51,7 +50,7 @@ class BillingController extends AbstractController
         ]);
     }
 
-    #[Route('/list', name: 'list_extensions', methods: ['GET', 'POST'])]
+    #[Route('/list', name: 'list_annuite', methods: ['GET', 'POST'])]
     public function list(Request $request, ExtensionsRepository $extensionsRepo): Response
     {
         $data = new ExtensionsSearchData();
@@ -77,7 +76,7 @@ class BillingController extends AbstractController
             $items = $extensionsRepo->findAll();
 
         return $this->render('billing/index.html.twig', [
-            'template_title' => 'Liste des extensions',
+            'template_title' => 'Liste des annuités',
             'meth_name' => 'list',
             'form' => $form->createView(),
             'filter_form' => $filter_form->createView(),
@@ -85,7 +84,7 @@ class BillingController extends AbstractController
         ]);
     }
 
-    #[Route('/import', name: 'import_extensions', methods: ['POST'])]
+    #[Route('/import', name: 'import_annuite', methods: ['POST'])]
     public function import(Request $request, EntityManagerInterface $em, ExtensionsRepository $extensionsRepos): Response
     {
         $entete = array('pays' => 0, 'periode' => 1, 'montant' => 2, 'region' => 3);
@@ -132,15 +131,15 @@ class BillingController extends AbstractController
 
             $this->addFlash('success', 'Importation bien enregistré');
 
-            return $this->redirectToRoute('list_extensions');
+            return $this->redirectToRoute('list_annuite');
         } else {
             $this->addFlash('error', 'Errerur fichier non valid');
         }
 
-        return $this->redirectToRoute('list_extensions');
+        return $this->redirectToRoute('list_annuite');
     }
 
-    #[Route('/{id}', name: 'delete_extensions', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete_annuite', methods: ['POST'])]
     public function delete(Request $request, Extensions $extensions, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$extensions->getId(), $request->request->get('_token'))) {
@@ -150,10 +149,10 @@ class BillingController extends AbstractController
             $this->addFlash('success', 'Extension supprimé');
         }
 
-        return $this->redirectToRoute('list_extensions', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/export', name: 'export_extensions', methods: ['GET'])]
+    #[Route('/export', name: 'export_annuite', methods: ['GET'])]
     public function export(ExtensionsRepository $extensionsRepo): Response
     {
         $items = $extensionsRepo->findAll();
@@ -178,10 +177,10 @@ class BillingController extends AbstractController
         ));
     }
 
-    #[Route('/add', name: 'add_extensions', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'add_annuite', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $em): Response
     {
-        $listRoute = $this->urlGenerator->generate('list_extensions');
+        $listRoute = $this->urlGenerator->generate('list_annuite');
         // creates a task object and initializes some data for this example
         $extensions = new Extensions();
         $extensions->setCodePays(2);
@@ -195,7 +194,7 @@ class BillingController extends AbstractController
 
             $this->addFlash('success', 'Nouvelle extensions enregistrée');
 
-            return $this->redirectToRoute('list_extensions', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('billing/add.html.twig', [
@@ -205,7 +204,7 @@ class BillingController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show_extensions', methods: ['GET'])]
+    #[Route('/{id}', name: 'show_annuite', methods: ['GET'])]
     public function show(Extensions $extensions): Response
     {
         return $this->render('billing/show.html.twig', [
@@ -214,10 +213,10 @@ class BillingController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit_extensions', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit_annuite', methods: ['GET', 'POST'])]
     public function edit(Request $request, Extensions $extensions, EntityManagerInterface $em): Response
     {
-        $routeBack = $this->urlGenerator->generate('show_extensions', array("id" => $extensions->getId()));
+        $routeBack = $this->urlGenerator->generate('show_annuite', array("id" => $extensions->getId()));
 
         $form = $this->createForm(ExtensionsFormType::class, $extensions);
         $form->handleRequest($request);
@@ -227,7 +226,7 @@ class BillingController extends AbstractController
 
             $this->addFlash('success', 'Extension bien modifié');
 
-            return $this->redirectToRoute('show_extensions', [
+            return $this->redirectToRoute('show_annuite', [
                 'id' => $extensions->getId()
             ], Response::HTTP_SEE_OTHER);
         }
