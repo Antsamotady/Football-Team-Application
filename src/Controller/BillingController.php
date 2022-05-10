@@ -76,7 +76,7 @@ class BillingController extends AbstractController
             $items = $annuiteRepo->findAll();
 
         return $this->render('billing/index.html.twig', [
-            'template_title' => 'Liste des annuités',
+            'template_title' => 'Liste Annuités',
             'meth_name' => 'list',
             'form' => $form->createView(),
             'filter_form' => $filter_form->createView(),
@@ -85,7 +85,7 @@ class BillingController extends AbstractController
     }
 
     #[Route('/import', name: 'import_annuite', methods: ['POST'])]
-    public function import(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepos): Response
+    public function import(Request $request, EntityManagerInterface $em): Response
     {
         $entete = array('pays' => 0, 'periode' => 1, 'montant' => 2, 'region' => 3);
 
@@ -158,7 +158,7 @@ class BillingController extends AbstractController
         $items = $annuiteRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
-        $titre = array('Pays', 'Periode', 'Montant', 'Region');
+        $titre = array('ID', 'Nom', 'Pays', 'Periode', 'Montant', 'Region');
 
         fputs($handle, chr(239) . chr(187) . chr(191));
         fputcsv($handle, $titre, ';');
@@ -209,7 +209,7 @@ class BillingController extends AbstractController
     {
         return $this->render('billing/show.html.twig', [
             'template_title' => 'Annuité',
-            'ext' => $annuite,
+            'item' => $annuite,
         ]);
     }
 

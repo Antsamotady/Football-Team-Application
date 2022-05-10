@@ -27,7 +27,7 @@
 		</div>
 		<!--end::Card title-->
 		<!--begin::Action-->
-		<a href="{{ path('edit_annuite', {'id': ext.id}) }}" class="btn btn-primary align-self-center">Modifier</a>
+		<a href="{{ path('edit_annuite', {'id': item.id}) }}" class="btn btn-primary align-self-center">Modifier</a>
 		{# <a class="btn btn-primary align-self-center">Modifier</a> #}
 		<!--end::Action-->
 	</div>
@@ -37,11 +37,21 @@
 		<!--begin::Row-->
 		<div class="row mb-7">
 			<!--begin::Label-->
+			<label class="col-lg-4 fw-bold text-muted">Nom</label>
+			<!--end::Label-->
+			<!--begin::Col-->
+			<div class="col-lg-8">
+				<span class="fw-bolder fs-6 text-gray-800">{{ item.name }}</span>
+			</div>
+			<!--end::Col-->
+		</div>
+		<div class="row mb-7">
+			<!--begin::Label-->
 			<label class="col-lg-4 fw-bold text-muted">Pays</label>
 			<!--end::Label-->
 			<!--begin::Col-->
 			<div class="col-lg-8">
-				<span class="fw-bolder fs-6 text-gray-800">{{ ext.pays }}</span>
+				<span class="fw-bolder fs-6 text-gray-800">{{ item.pays }}</span>
 			</div>
 			<!--end::Col-->
 		</div>
@@ -51,7 +61,7 @@
 			<!--end::Label-->
 			<!--begin::Col-->
 			<div class="col-lg-8">
-				<span class="fw-bolder fs-6 text-gray-800">{{ ext.periode }}</span>
+				<span class="fw-bolder fs-6 text-gray-800">{{ item.periode }}</span>
 			</div>
 			<!--end::Col-->
 		</div>
@@ -61,7 +71,7 @@
 			<!--end::Label-->
 			<!--begin::Col-->
 			<div class="col-lg-8">
-				<span class="fw-bolder fs-6 text-gray-800">{{ ext.montants }}</span>
+				<span class="fw-bolder fs-6 text-gray-800">{{ item.montants }}</span>
 			</div>
 			<!--end::Col-->
 		</div>
@@ -71,7 +81,7 @@
 			<!--end::Label-->
 			<!--begin::Col-->
 			<div class="col-lg-8">
-				<span class="fw-bolder fs-6 text-gray-800">{{ ext.region }}</span>
+				<span class="fw-bolder fs-6 text-gray-800">{{ item.region }}</span>
 			</div>
 			<!--end::Col-->
 		</div>

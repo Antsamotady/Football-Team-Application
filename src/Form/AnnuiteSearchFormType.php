@@ -17,7 +17,7 @@ class AnnuiteSearchFormType extends AbstractType
             'label' => false,
             'required' => false,
             'attr' => [
-                'placeholder' => 'Rechercher un client'
+                'placeholder' => 'Rechercher par nom'
             ]
         ]);
     }

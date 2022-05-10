@@ -73,25 +73,29 @@
 					<!--begin::Content-->
 					<div class="px-7 py-5" data-kt-subscription-table-filter="form">
 						<!--begin::Input group-->
-						<div class="mb-10">
+						<div class="mb-3">
+							<label class="form-label fs-6 fw-bold">Nom:</label>
+							{{ form_widget(filter_form.nom, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+						</div>
+						<div class="mb-3">
 							<label class="form-label fs-6 fw-bold">Pays:</label>
 							{{ form_widget(filter_form.pays, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
 						</div>
 						<!--end::Input group-->
 						<!--begin::Input group-->
-						<div class="mb-10">
+						<div class="mb-3">
 							<label class="form-label fs-6 fw-bold">Periode:</label>
 							{{ form_widget(filter_form.periode, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
 						</div>
 						<!--end::Input group-->
 						<!--begin::Input group-->
-						<div class="mb-10">
+						<div class="mb-3">
 							<label class="form-label fs-6 fw-bold">Montant:</label>
 							{{ form_widget(filter_form.montant, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
 						</div>
 						<!--end::Input group-->
 						<!--begin::Input group-->
-						<div class="mb-10">
+						<div class="mb-3">
 							<label class="form-label fs-6 fw-bold">Region:</label>
 							{{ form_widget(filter_form.region, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
 						</div>
@@ -164,6 +168,7 @@
 			<thead>
 				<!--begin::Table row-->
 				<tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+					<th class="min-w-125px">Nom</th>
 					<th class="min-w-125px">Pays</th>
 					<th class="min-w-125px">Periode</th>
 					<th class="min-w-125px">Montant taxe</th>
@@ -178,9 +183,12 @@
 
 			{% for item in items %}
 				<tr>
+					<td>
+						<a href="{{ path('show_annuite', {'id': item.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ item.name }}</a>
+					</td>
 					<!--begin::Customer=-->
 					<td>
-						<a href="{{ path('show_annuite', {'id': item.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ item.pays }}</a>
+						{{ item.pays }}
 					</td>
 					<!--end::Customer=-->
 					<!--begin::Status=-->

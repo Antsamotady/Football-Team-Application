@@ -15,6 +15,10 @@ class AnnuiteFilterFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('nom', TextType::class, [
+                'required' => false,
+                'label' => false,
+            ])
             ->add('pays', EntityType::class, [
                 'class' => Annuite::class,
                 'required' => false,

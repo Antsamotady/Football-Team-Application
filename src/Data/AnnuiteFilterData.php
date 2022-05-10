@@ -4,6 +4,7 @@ namespace App\Data;
 
 class AnnuiteFilterData
 {
+    private $nom;
     private $pays;
     private $periode;
     private $montant;
@@ -86,6 +87,26 @@ class AnnuiteFilterData
     public function setRegion($region)
     {
         $this->region = $region;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nom
+     */ 
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set the value of nom
+     *
+     * @return  self
+     */ 
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
 
         return $this;
     }

@@ -39,6 +39,16 @@
 				<!--begin::Input group-->
 				<div class="row mb-6">
 					<!--begin::Label-->
+					<label class="col-lg-4 col-form-label required fw-bold fs-6">Nom</label>
+					<!--end::Label-->
+					<!--begin::Col-->
+					<div class="col-lg-8 fv-row">
+						{{ form_widget(form.name, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+					</div>
+					<!--end::Col-->
+				</div>
+				<div class="row mb-6">
+					<!--begin::Label-->
 					<label class="col-lg-4 col-form-label required fw-bold fs-6">Pays</label>
 					<!--end::Label-->
 					<!--begin::Col-->

@@ -35,8 +35,8 @@ class AnnuiteRepository extends ServiceEntityRepository
         if (!empty($search->getNom()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.pays) LIKE UPPER(:pays)')        // Doctrine LIKE case insensitive
-                ->setParameter('pays', "%{$search->getNom()}%");
+                ->andWhere('UPPER(u.name) LIKE UPPER(:name)')        
+                ->setParameter('name', "%{$search->getNom()}%");
         }
 
         $result = $qb->getQuery()->getResult();
@@ -56,10 +56,17 @@ class AnnuiteRepository extends ServiceEntityRepository
             ->createQueryBuilder('u')
             ->select('u');
 
+        if (!empty($search->getNom()))
+        {
+            $qb = $qb
+                ->andWhere('UPPER(u.name) LIKE UPPER(:name)')        
+                ->setParameter('name', "%{$search->getNom()}%");
+        }
+
         if (!empty($search->getPays()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.pays) LIKE UPPER(:pays)')        // Doctrine LIKE case insensitive
+                ->andWhere('UPPER(u.pays) LIKE UPPER(:pays)')        
                 ->setParameter('pays', "%{$search->getPays()}%");
         }
 
@@ -73,14 +80,14 @@ class AnnuiteRepository extends ServiceEntityRepository
         if (!empty($search->getMontant()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.montants) LIKE UPPER(:montants)')        // Doctrine LIKE case insensitive
+                ->andWhere('UPPER(u.montants) LIKE UPPER(:montants)')        
                 ->setParameter('montants', "%{$search->getMontant()}%");
         }
 
         if (!empty($search->getRegion()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.region) LIKE UPPER(:region)')        // Doctrine LIKE case insensitive
+                ->andWhere('UPPER(u.region) LIKE UPPER(:region)')        
                 ->setParameter('region', "%{$search->getRegion()}%");
         }
 
