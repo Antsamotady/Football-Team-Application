@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ExtensionsRepository;
+use App\Repository\AnnuiteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ExtensionsRepository::class)]
-class Extensions
+#[ORM\Entity(repositoryClass: AnnuiteRepository::class)]
+class Annuite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

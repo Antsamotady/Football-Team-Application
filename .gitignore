@@ -19,3 +19,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+#
+# My own stuff
+start_sf_server.sh
+deploy_me.sh

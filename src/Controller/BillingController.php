@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Extensions;
-use App\Form\ExtensionsFormType;
-use App\Data\ExtensionsFilterData;
-use App\Data\ExtensionsSearchData;
-use App\Form\ExtensionsFilterFormType;
-use App\Form\ExtensionsSearchFormType;
-use App\Repository\ExtensionsRepository;
+use App\Entity\Annuite;
+use App\Form\AnnuiteFormType;
+use App\Data\AnnuiteFilterData;
+use App\Data\AnnuiteSearchData;
+use App\Form\AnnuiteFilterFormType;
+use App\Form\AnnuiteSearchFormType;
+use App\Repository\AnnuiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,10 +26,10 @@ class BillingController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
-    #[Route('/annuite', name: 'send_annuite', methods: ['GET'])]
-    public function send(ExtensionsRepository $extensionsRepo)
+    #[Route('/send-annuite', name: 'send_annuite', methods: ['GET'])]
+    public function send(AnnuiteRepository $annuiteRepo)
     {
-        $items = $extensionsRepo->findAll();
+        $items = $annuiteRepo->findAll();
 
         foreach ($items as $item) {
             $data[] = $item->getExport();
@@ -51,14 +51,14 @@ class BillingController extends AbstractController
     }
 
     #[Route('/list', name: 'list_annuite', methods: ['GET', 'POST'])]
-    public function list(Request $request, ExtensionsRepository $extensionsRepo): Response
+    public function list(Request $request, AnnuiteRepository $annuiteRepo): Response
     {
-        $data = new ExtensionsSearchData();
-        $form = $this->createForm(ExtensionsSearchFormType::class, $data);
+        $data = new AnnuiteSearchData();
+        $form = $this->createForm(AnnuiteSearchFormType::class, $data);
         $form->handleRequest($request);
 
-        $filtered_data = new ExtensionsFilterData();
-        $filter_form = $this->createForm(ExtensionsFilterFormType::class, $filtered_data);
+        $filtered_data = new AnnuiteFilterData();
+        $filter_form = $this->createForm(AnnuiteFilterFormType::class, $filtered_data);
         $filter_form->handleRequest($request);
 
         $items = [];
@@ -67,13 +67,13 @@ class BillingController extends AbstractController
         {
             $nom = $data->getNom();
             if ($nom == "" || $nom == null)
-                $items = $extensionsRepo->findAll();
+                $items = $annuiteRepo->findAll();
             else
-                $items = $extensionsRepo->findSearch($data);
+                $items = $annuiteRepo->findSearch($data);
         } elseif ($filter_form->isSubmitted() && $filter_form->isValid()) {
-                $items = $extensionsRepo->findFiltered($filtered_data);
+                $items = $annuiteRepo->findFiltered($filtered_data);
         } else
-            $items = $extensionsRepo->findAll();
+            $items = $annuiteRepo->findAll();
 
         return $this->render('billing/index.html.twig', [
             'template_title' => 'Liste des annuités',
@@ -85,7 +85,7 @@ class BillingController extends AbstractController
     }
 
     #[Route('/import', name: 'import_annuite', methods: ['POST'])]
-    public function import(Request $request, EntityManagerInterface $em, ExtensionsRepository $extensionsRepos): Response
+    public function import(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepos): Response
     {
         $entete = array('pays' => 0, 'periode' => 1, 'montant' => 2, 'region' => 3);
 
@@ -102,7 +102,7 @@ class BillingController extends AbstractController
                 if ($row == 1) {
                         
                 } else {
-                    $ext = new Extensions();
+                    $ext = new Annuite();
                     $ext->setCodePays('AA');
 
                     if ($data[$entete['pays']] != '' &&
@@ -140,10 +140,10 @@ class BillingController extends AbstractController
     }
 
     #[Route('/{id}', name: 'delete_annuite', methods: ['POST'])]
-    public function delete(Request $request, Extensions $extensions, EntityManagerInterface $em): Response
+    public function delete(Request $request, Annuite $annuite, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$extensions->getId(), $request->request->get('_token'))) {
-            $em->remove($extensions);
+        if ($this->isCsrfTokenValid('delete'.$annuite->getId(), $request->request->get('_token'))) {
+            $em->remove($annuite);
             $em->flush();
 
             $this->addFlash('success', 'Extension supprimé');
@@ -153,9 +153,9 @@ class BillingController extends AbstractController
     }
 
     #[Route('/export', name: 'export_annuite', methods: ['GET'])]
-    public function export(ExtensionsRepository $extensionsRepo): Response
+    public function export(AnnuiteRepository $annuiteRepo): Response
     {
-        $items = $extensionsRepo->findAll();
+        $items = $annuiteRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
         $titre = array('Pays', 'Periode', 'Montant', 'Region');
@@ -173,7 +173,7 @@ class BillingController extends AbstractController
 
         return new Response($content, 200, array(
             'Content-Type' => 'application/force-download; ',
-            'Content-Disposition' => 'attachment; filename="extensions.csv"'
+            'Content-Disposition' => 'attachment; filename="annuite.csv"'
         ));
     }
 
@@ -182,43 +182,43 @@ class BillingController extends AbstractController
     {
         $listRoute = $this->urlGenerator->generate('list_annuite');
         // creates a task object and initializes some data for this example
-        $extensions = new Extensions();
-        $extensions->setCodePays(2);
+        $annuite = new Annuite();
+        $annuite->setCodePays(2);
 
-        $form = $this->createForm(ExtensionsFormType::class, $extensions);
+        $form = $this->createForm(AnnuiteFormType::class, $annuite);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($extensions);
+            $em->persist($annuite);
             $em->flush();
 
-            $this->addFlash('success', 'Nouvelle extensions enregistrée');
+            $this->addFlash('success', 'Nouvelle annuite enregistrée');
 
             return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('billing/add.html.twig', [
-            'template_title' => 'Nouvel abonnement extensions',
+            'template_title' => 'Nouvel abonnement annuite',
             'list_route' => $listRoute,
             'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'show_annuite', methods: ['GET'])]
-    public function show(Extensions $extensions): Response
+    public function show(Annuite $annuite): Response
     {
         return $this->render('billing/show.html.twig', [
-            'template_title' => 'Extension',
-            'ext' => $extensions,
+            'template_title' => 'Annuité',
+            'ext' => $annuite,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'edit_annuite', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Extensions $extensions, EntityManagerInterface $em): Response
+    public function edit(Request $request, Annuite $annuite, EntityManagerInterface $em): Response
     {
-        $routeBack = $this->urlGenerator->generate('show_annuite', array("id" => $extensions->getId()));
+        $routeBack = $this->urlGenerator->generate('show_annuite', array("id" => $annuite->getId()));
 
-        $form = $this->createForm(ExtensionsFormType::class, $extensions);
+        $form = $this->createForm(AnnuiteFormType::class, $annuite);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -227,13 +227,13 @@ class BillingController extends AbstractController
             $this->addFlash('success', 'Extension bien modifié');
 
             return $this->redirectToRoute('show_annuite', [
-                'id' => $extensions->getId()
+                'id' => $annuite->getId()
             ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('billing/edit.html.twig', [
-            'template_title' => 'Modification Extensions',
-            'extensions' => $extensions,
+            'template_title' => 'Modification Annuite',
+            'annuite' => $annuite,
             'route_back' => $routeBack,
             'form' => $form,
         ]);

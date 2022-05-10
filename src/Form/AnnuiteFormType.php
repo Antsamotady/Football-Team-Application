@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Extensions;
+use App\Entity\Annuite;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ExtensionsFormType extends AbstractType
+class AnnuiteFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -22,7 +22,7 @@ class ExtensionsFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Extensions::class,
+            'data_class' => Annuite::class,
             'method' => 'GET',
             'csrf_protection' => false
         ]);

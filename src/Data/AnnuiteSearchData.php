@@ -2,7 +2,7 @@
 
 namespace App\Data;
 
-class ExtensionsSearchData
+class AnnuiteSearchData
 {
     /**
      * @var string

@@ -2,31 +2,31 @@
 
 namespace App\Repository;
 
-use App\Entity\Extensions;
-use App\Data\ExtensionsFilterData;
-use App\Data\ExtensionsSearchData;
+use App\Entity\Annuite;
+use App\Data\AnnuiteFilterData;
+use App\Data\AnnuiteSearchData;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
- * @method Extensions|null find($id, $lockMode = null, $lockVersion = null)
- * @method Extensions|null findOneBy(array $criteria, array $orderBy = null)
- * @method Extensions[]    findAll()
- * @method Extensions[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Annuite|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Annuite|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Annuite[]    findAll()
+ * @method Annuite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ExtensionsRepository extends ServiceEntityRepository
+class AnnuiteRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Extensions::class);
+        parent::__construct($registry, Annuite::class);
     }
 
     /**
      * Client linked to search
      *
-     * @return Extensions[]
+     * @return Annuite[]
      */
-    public function findSearch(ExtensionsSearchData $search): array
+    public function findSearch(AnnuiteSearchData $search): array
     {
         $qb = $this
             ->createQueryBuilder('u')
@@ -46,11 +46,11 @@ class ExtensionsRepository extends ServiceEntityRepository
     }
 
     /**
-    * Extensions linked to search
+    * Annuite linked to search
     *
-    * @return Extensions[]
+    * @return Annuite[]
     */
-    public function findFiltered(ExtensionsFilterData $search): array
+    public function findFiltered(AnnuiteFilterData $search): array
     {
         $qb = $this
             ->createQueryBuilder('u')
@@ -92,7 +92,7 @@ class ExtensionsRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Extensions[] Returns an array of Extensions objects
+    //  * @return Annuite[] Returns an array of Annuite objects
     //  */
     /*
     public function findByExampleField($value)
@@ -109,7 +109,7 @@ class ExtensionsRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Extensions
+    public function findOneBySomeField($value): ?Annuite
     {
         return $this->createQueryBuilder('e')
             ->andWhere('e.exampleField = :val')

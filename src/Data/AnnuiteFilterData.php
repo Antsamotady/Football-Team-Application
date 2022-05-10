@@ -2,7 +2,7 @@
 
 namespace App\Data;
 
-class ExtensionsFilterData
+class AnnuiteFilterData
 {
     private $pays;
     private $periode;
