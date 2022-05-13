@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\AnnuiteLocarno;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Data\AnnuiteSearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method AnnuiteLocarno|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,22 +20,22 @@ class AnnuiteLocarnoRepository extends ServiceEntityRepository
         parent::__construct($registry, AnnuiteLocarno::class);
     }
 
-    // /**
-    //  * @return AnnuiteLocarno[] Returns an array of AnnuiteLocarno objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return AnnuiteLocarno[] Returns an array of AnnuiteLocarno objects
+     */
+    public function findSearch(AnnuiteSearchData $search)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+                'SELECT p, c
+                FROM App\Entity\Annuite p
+                INNER JOIN p.name c
+                WHERE p.name = :name'
+            )->setParameter('name', "%{$search->getNom()}%");
+
+        return $query->getOneOrNullResult();
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?AnnuiteLocarno

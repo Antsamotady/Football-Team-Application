@@ -107,4 +107,19 @@ class AnnuiteLocarno
 
         return $this;
     }
+
+    public function getExport() 
+    {
+        $result = [];
+        $result[] = $this->id;
+        $result[] = $this->annuite;
+        $result[] = $this->region;
+        $result[] = $this->taxRegister;
+        $result[] = $this->taxRenew;
+        $result[] = $this->costViewRenew;
+        $result[] = $this->costViewRegister;
+
+        return $result;
+    }
+
 }

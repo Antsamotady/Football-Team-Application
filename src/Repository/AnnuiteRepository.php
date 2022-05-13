@@ -35,7 +35,7 @@ class AnnuiteRepository extends ServiceEntityRepository
         if (!empty($search->getNom()))
         {
             $qb = $qb
-                ->andWhere('UPPER(u.name) LIKE UPPER(:name)')        
+                ->andWhere('UPPER(u.name) LIKE UPPER(:name)')       
                 ->setParameter('name', "%{$search->getNom()}%");
         }
 
