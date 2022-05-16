@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Annuite;
+use App\Entity\AnnuiteNice;
 use App\Form\AnnuiteFormType;
 use App\Entity\AnnuiteLocarno;
 use App\Data\AnnuiteFilterData;
@@ -12,6 +13,7 @@ use App\Form\AnnuiteSearchFormType;
 use App\Form\AnnuiteLocarnoFormType;
 use App\Repository\AnnuiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\AnnuiteNiceRepository;
 use App\Repository\AnnuiteLocarnoRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +31,224 @@ class BillingController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
+    #[Route('/import-locarno', name: 'import_locarno', methods: ['POST'])]
+    public function importLocarno(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo, AnnuiteLocarnoRepository $locarnoRepo): Response
+    {
+        $entete = array('annuite' => 0, 'region' => 1, 'taxRegister' => 2, 'taxRenew' => 3, 'costViewRenew' => 4, 'costViewRegister' => 5);
+
+        $path = __DIR__ . '/../../public/upload/';
+        $file = $request->files->get('locarnoimport');
+        $file->move($path, "tmp.csv");
+
+        $row = 1;
+        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                $data = $this->decrypteinutf8($data); // put in utf8;
+
+                if ($row == 1) {
+                        
+                } else {
+                    if ($data[$entete['annuite']] != ''
+                        // $data[$entete['region']] != '' &&
+                        // $data[$entete['taxRegister']] != '' &&
+                        // $data[$entete['taxRenew']] != '' &&
+                        // $data[$entete['costViewRenew']] != '' &&
+                        // $data[$entete['costViewRegister']] != ''
+                    ) {
+                        $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['annuite']] ]);
+                        if ($annuite) {
+                            $annuiteLocarno = $locarnoRepo->findOneBy(['annuite' => $annuite ]);
+                            if (!$annuiteLocarno)
+                                $annuiteLocarno = new AnnuiteLocarno();
+
+                            $annuiteLocarno->setAnnuite($annuite);
+                            $annuiteLocarno->setRegion($annuite);
+                            $annuiteLocarno->setTaxRegister ($data[$entete['taxRegister']]);
+                            $annuiteLocarno->setTaxRenew ($data[$entete['taxRenew']]);
+                            $annuiteLocarno->setCostViewRenew ($data[$entete['costViewRenew']]);
+                            $annuiteLocarno->setCostViewRegister ($data[$entete['costViewRegister']]);
+
+                            $em->persist($annuiteLocarno);
+                            $em->flush();
+                        }
+                    } else
+                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+
+                }
+                $row++;
+            }
+
+            fclose($handle);
+
+            //delete tmp file
+            unlink($path . "tmp.csv");
+
+            $this->addFlash('success', 'Importation réussie');
+
+            return $this->redirectToRoute('list_locarno');
+        } else {
+            $this->addFlash('error', 'Errerur fichier non valid');
+        }
+
+        return $this->redirectToRoute('list_annuite');
+    }
+
+    #[Route('/export-nice', name: 'export_nice', methods: ['GET'])]
+    public function exportNice(AnnuiteNiceRepository $niceRepo): Response
+    {
+        $items = $niceRepo->findAll();
+
+        $handle = fopen('php://memory', 'r+');
+        $titre = array('ID', 'Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
+
+        fputs($handle, chr(239) . chr(187) . chr(191));
+        fputcsv($handle, $titre, ';');
+        foreach ($items as $item) {
+            $result = $item->getExport();
+            fputcsv($handle, $result, ';');
+        }
+
+        rewind($handle);
+        $content = stream_get_contents($handle);
+        fclose($handle);
+
+        return new Response($content, 200, array(
+            'Content-Type' => 'application/force-download; ',
+            'Content-Disposition' => 'attachment; filename="annuite-nice.csv"'
+        ));
+    }
+
+    #[Route('/import-nice', name: 'import_nice', methods: ['POST'])]
+    public function importNice(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo, AnnuiteNiceRepository $niceRepo): Response
+    {
+        $entete = array('annuite' => 0, 'region' => 1, 'taxRegister' => 2, 'taxRenew' => 3, 'costClassRenew' => 4, 'costClassRegister' => 5);
+
+        $path = __DIR__ . '/../../public/upload/';
+        $file = $request->files->get('niceimport');
+        $file->move($path, "tmp.csv");
+
+        $row = 1;
+        
+        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                $data = $this->decrypteinutf8($data); // put in utf8;
+
+                if ($row == 1) {
+                        
+                } else {
+                    if ($data[$entete['annuite']] != ''
+                        // $data[$entete['region']] != '' &&
+                        // $data[$entete['taxRegister']] != '' &&
+                        // $data[$entete['taxRenew']] != '' &&
+                        // $data[$entete['costViewRenew']] != '' &&
+                        // $data[$entete['costViewRegister']] != ''
+                    ) {
+                        $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['annuite']] ]);
+                        if ($annuite) {
+                            $annuiteNice = $niceRepo->findOneBy(['annuite' => $annuite ]);
+                            if (!$annuiteNice)
+                                $annuiteNice = new AnnuiteNice();
+
+                            $annuiteNice->setAnnuite($annuite);
+                            $annuiteNice->setRegion($annuite);
+                            $annuiteNice->setTaxRegister ($data[$entete['taxRegister']]);
+                            $annuiteNice->setTaxRenew ($data[$entete['taxRenew']]);
+                            $annuiteNice->setCostClassRenew ($data[$entete['costClassRenew']]);
+                            $annuiteNice->setCostClassRegister ($data[$entete['costClassRegister']]);
+
+                            $em->persist($annuiteNice);
+                            $em->flush();
+                        }
+                    } else
+                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+
+                }
+                $row++;
+            }
+
+            fclose($handle);
+
+            //delete tmp file
+            unlink($path . "tmp.csv");
+
+            $this->addFlash('success', 'Importation réussie');
+
+            return $this->redirectToRoute('list_nice');
+        } else {
+            $this->addFlash('error', 'Errerur fichier non valid');
+        }
+
+        return $this->redirectToRoute('list_annuite');
+    }
+
+    #[Route('/list-annuite-nice', name: 'list_nice', methods: ['GET', 'POST'])]
+    public function listNice(Request $request, AnnuiteNiceRepository $niceRepo): Response
+    {
+        $data = new AnnuiteSearchData();
+        $form = $this->createForm(AnnuiteSearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $items = [];
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $nom = $data->getNom();
+            if ($nom == "" || $nom == null)
+                $items = $niceRepo->findAll();
+            else
+                $items = $niceRepo->findSearch($data);
+        }
+
+        $items = $niceRepo->findAll();
+        
+        return $this->render('billing/index_annuite_nice.html.twig', [
+            'template_title' => 'Liste des extensions',
+            'form' => $form->createView(),
+            'items' => $items,
+            'active_ann' => false,
+            'active_loc' => false,
+            'active_nic' => true,
+        ]);
+    }
+
+    #[Route('/add-locarno', name: 'add_locarno', methods: ['GET', 'POST'])]
+    public function addLocarno(Request $request, EntityManagerInterface $em): Response
+    {
+        $listRoute = $this->urlGenerator->generate('list_annuite');
+        $locarno = new AnnuiteLocarno();
+
+        $form = $this->createForm(AnnuiteLocarnoFormType::class, $locarno);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($locarno);
+            $em->flush();
+
+            $this->addFlash('success', 'Nouvelle annuite enregistrée');
+
+            return $this->redirectToRoute('list_locarno', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('billing/add_locarno.html.twig', [
+            'template_title' => 'Edition Annuite Locarno',
+            'list_route' => $listRoute,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'delete_locarno', methods: ['POST'])]
+    public function deleteLocarno(Request $request, AnnuiteLocarno $locarno, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$locarno->getId(), $request->request->get('_token'))) {
+            $em->remove($locarno);
+            $em->flush();
+
+            $this->addFlash('success', 'Extension supprimé');
+        }
+
+        return $this->redirectToRoute('list_locarno', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/show-locarno/{id}', name: 'show_locarno', methods: ['GET'])]
     public function showLocarno(AnnuiteLocarno $locarno): Response
     {
@@ -41,11 +261,9 @@ class BillingController extends AbstractController
     #[Route('/edit-locarno/{id}', name: 'edit_locarno', methods: ['GET', 'POST'])]
     public function editLocarno(Request $request, AnnuiteLocarno $locarno, EntityManagerInterface $em): Response
     {
-        $routeBack = $this->urlGenerator->generate('show_annuite', array("id" => $locarno->getId()));
+        $routeBack = $this->urlGenerator->generate('show_locarno', array("id" => $locarno->getId()));
 
-        $form = $this->createForm(AnnuiteLocarnoFormType::class, $locarno, [
-            'annuite' => $locarno->getAnnuite(),
-        ]);
+        $form = $this->createForm(AnnuiteLocarnoFormType::class, $locarno);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -101,7 +319,7 @@ class BillingController extends AbstractController
         $items = $locarnoRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
-        $titre = array('ID', 'Annuite_id', 'Region_id', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
+        $titre = array('ID', 'Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
 
         fputs($handle, chr(239) . chr(187) . chr(191));
         fputcsv($handle, $titre, ';');
@@ -118,69 +336,6 @@ class BillingController extends AbstractController
             'Content-Type' => 'application/force-download; ',
             'Content-Disposition' => 'attachment; filename="annuite-locarno.csv"'
         ));
-    }
-
-    #[Route('/import-locarno', name: 'import_locarno', methods: ['POST'])]
-    public function importLocarno(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo, AnnuiteLocarnoRepository $locarnoRepo): Response
-    {
-        $entete = array('annuite' => 0, 'region' => 1, 'taxRegister' => 2, 'taxRenew' => 3, 'costViewRenew' => 4, 'costViewRegister' => 5);
-
-        $path = __DIR__ . '/../../public/upload/';
-        $file = $request->files->get('locarnoimport');
-        $file->move($path, "tmp.csv");
-
-        $row = 1;
-        
-        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                $data = $this->decrypteinutf8($data); // put in utf8;
-
-                if ($row == 1) {
-                        
-                } else {
-                    if ($data[$entete['annuite']] != ''
-                        // $data[$entete['region']] != '' &&
-                        // $data[$entete['taxRegister']] != '' &&
-                        // $data[$entete['taxRenew']] != '' &&
-                        // $data[$entete['costViewRenew']] != '' &&
-                        // $data[$entete['costViewRegister']] != ''
-                    ) {
-                        $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['annuite']] ]);
-                        if ($annuite) {
-                            $annuiteLocarno = $locarnoRepo->findOneBy(['annuite' => $annuite ]);
-                            if (!$annuiteLocarno)
-                                $annuiteLocarno = new AnnuiteLocarno();
-
-                            $annuiteLocarno->setAnnuite($annuite);
-                            $annuiteLocarno->setRegion($annuite);
-                            $annuiteLocarno->setTaxRegister ($data[$entete['taxRegister']]);
-                            $annuiteLocarno->setTaxRenew ($data[$entete['taxRenew']]);
-                            $annuiteLocarno->setCostViewRenew ($data[$entete['costViewRenew']]);
-                            $annuiteLocarno->setCostViewRegister ($data[$entete['costViewRegister']]);
-
-                            $em->persist($annuiteLocarno);
-                            $em->flush();
-                        }
-                    } else
-                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
-
-                }
-                $row++;
-            }
-
-            fclose($handle);
-
-            //delete tmp file
-            unlink($path . "tmp.csv");
-
-            $this->addFlash('success', 'Importation réussie');
-
-            return $this->redirectToRoute('list_locarno');
-        } else {
-            $this->addFlash('error', 'Errerur fichier non valid');
-        }
-
-        return $this->redirectToRoute('list_annuite');
     }
 
     #[Route('/send-annuite', name: 'send_annuite', methods: ['GET'])]

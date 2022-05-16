@@ -25,9 +25,9 @@ class AnnuiteLocarnoFormType extends AbstractType
                 //     return $annuiteRepository->createQueryBuilder('u')->where('u.id = :id')->setParameter('id', $this->id);
                 // },
             ])
-            ->add('region', TextType::class, [
-                'required' => $options['annuite'],
-            ])
+            // ->add('region', TextType::class, [
+            //     'disable' => $options['annuite'],
+            // ])
             ->add('taxRegister')
             ->add('taxRenew')
             ->add('costViewRenew')
@@ -40,7 +40,7 @@ class AnnuiteLocarnoFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => AnnuiteLocarno::class,
             'method' => 'GET',
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
     }
 

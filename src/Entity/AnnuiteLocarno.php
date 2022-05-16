@@ -112,7 +112,7 @@ class AnnuiteLocarno
     {
         $result = [];
         $result[] = $this->id;
-        $result[] = $this->annuite;
+        $result[] = $this->annuite->getName();
         $result[] = $this->region;
         $result[] = $this->taxRegister;
         $result[] = $this->taxRenew;

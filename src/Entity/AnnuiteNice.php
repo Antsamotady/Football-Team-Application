@@ -107,4 +107,19 @@ class AnnuiteNice
 
         return $this;
     }
+
+    public function getExport() 
+    {
+        $result = [];
+        $result[] = $this->id;
+        $result[] = $this->annuite->getName();
+        $result[] = $this->region;
+        $result[] = $this->taxRegister;
+        $result[] = $this->taxRenew;
+        $result[] = $this->costClassRenew;
+        $result[] = $this->costClassRegister;
+
+        return $result;
+    }
+
 }

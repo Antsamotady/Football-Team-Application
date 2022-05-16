@@ -35,7 +35,7 @@
 							</span>
 							<!--end::Svg Icon-->Exporter
 						</a>
-						<a type="button" class="btn btn-primary me-3" href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_import_locarno">
+						<a type="button" class="btn btn-primary me-3" href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_import_nice">
 							<!--begin::Svg Icon | path: icons/duotune/arrows/arr078.svg-->
 							<span class="svg-icon svg-icon-2">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -58,7 +58,7 @@
 						</a>
                     </div>
                 </div>
-				{{ include('billing/modal_import_annuite_locarno.html.twig') }}
+				{{ include('billing/modal_import_annuite_nice.html.twig') }}
 			</div>
 			<div class="card-body pt-0">
 				<!--begin::Table-->
@@ -71,7 +71,8 @@
 							<th class="min-w-125px">region</th>
 							<th class="min-w-125px">tax_register</th>
 							<th class="min-w-125px">tax_renew</th>
-							<th class="min-w-125px">cost_view_renew</th>
+							<th class="min-w-125px">cost_class_renew</th>
+							<th class="min-w-125px">cost_class_register</th>
 							<th class="text-end min-w-70px">Actions</th>
 						</tr>
 						<!--end::Table row-->
@@ -99,10 +100,13 @@
 							<td>
 								{{ item.taxRenew }}
 							</td>
+							<td>
+								{{ item.costClassRenew }}
+							</td>
 							<!--end::Billing=-->
 							<!--begin::Product=-->
 							<td>
-								{{ item.costViewRenew }}
+								{{ item.costClassRegister }}
 							</td>
 							<!--end::Product=-->
 							<!--begin::Action=-->
