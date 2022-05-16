@@ -351,6 +351,34 @@ class BillingController extends AbstractController
             $data,
         ], 200, []);
     }
+
+    #[Route('/send-annuite-locarno', name: 'send_annuite_locarno', methods: ['GET'])]
+    public function sendLocarno(AnnuiteLocarnoRepository $locarnoRepo)
+    {
+        $items = $locarnoRepo->findAll();
+
+        foreach ($items as $item) {
+            $data[] = $item->getExport();
+        }
+
+        return $this->json([
+            $data,
+        ], 200, []);
+    }
+
+    #[Route('/send-annuite-nice', name: 'send_annuite_nice', methods: ['GET'])]
+    public function sendNice(AnnuiteNiceRepository $niceRepo)
+    {
+        $items = $niceRepo->findAll();
+
+        foreach ($items as $item) {
+            $data[] = $item->getExport();
+        }
+
+        return $this->json([
+            $data,
+        ], 200, []);
+    }
     
     #[Route('/billing', name: 'billing')]
     public function index(): Response

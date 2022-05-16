@@ -32,8 +32,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # API
         - { path: ^/client/subsc, roles: PUBLIC_ACCESS }
         - { path: ^/extensions/send-annuite, roles: PUBLIC_ACCESS }
+        - { path: ^/extensions/send-annuite-locarno, roles: PUBLIC_ACCESS }
+        - { path: ^/extensions/send-annuite-nice, roles: PUBLIC_ACCESS }
         # No page available except for the login one if not authenticated
         - { path: ^(?!/login), roles: ROLE_USER }
         - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
