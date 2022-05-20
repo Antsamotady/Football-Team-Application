@@ -31,6 +31,15 @@ class BillingController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
+    #[Route('/show-nice/{id}', name: 'show_nice', methods: ['GET'])]
+    public function showNice(AnnuiteNice $nice): Response
+    {
+        return $this->render('billing/show_nice.html.twig', [
+            'template_title' => 'Annuité Nice',
+            'item' => $nice,
+        ]);
+    }
+
     #[Route('/import-locarno', name: 'import_locarno', methods: ['POST'])]
     public function importLocarno(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo, AnnuiteLocarnoRepository $locarnoRepo): Response
     {

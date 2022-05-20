@@ -68,7 +68,7 @@
 						<!--begin::Table row-->
 						<tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
 							<th class="min-w-125px">annuite</th>
-							<th class="min-w-125px">region</th>
+							<th class="min-w-125px">pays</th>
 							<th class="min-w-125px">tax_register</th>
 							<th class="min-w-125px">tax_renew</th>
 							<th class="min-w-125px">cost_class_renew</th>
@@ -84,7 +84,7 @@
 					{% for item in items %}
 						<tr>
 							<td>
-								<a href="{{ path('show_locarno', {'id': item.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ item.annuite.name }}</a>
+								<a href="{{ path('show_nice', {'id': item.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ item.annuite.name }}</a>
 							</td>
 							<!--begin::Status=-->
 							<td>
@@ -127,15 +127,15 @@
 									</div>
 									<!--end::Menu item-->
 									<!--begin::Menu item-->
-									<div class="menu-item px-3">
+									{# <div class="menu-item px-3">
 										<a href="{{ path('edit_locarno', {'id': item.id}) }}"  class="menu-link px-3">Modifier</a>
-									</div>
+									</div> #}
 									<!--end::Menu item-->
 									<!--begin::Menu item-->
 									<div class="menu-item px-3">
 										<form method="post" action="{{ path('delete_locarno', {'id': item.id}) }}" onsubmit="return confirm('Attention vous allez supprimer cette extension');">
 											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
-											<button class="btn me-3 menu-link px-2" data-kt-users-table-filter="delete_row">Supprimer</button>
+											<button class="btn me-3 menu-link px-2" data-kt-users-table-filter="delete_row"><span style="font-size:smaller;">Supprimer</span></button>
 										</form>
 									</div>
 									<!--end::Menu item-->
