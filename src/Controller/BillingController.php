@@ -31,6 +31,63 @@ class BillingController extends AbstractController
         $this->urlGenerator = $urlGenerator;
     }
 
+    #[Route('/import', name: 'import_annuite', methods: ['POST'])]
+    public function import(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo): Response
+    {
+        $entete = array('nom' => 0, 'pays' => 1, 'periode' => 2, 'montant' => 3, 'region' => 4);
+        $path = __DIR__ . '/../../public/upload/';
+        $file = $request->files->get('fileimport');
+        $file->move($path, "tmp.csv");
+
+        $row = 1;
+        
+        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                $data = $this->decrypteinutf8($data); // put in utf8;
+
+                if ($row == 1) {
+                        
+                } else {
+                    if ($data[$entete['nom']] != '' &&
+                        $data[$entete['pays']] != '' &&
+                        $data[$entete['periode']] != '' &&
+                        $data[$entete['montant']] != '' &&
+                        $data[$entete['region']] != ''
+                    ) {
+                        $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['nom']] ]);
+                        if (!$annuite)
+                            $annuite = new Annuite();
+                        
+                        $annuite->setName($data[$entete['nom']]);
+                        $annuite->setPays($data[$entete['pays']]);
+                        $annuite->setPeriode($data[$entete['periode']]);
+                        $annuite->setMontants($data[$entete['montant']]);
+                        $annuite->setRegion($data[$entete['region']]);
+
+                        $em->persist($annuite);
+                        $em->flush();
+                    } else
+                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+
+                }
+                $row++;
+            }
+
+            fclose($handle);
+
+            //delete tmp file
+            unlink($path . "tmp.csv");
+
+            $this->addFlash('success', 'Importation réussie');
+
+            return $this->redirectToRoute('list_annuite');
+        } else {
+            $this->addFlash('error', 'Errerur fichier non valid');
+        }
+
+        return $this->redirectToRoute('list_annuite');
+    }
+
     #[Route('/show-nice/{id}', name: 'show_nice', methods: ['GET'])]
     public function showNice(AnnuiteNice $nice): Response
     {
@@ -433,64 +490,6 @@ class BillingController extends AbstractController
             'active_loc' => false,
             'active_nic' => false,
         ]);
-    }
-
-    #[Route('/import', name: 'import_annuite', methods: ['POST'])]
-    public function import(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo): Response
-    {
-        $entete = array('nom' => 0, 'pays' => 1, 'periode' => 2, 'montant' => 3, 'region' => 4);
-
-        $path = __DIR__ . '/../../public/upload/';
-        $file = $request->files->get('fileimport');
-        $file->move($path, "tmp.csv");
-
-        $row = 1;
-        
-        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                $data = $this->decrypteinutf8($data); // put in utf8;
-
-                if ($row == 1) {
-                        
-                } else {
-                    if ($data[$entete['nom']] != '' &&
-                        $data[$entete['pays']] != '' &&
-                        $data[$entete['periode']] != '' &&
-                        $data[$entete['montant']] != '' &&
-                        $data[$entete['region']] != ''
-                    ) {
-                        $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['nom']] ]);
-                        if (!$annuite)
-                            $annuite = new Annuite();
-                        
-                        $annuite->setName($data[$entete['nom']]);
-                        $annuite->setPays($data[$entete['pays']]);
-                        $annuite->setPeriode($data[$entete['periode']]);
-                        $annuite->setMontants($data[$entete['montant']]);
-                        $annuite->setRegion($data[$entete['region']]);
-
-                        $em->persist($annuite);
-                        $em->flush();
-                    } else
-                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
-
-                }
-                $row++;
-            }
-
-            fclose($handle);
-
-            //delete tmp file
-            unlink($path . "tmp.csv");
-
-            $this->addFlash('success', 'Importation réussie');
-
-            return $this->redirectToRoute('list_annuite');
-        } else {
-            $this->addFlash('error', 'Errerur fichier non valid');
-        }
-
-        return $this->redirectToRoute('list_annuite');
     }
 
     #[Route('/{id}', name: 'delete_annuite', methods: ['POST'])]
