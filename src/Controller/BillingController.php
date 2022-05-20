@@ -88,6 +88,19 @@ class BillingController extends AbstractController
         return $this->redirectToRoute('list_annuite');
     }
 
+    #[Route('/{id}', name: 'delete_annuite', methods: ['POST'])]
+    public function delete(Request $request, Annuite $annuite, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$annuite->getId(), $request->request->get('_token'))) {
+            $em->remove($annuite);
+            $em->flush();
+
+            $this->addFlash('success', 'Extension supprimé');
+        }
+
+        return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/show-nice/{id}', name: 'show_nice', methods: ['GET'])]
     public function showNice(AnnuiteNice $nice): Response
     {
@@ -490,19 +503,6 @@ class BillingController extends AbstractController
             'active_loc' => false,
             'active_nic' => false,
         ]);
-    }
-
-    #[Route('/{id}', name: 'delete_annuite', methods: ['POST'])]
-    public function delete(Request $request, Annuite $annuite, EntityManagerInterface $em): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$annuite->getId(), $request->request->get('_token'))) {
-            $em->remove($annuite);
-            $em->flush();
-
-            $this->addFlash('success', 'Extension supprimé');
-        }
-
-        return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/export', name: 'export_annuite', methods: ['GET'])]
