@@ -88,28 +88,6 @@ class BillingController extends AbstractController
         return $this->redirectToRoute('list_annuite');
     }
 
-    #[Route('/{id}', name: 'delete_annuite', methods: ['POST'])]
-    public function delete(Request $request, Annuite $annuite, EntityManagerInterface $em): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$annuite->getId(), $request->request->get('_token'))) {
-            $em->remove($annuite);
-            $em->flush();
-
-            $this->addFlash('success', 'Extension supprimé');
-        }
-
-        return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/show-nice/{id}', name: 'show_nice', methods: ['GET'])]
-    public function showNice(AnnuiteNice $nice): Response
-    {
-        return $this->render('billing/show_nice.html.twig', [
-            'template_title' => 'Annuité Nice',
-            'item' => $nice,
-        ]);
-    }
-
     #[Route('/import-locarno', name: 'import_locarno', methods: ['POST'])]
     public function importLocarno(Request $request, EntityManagerInterface $em, AnnuiteRepository $annuiteRepo, AnnuiteLocarnoRepository $locarnoRepo): Response
     {
@@ -170,6 +148,54 @@ class BillingController extends AbstractController
         }
 
         return $this->redirectToRoute('list_annuite');
+    }
+
+    #[Route('/del-annuite/{id}', name: 'delete_annuite', methods: ['POST'])]
+    public function delete(Request $request, Annuite $annuite, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$annuite->getId(), $request->request->get('_token'))) {
+            $em->remove($annuite);
+            $em->flush();
+
+            $this->addFlash('success', 'Extension supprimé');
+        }
+
+        return $this->redirectToRoute('list_annuite', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/del-locarno/{id}', name: 'delete_locarno', methods: ['POST'])]
+    public function deleteLocarno(Request $request, AnnuiteLocarno $locarno, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$locarno->getId(), $request->request->get('_token'))) {
+            $em->remove($locarno);
+            $em->flush();
+
+            $this->addFlash('success', 'Extension supprimé');
+        }
+
+        return $this->redirectToRoute('list_locarno', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/del-nice/{id}', name: 'delete_nice', methods: ['POST'])]
+    public function deleteNice(Request $request, AnnuiteNice $nice, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$nice->getId(), $request->request->get('_token'))) {
+            $em->remove($nice);
+            $em->flush();
+
+            $this->addFlash('success', 'Extension supprimé');
+        }
+
+        return $this->redirectToRoute('list_nice', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/show-nice/{id}', name: 'show_nice', methods: ['GET'])]
+    public function showNice(AnnuiteNice $nice): Response
+    {
+        return $this->render('billing/show_nice.html.twig', [
+            'template_title' => 'Annuité Nice',
+            'item' => $nice,
+        ]);
     }
 
     #[Route('/export-nice', name: 'export_nice', methods: ['GET'])]
@@ -313,19 +339,6 @@ class BillingController extends AbstractController
             'list_route' => $listRoute,
             'form' => $form->createView(),
         ]);
-    }
-
-    #[Route('/{id}', name: 'delete_locarno', methods: ['POST'])]
-    public function deleteLocarno(Request $request, AnnuiteLocarno $locarno, EntityManagerInterface $em): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$locarno->getId(), $request->request->get('_token'))) {
-            $em->remove($locarno);
-            $em->flush();
-
-            $this->addFlash('success', 'Extension supprimé');
-        }
-
-        return $this->redirectToRoute('list_locarno', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/show-locarno/{id}', name: 'show_locarno', methods: ['GET'])]
@@ -557,7 +570,7 @@ class BillingController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show_annuite', methods: ['GET'])]
+    #[Route('/show-annuite/{id}', name: 'show_annuite', methods: ['GET'])]
     public function show(Annuite $annuite): Response
     {
         return $this->render('billing/show.html.twig', [
