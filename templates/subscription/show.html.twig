@@ -27,7 +27,11 @@
 		</div>
 		<!--end::Card title-->
 		<!--begin::Action-->
-		<a href="{{ path('edit_client', {'id': client.id}) }}" class="btn btn-primary align-self-center">Modifier</a>
+		<div class="d-flex justify-content-end">
+			<a href="{{ path('list_client') }}" class="btn btn-light-primary align-self-center me-3">
+			<!--end::Svg Icon-->Retour à la liste
+			<a href="{{ path('edit_client', {'id': client.id}) }}" class="btn btn-primary align-self-center">Modifier</a>
+		</div>
 		{# <a class="btn btn-primary align-self-center">Modifier</a> #}
 		<!--end::Action-->
 	</div>

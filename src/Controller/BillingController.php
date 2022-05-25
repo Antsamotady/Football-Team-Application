@@ -113,17 +113,18 @@ class BillingController extends AbstractController
                         // $data[$entete['costViewRegister']] != ''
                     ) {
                         $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['annuite']] ]);
+                        $annuiteRegion = $annuiteRepo->findOneBy(['pays' => $data[$entete['region']] ]);
                         if ($annuite) {
                             $annuiteLocarno = $locarnoRepo->findOneBy(['annuite' => $annuite ]);
                             if (!$annuiteLocarno)
                                 $annuiteLocarno = new AnnuiteLocarno();
 
                             $annuiteLocarno->setAnnuite($annuite);
-                            $annuiteLocarno->setRegion($annuite);
-                            $annuiteLocarno->setTaxRegister ($data[$entete['taxRegister']]);
-                            $annuiteLocarno->setTaxRenew ($data[$entete['taxRenew']]);
-                            $annuiteLocarno->setCostViewRenew ($data[$entete['costViewRenew']]);
-                            $annuiteLocarno->setCostViewRegister ($data[$entete['costViewRegister']]);
+                            $annuiteLocarno->setRegion($annuiteRegion);
+                            $annuiteLocarno->setTaxRegister($data[$entete['taxRegister']]);
+                            $annuiteLocarno->setTaxRenew($data[$entete['taxRenew']]);
+                            $annuiteLocarno->setCostViewRenew($data[$entete['costViewRenew']]);
+                            $annuiteLocarno->setCostViewRegister($data[$entete['costViewRegister']]);
 
                             $em->persist($annuiteLocarno);
                             $em->flush();
@@ -249,13 +250,14 @@ class BillingController extends AbstractController
                         // $data[$entete['costViewRegister']] != ''
                     ) {
                         $annuite = $annuiteRepo->findOneBy(['name' => $data[$entete['annuite']] ]);
+                        $annuiteRegion = $annuiteRepo->findOneBy(['pays' => $data[$entete['region']] ]);
                         if ($annuite) {
                             $annuiteNice = $niceRepo->findOneBy(['annuite' => $annuite ]);
                             if (!$annuiteNice)
                                 $annuiteNice = new AnnuiteNice();
 
                             $annuiteNice->setAnnuite($annuite);
-                            $annuiteNice->setRegion($annuite);
+                            $annuiteNice->setRegion($annuiteRegion);
                             $annuiteNice->setTaxRegister ($data[$entete['taxRegister']]);
                             $annuiteNice->setTaxRenew ($data[$entete['taxRenew']]);
                             $annuiteNice->setCostClassRenew ($data[$entete['costClassRenew']]);
