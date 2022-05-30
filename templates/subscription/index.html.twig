@@ -18,6 +18,9 @@
 {% for notice in app.flashes('success') %}
 	<div class="alert alert-success" role="alert">{{ notice }}</div>
 {% endfor %}
+{% for notice in app.flashes('error') %}
+	<div class="alert alert-danger" role="alert">{{ notice }}</div>
+{% endfor %}
 
 <!--begin::Card-->
 <div class="card">

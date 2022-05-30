@@ -123,6 +123,11 @@ class SubscriptionController extends AbstractController
                         $data[$entete['nbTitres']] != '' &&
                         $data[$entete['dateFin']] != ''
                     ) {
+                        if(!preg_match('/\d{2}-\d{2}-\d{4}/',$data[$entete['dateFin']])){
+                            $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+                            return $this->redirectToRoute('list_client');
+                         }
+                         
                         $client = $clientRepo->findOneBy(['nomClient' => $data[$entete['nom']] ]);
                         if (!$client)
                             $client = new Abonnement();
@@ -140,7 +145,6 @@ class SubscriptionController extends AbstractController
                         $em->flush();
                     } else {
                         $this->addFlash('error', 'Erreur à la ligne : ' . $row);
-
                         return $this->redirectToRoute('list_client');
                     }
                 }
