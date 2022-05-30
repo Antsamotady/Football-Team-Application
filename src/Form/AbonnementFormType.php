@@ -26,6 +26,12 @@ class AbonnementFormType extends AbstractType
                 'required' => false,
             ])
             ->add('nbTitres')
+            ->add('nbUsers')
+            ->add('nbEntities')
+            ->add('simulation', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('limitAnnonce')
         ;
     }
 

@@ -167,6 +167,10 @@ class Abonnement
         $result[] = $this->cleAbo;
         $result[] = $this->nbTitres;
         $result[] = $this->getDateFin()->format('d-m-Y');
+        $result[] = $this->nbUsers;
+        $result[] = $this->nbEntities;
+        $result[] = $this->simulation;
+        $result[] = $this->limitAnnonce;
 
         return $result;
     }

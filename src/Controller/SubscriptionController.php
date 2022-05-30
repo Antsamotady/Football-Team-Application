@@ -81,7 +81,7 @@ class SubscriptionController extends AbstractController
         $items = $clientRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
-        $titre = array('Nom', 'flagActif', 'cleAbo', 'Nb titres', 'Date de fin');
+        $titre = array('Nom', 'flagActif', 'cleAbo', 'Nb titres', 'Date de fin', 'Nb utilisateurs', 'Nb entités', 'Simulation', 'Limite annonces');
 
         fputs($handle, chr(239) . chr(187) . chr(191));
         fputcsv($handle, $titre, ';');
@@ -98,6 +98,68 @@ class SubscriptionController extends AbstractController
             'Content-Type' => 'application/force-download; ',
             'Content-Disposition' => 'attachment; filename="abonnement.csv"'
         ));
+    }
+
+    #[Route('/import', name: 'import_client', methods: ['POST'])]
+    public function import(Request $request, EntityManagerInterface $em, AbonnementRepository $clientRepo): Response
+    {
+        $entete = array('nom' => 0, 'flagActif' => 1, 'cleAbo' => 2, 'nbTitres' => 3, 'dateFin' => 4, 'nbUtilisateur' => 5, 'nbEntites' => 6, 'simulation' => 7, 'limitAnnonces' => 8);
+        $path = __DIR__ . '/../../public/upload/';
+        $file = $request->files->get('clientimport');
+        $file->move($path, "tmp.csv");
+
+        $row = 1;
+        
+        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                $data = $this->decrypteinutf8($data); // put in utf8;
+
+                if ($row == 1) {
+                        
+                } else {
+                    if ($data[$entete['nom']] != '' &&
+                        $data[$entete['flagActif']] != '' &&
+                        $data[$entete['cleAbo']] != '' &&
+                        $data[$entete['nbTitres']] != '' &&
+                        $data[$entete['dateFin']] != ''
+                    ) {
+                        $client = $clientRepo->findOneBy(['nomClient' => $data[$entete['nom']] ]);
+                        if (!$client)
+                            $client = new Abonnement();
+                        $client->setNomClient($data[$entete['nom']]);
+                        $client->setFlagActif($data[$entete['flagActif']]);
+                        $client->setCleAbo($data[$entete['cleAbo']]);
+                        $client->setNbTitres($data[$entete['nbTitres']]);
+                        $client->setDateFin(new \Datetime($data[$entete['dateFin']]));
+                        $client->setNbUsers((int)$data[$entete['nbUtilisateur']]);
+                        $client->setNbEntities((int)$data[$entete['nbEntites']]);
+                        $client->setSimulation((int)$data[$entete['simulation']]);
+                        $client->setLimitAnnonce((int)$data[$entete['limitAnnonces']]);
+
+                        $em->persist($client);
+                        $em->flush();
+                    } else {
+                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+
+                        return $this->redirectToRoute('list_client');
+                    }
+                }
+                $row++;
+            }
+
+            fclose($handle);
+
+            //delete tmp file
+            unlink($path . "tmp.csv");
+
+            $this->addFlash('success', 'Importation réussie');
+
+            return $this->redirectToRoute('list_client');
+        } else {
+            $this->addFlash('error', 'Errerur fichier non valid');
+        }
+
+        return $this->redirectToRoute('list_client');
     }
 
     #[Route('/add', name: 'add_client', methods: ['GET', 'POST'])]
@@ -222,6 +284,15 @@ class SubscriptionController extends AbstractController
     
         // Output the 36 character UUID.
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
+    /* Import csv */
+    protected function decrypteinutf8($datas) {
+        $datas_return = array();
+        foreach ($datas as $value) {
+            $datas_return[] = (preg_match('!!u', $value)) ? $value : utf8_encode($value);
+        }
+        return $datas_return;
     }
     
 }

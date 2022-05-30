@@ -17,45 +17,26 @@
 {% for notice in app.flashes('success') %}
 	<div class="alert alert-success" role="alert">{{ notice }}</div>
 {% endfor %}
-<!--begin::details View-->
 <div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
-	<!--begin::Card header-->
 	<div class="card-header cursor-pointer">
-		<!--begin::Card title-->
 		<div class="card-title m-0">
 			<h3 class="fw-bolder m-0">Détail client</h3>
 		</div>
-		<!--end::Card title-->
-		<!--begin::Action-->
 		<div class="d-flex justify-content-end">
-			<a href="{{ path('list_client') }}" class="btn btn-light-primary align-self-center me-3">
-			<!--end::Svg Icon-->Retour à la liste
+			<a href="{{ path('list_client') }}" class="btn btn-light-primary align-self-center me-3">Retour à la liste</a>
 			<a href="{{ path('edit_client', {'id': client.id}) }}" class="btn btn-primary align-self-center">Modifier</a>
 		</div>
 		{# <a class="btn btn-primary align-self-center">Modifier</a> #}
-		<!--end::Action-->
 	</div>
-	<!--begin::Card header-->
-	<!--begin::Card body-->
 	<div class="card-body p-9">
-		<!--begin::Row-->
 		<div class="row mb-7">
-			<!--begin::Label-->
 			<label class="col-lg-4 fw-bold text-muted">Nom</label>
-			<!--end::Label-->
-			<!--begin::Col-->
 			<div class="col-lg-8">
 				<span class="fw-bolder fs-6 text-gray-800">{{ client.nomClient }}</span>
 			</div>
-			<!--end::Col-->
 		</div>
-		<!--end::Row-->
-		<!--begin::Row-->
 		<div class="row mb-7">
-			<!--begin::Label-->
 			<label class="col-lg-4 fw-bold text-muted">flagActif</label>
-			<!--end::Label-->
-			<!--begin::Col-->
 			<div class="col-lg-8 fv-row">
                 {% if client.flagActif %}
 					<span class="badge badge-light-success">oui</span>
@@ -63,48 +44,53 @@
 					<span class="badge badge-light-danger">non</span>
 				{% endif %}
 			</div>
-			<!--end::Col-->
 		</div>
-		<!--end::Row-->
-		<!--begin::Row-->
 		<div class="row mb-7">
-			<!--begin::Label-->
 			<label class="col-lg-4 fw-bold text-muted">cleAbo</label>
-			<!--end::Label-->
-			<!--begin::Col-->
 			<div class="col-lg-8 fv-row">
 				<span class="fw-bold text-gray-800 fs-6">{{ client.cleAbo }}</span>
 			</div>
-			<!--end::Col-->
 		</div>
-		<!--end::Row-->
-		<!--begin::Row-->
 		<div class="row mb-7">
-			<!--begin::Label-->
 			<label class="col-lg-4 fw-bold text-muted">Nombre de titre(s)</label>
-			<!--end::Label-->
-			<!--begin::Col-->
 			<div class="col-lg-8 fv-row">
 				<span class="fw-bold text-gray-800 fs-6">{{ client.nbTitres }}</span>
 			</div>
-			<!--end::Col-->
 		</div>
-		<!--end::Row-->
-		<!--end::Row-->
-		<!--begin::Row-->
 		<div class="row mb-7">
-			<!--begin::Label-->
 			<label class="col-lg-4 fw-bold text-muted">Date date fin</label>
-			<!--end::Label-->
-			<!--begin::Col-->
 			<div class="col-lg-8 fv-row">
 				<span class="fw-bold text-gray-800 fs-6">{{ client.dateFin|date('d-m-Y') }}</span>
 			</div>
-			<!--end::Col-->
 		</div>
-		<!--end::Row-->
+		<div class="row mb-7">
+			<label class="col-lg-4 fw-bold text-muted">Nombre d'utilisateur(s)</label>
+			<div class="col-lg-8 fv-row">
+				<span class="fw-bold text-gray-800 fs-6">{{ client.nbUsers }}</span>
+			</div>
+		</div>
+		<div class="row mb-7">
+			<label class="col-lg-4 fw-bold text-muted">Nombre d'entité(s)</label>
+			<div class="col-lg-8 fv-row">
+				<span class="fw-bold text-gray-800 fs-6">{{ client.nbEntities }}</span>
+			</div>
+		</div>
+		<div class="row mb-7">
+			<label class="col-lg-4 fw-bold text-muted">Simulation</label>
+			<div class="col-lg-8 fv-row">
+                {% if client.simulation %}
+					<span class="badge badge-light-success">oui</span>
+				{% else %}
+					<span class="badge badge-light-danger">non</span>
+				{% endif %}
+			</div>
+		</div>
+		<div class="row mb-7">
+			<label class="col-lg-4 fw-bold text-muted">Limite annonce</label>
+			<div class="col-lg-8 fv-row">
+				<span class="fw-bold text-gray-800 fs-6">{{ client.limitAnnonce }}</span>
+			</div>
+		</div>
 	</div>
-	<!--end::Card body-->
 </div>
-<!--end::details View-->
 {% endblock %}
