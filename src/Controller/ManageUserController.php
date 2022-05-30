@@ -11,6 +11,7 @@ use Symfony\Component\Mime\Email;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -123,17 +124,26 @@ class ManageUserController extends AbstractController
     #[Route('/list', name: 'list_users', methods: ['GET', 'POST'])]
     public function list(Request $request, UserRepository $userRepository, MailerInterface $mailer): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $user = $this->getUser();
+        $ip = $request->getClientIp();
+        $dTime = new \DateTime();
 
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->from('hello@example.com')
             ->to('tsilavinarj02@gmail.com')
             //->cc('cc@example.com')
             //->bcc('bcc@example.com')
             //->replyTo('fabien@example.com')
             //->priority(Email::PRIORITY_HIGH)
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+            ->subject('Login du '.$dTime->format('Y-m-d H:i:s'))
+            ->htmlTemplate('email/journal-mail.html.twig')
+            ->context([
+                'login' => $user->getName(),
+                'IP' => $ip,
+                'horodatage' => $dTime->format('Y-m-d H:i:s')
+            ])
+            ;
             
         $mailer->send($email);
 
