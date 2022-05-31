@@ -34,7 +34,7 @@ class SecurityController extends GlobalController
                 $t = $this->spentTime($loginError[0]->getTimestamp());
                 if ($t >= $waiting) {
                     $this->delLoginError($em, $loginErrorRepo->findAll());
-                    $this->upLoginError($em, $lastUsername, 0, true);
+                    $this->upLoginError($em, $lastUsername, 0, false);
                     $blockLogin = false;
                 } else {
                     $blockLogin = true;
