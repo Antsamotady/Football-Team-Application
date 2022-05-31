@@ -19,37 +19,45 @@
 						<!--end::Login Header-->
 						<!--begin::Login Sign in form-->
 						<div class="login-signin">
-							<div class="mb-8">
-								<h3>Connectez-vous</h3>
-							</div>
-							<form method="post" class="form" id="kt_login_signin_form">
-							    {% if error %}
-									<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-								{% endif %}
+							{% if block_login %}
+								<div class="mb-8">
+									<h3>Connexion impossible pour le moment.</h3>
+									<p>5 tentatives successives d'authentification échouées</p>
+									<p>Actualisez (F5) dans 15 minutes et rééssayez.</p>
+								</div>
+							{% else %}	
+								<div class="mb-8">
+									<h3>Connectez-vous</h3>
+								</div>
+								<form method="post" class="form" id="kt_login_signin_form">
+									{% if error %}
+										<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+									{% endif %}
 
-								{% if app.user %}
-									<div class="mb-3">
-										Vous êtes déjà connecté entant que {{ app.user.name }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+									{% if app.user %}
+										<div class="mb-3">
+											Vous êtes déjà connecté entant que {{ app.user.name }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+										</div>
+									{% endif %}
+
+									<div class="form-group mb-5">
+										<input class="form-control h-auto form-control-solid py-4 px-8" type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" name="email" autocomplete="email" required autofocus />
 									</div>
-								{% endif %}
-
-								<div class="form-group mb-5">
-									<input class="form-control h-auto form-control-solid py-4 px-8" type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" name="email" autocomplete="email" required autofocus />
-								</div>
-								<div class="form-group mb-5">
-									<input id="inputPassword" class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required />
-									<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
-								</div>
-								{# <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
-									<div class="checkbox-inline">
-										<label class="checkbox m-0 text-muted"> #}
-										{# <input type="checkbox" name="remember" /> #}
-										{# <span></span>Remember me</label> #}
-									{# </div>
-									<a href="javascript:;" id="kt_login_forgot" class="text-muted text-hover-primary">Forget Password ?</a>
-								</div> #}
-								<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" type="submit">Se connecter</button>
-							</form>
+									<div class="form-group mb-5">
+										<input id="inputPassword" class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required />
+										<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+									</div>
+									{# <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
+										<div class="checkbox-inline">
+											<label class="checkbox m-0 text-muted"> #}
+											{# <input type="checkbox" name="remember" /> #}
+											{# <span></span>Remember me</label> #}
+										{# </div>
+										<a href="javascript:;" id="kt_login_forgot" class="text-muted text-hover-primary">Forget Password ?</a>
+									</div> #}
+									<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" type="submit">Se connecter</button>
+								</form>
+							{% endif %}
 						</div>
 						<!--end::Login Sign in form-->
 					</div>
