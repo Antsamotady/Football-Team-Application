@@ -13,7 +13,7 @@ class AnnuiteNice
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\OneToOne(inversedBy: 'annuiteNice', targetEntity: Annuite::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'annuiteNice', targetEntity: Annuite::class)]
     private $annuite;
 
     #[ORM\ManyToOne(targetEntity: Annuite::class, inversedBy: 'regionCodeNices')]

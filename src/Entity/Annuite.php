@@ -57,7 +57,7 @@ class Annuite
     #[ORM\OneToMany(mappedBy: 'region', targetEntity: AnnuiteNice::class)]
     private $regionCodeNices;
 
-    #[ORM\OneToOne(mappedBy: 'annuite', targetEntity: AnnuiteLocarno::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'annuite', targetEntity: AnnuiteLocarno::class, orphanRemoval: true)]
     private $annuiteLocarno;
 
     #[ORM\OneToMany(mappedBy: 'region', targetEntity: AnnuiteLocarno::class)]
