@@ -111,7 +111,7 @@ class AnnuiteNice
     public function getExport() 
     {
         $result = [];
-        $result[] = $this->id;
+        // $result[] = $this->id;
         $result[] = $this->annuite->getName();
         $result[] = $this->region ? $this->region->getPays() : '';
         $result[] = $this->taxRegister;

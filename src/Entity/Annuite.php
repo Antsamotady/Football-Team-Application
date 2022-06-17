@@ -138,7 +138,7 @@ class Annuite
     public function getExport() 
     {
         $result = [];
-        $result[] = $this->id;
+        // $result[] = $this->id;
         $result[] = $this->name;
         $result[] = $this->pays;
         $result[] = $this->periode;

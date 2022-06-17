@@ -205,7 +205,8 @@ class BillingController extends AbstractController
         $items = $niceRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
-        $titre = array('ID', 'Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
+        // $titre = array('ID', 'Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
+        $titre = array('Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
 
         fputs($handle, chr(239) . chr(187) . chr(191));
         fputcsv($handle, $titre, ';');
@@ -413,7 +414,8 @@ class BillingController extends AbstractController
         $items = $locarnoRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
-        $titre = array('ID', 'Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
+        // $titre = array('ID', 'Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
+        $titre = array('Annuite', 'Region', 'TaxRegister', 'TaxRenew', 'CostViewRenew', 'CostViewRegister');
 
         fputs($handle, chr(239) . chr(187) . chr(191));
         fputcsv($handle, $titre, ';');
@@ -526,7 +528,8 @@ class BillingController extends AbstractController
         $items = $annuiteRepo->findAll();
 
         $handle = fopen('php://memory', 'r+');
-        $titre = array('ID', 'Nom', 'Pays', 'Periode', 'Montant', 'Region');
+        // $titre = array('ID', 'Nom', 'Pays', 'Periode', 'Montant', 'Region');
+        $titre = array('Nom', 'Pays', 'Periode', 'Montant', 'Region');
 
         fputs($handle, chr(239) . chr(187) . chr(191));
         fputcsv($handle, $titre, ';');
