@@ -66,12 +66,19 @@ class SubscriptionController extends AbstractController
     #[Route('/subsc/{uuid}', name: 'send_sub', methods: ['GET'])]
     public function send(AbonnementRepository $clientRepo, $uuid)
     {
-        $items = $clientRepo->findOneBy(['cleAbo' => $uuid]);
-        $dateFin = $items->getDateFin();
-        // $optionAbonnement = 
+        $item = $clientRepo->findOneBy(['cleAbo' => $uuid]);
+        $dateFin = $item->getDateFin();
+        $limitFamille = $item->getNbTitres();
+        $limitUser = $item->getNbUsers();
+        $limitEntity = $item->getNbEntities();
+        $limitAnnonce = $item->getLimitAnnonce();
         
         return $this->json([
             'dateFin' => $dateFin->format('Y-m-d'),
+            'limitFamille' => $limitFamille,
+            'limitUser' => $limitUser,
+            'limitEntity' => $limitEntity,
+            'limitAnnonce' => $limitAnnonce,
         ], 200, []);
     }
 

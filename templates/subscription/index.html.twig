@@ -248,7 +248,13 @@
 					<td>{{ item.nbTitres }}</td>
 					<td>{{ item.nbUsers }}</td>
 					<td>{{ item.nbEntities }}</td>
-					<td>{{ item.simulation }}</td>
+					<td>
+						{% if item.simulation %}
+							<div class="badge badge-light-success">oui</div>
+						{% else %}
+							<div class="badge badge-light-danger">non</div>
+						{% endif %}
+					</td>
 					<td>{{ item.limitAnnonce }}</td>
 					<td>{{ item.dateFin|date('d-m-Y') }}</td>
 					<td class="text-end">
