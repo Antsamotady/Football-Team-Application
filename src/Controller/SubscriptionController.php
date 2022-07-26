@@ -67,6 +67,8 @@ class SubscriptionController extends AbstractController
     public function send(AbonnementRepository $clientRepo, $uuid)
     {
         $item = $clientRepo->findOneBy(['cleAbo' => $uuid]);
+
+        $clientName = $item->getNomClient();
         $dateFin = $item->getDateFin();
         $limitFamille = $item->getNbTitres();
         $limitUser = $item->getNbUsers();
@@ -74,6 +76,7 @@ class SubscriptionController extends AbstractController
         $limitAnnonce = $item->getLimitAnnonce();
         
         return $this->json([
+            'clientName' => $clientName,
             'dateFin' => $dateFin->format('Y-m-d'),
             'limitFamille' => $limitFamille,
             'limitUser' => $limitUser,
