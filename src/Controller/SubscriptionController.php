@@ -10,6 +10,7 @@ use App\Form\AbonnementFormType;
 use App\Form\ClientFilterFormType;
 use App\Form\ClientSearchFormType;
 use App\Repository\AbonnementRepository;
+use App\Repository\JournalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,6 +62,20 @@ class SubscriptionController extends AbstractController
                 "message" => $e->getMessage()
             ], 400);
         }
+    }
+
+    #[Route('/sessionchk/{sessionId}', name: 'chk_session', methods: ['GET'])]
+    public function chksession(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, $sessionId, JournalRepository $journalRepository)
+    {
+        $item = $journalRepository->findOneBy(['sessionId' => $sessionId]);
+        if ($item)
+            return $this->json([
+                "toBeChecked" => false,
+            ], 201);
+        else
+            return $this->json([
+                "toBeChecked" => true,
+            ], 201);
     }
 
     #[Route('/subsc/{uuid}', name: 'send_sub', methods: ['GET'])]

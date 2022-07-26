@@ -43,6 +43,9 @@ class Journal
     #[ORM\Column(type: 'string', length: 255)]
     private $HtmlHeader;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $sessionId;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -164,6 +167,26 @@ class Journal
     public function setHtmlHeader(string $HtmlHeader): self
     {
         $this->HtmlHeader = $HtmlHeader;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of sessionId
+     */ 
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * Set the value of sessionId
+     *
+     * @return  self
+     */ 
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
 
         return $this;
     }
