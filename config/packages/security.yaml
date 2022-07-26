@@ -34,6 +34,7 @@ security:
     access_control:
         # API
         - { path: ^/client/subsc, roles: PUBLIC_ACCESS }
+        - { path: ^/client/sessionchk, roles: PUBLIC_ACCESS }
         - { path: ^/extensions/send-annuite, roles: PUBLIC_ACCESS }
         - { path: ^/extensions/send-annuite-locarno, roles: PUBLIC_ACCESS }
         - { path: ^/extensions/send-annuite-nice, roles: PUBLIC_ACCESS }
