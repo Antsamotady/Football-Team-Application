@@ -103,6 +103,7 @@ class SubscriptionController extends AbstractController
             'limitUser' => $limitUser,
             'limitEntity' => $limitEntity,
             'limitAnnonce' => $limitAnnonce,
+            "status" => 200,
         ], 200, []);
     }
 
