@@ -71,17 +71,23 @@ class SubscriptionController extends AbstractController
         if ($item)
             return $this->json([
                 "toBeChecked" => false,
-            ], 201);
+            ], 200);
         else
             return $this->json([
                 "toBeChecked" => true,
-            ], 201);
+            ], 200);
     }
 
     #[Route('/subsc/{uuid}', name: 'send_sub', methods: ['GET'])]
     public function send(AbonnementRepository $clientRepo, $uuid)
     {
+
         $item = $clientRepo->findOneBy(['cleAbo' => $uuid]);
+
+        if (!$item)
+            return $this->json([
+                "status" => 400,
+            ], 400);
 
         $clientName = $item->getNomClient();
         $dateFin = $item->getDateFin();
