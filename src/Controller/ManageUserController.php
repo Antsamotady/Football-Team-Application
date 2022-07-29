@@ -232,7 +232,7 @@ class ManageUserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit_user', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request,  UserPasswordHasherInterface $userPasswordHasher, User $user, EntityManagerInterface $entityManager): Response
     {
         $routeBack = $this->urlGenerator->generate('show_user', array("id" => $user->getId()));
 
@@ -240,6 +240,14 @@ class ManageUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword(
+            $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
+            );
+
+            $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Utilisateur bien modifié');
