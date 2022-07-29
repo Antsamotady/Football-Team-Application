@@ -210,7 +210,7 @@ class ManageUserController extends AbstractController
 
             return $this->redirectToRoute('list_users');
         } elseif ($form->isSubmitted() && !$form->isValid()) {
-            $this->addFlash('error', 'Email déjà existant');
+            $this->addFlash('error', 'Veuiller vérifier votre saisie.');
         }
 
         return $this->render('manage_user/add.html.twig', [
@@ -255,6 +255,8 @@ class ManageUserController extends AbstractController
             return $this->redirectToRoute('show_user', [
                 'id' => $user->getId()
             ], Response::HTTP_SEE_OTHER);
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Veuiller vérifier votre saisie.');
         }
 
         return $this->renderForm('manage_user/edit.html.twig', [

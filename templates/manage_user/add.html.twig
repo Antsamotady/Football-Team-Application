@@ -44,6 +44,7 @@
 					<!--begin::Col-->
 					<div class="col-lg-8 fv-row">
 						{{ form_widget(registrationForm.name, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+						{{ form_errors(registrationForm.name) }}
 					</div>
 					<!--end::Col-->
 				</div>
@@ -56,22 +57,26 @@
 					<!--begin::Col-->
 					<div class="col-lg-8 fv-row">
 						{{ form_widget(registrationForm.email, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+						{{ form_errors(registrationForm.email) }}
 					</div>
 					<!--end::Col-->
 				</div>
 				<!--end::Input group-->
 				<!--begin::Input group-->
 				<div class="row mb-6">
-					<!--begin::Label-->
 					<label class="col-lg-4 col-form-label required fw-bold fs-6">Mot de passe</label>
-					<!--end::Label-->
-					<!--begin::Col-->
 					<div class="col-lg-8 fv-row">
-						{{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+						{{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+						{{ form_errors(registrationForm.plainPassword) }}
 					</div>
-					<!--end::Col-->
 				</div>
-				<!--end::Input group-->
+				<div class="row mb-6">
+					<label class="col-lg-4 col-form-label required fw-bold fs-6">Confirmer le mot de passe</label>
+					<div class="col-lg-8 fv-row">
+						{{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control form-control-lg form-control-solid'}}) }}
+						{{ form_errors(registrationForm.plainPassword) }}
+					</div>
+				</div>
 
 			</div>
 			<!--end::Card body-->
