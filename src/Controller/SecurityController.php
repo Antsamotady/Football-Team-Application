@@ -16,50 +16,18 @@ class SecurityController extends GlobalController
      */
     public function login(AuthenticationUtils $authenticationUtils,EntityManagerInterface $em,  LoginErrorRepository $loginErrorRepo): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('target_path');
+        }
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-        $waiting = $this->getParameter('app.time_after_error_login');
-        $blockLogin = false;
-        
-        if ($loginErrorRepo->findAll()) {
-            $loginError = $loginErrorRepo->findBy(array(),array('id'=>'DESC'),1,0);
-            // block login here
-            if ($loginError[0]->getToBeBlocked()) {
-                $t = $this->spentTime($loginError[0]->getTimestamp());
-                if ($t >= $waiting) {
-                    $this->delLoginError($em, $loginErrorRepo->findAll());
-                    $this->upLoginError($em, $lastUsername, 0, false);
-                    $blockLogin = false;
-                } else {
-                    $blockLogin = true;
-                }
-            }
-            
-            $nbFailure = $loginError[0]->getNbFailure();
-        } else {
-            $loginError = [];
-            $nbFailure = 0;
-        }
-
-        if ($error) {
-            $this->upLoginError($em, $lastUsername, $nbFailure+1);
-            if ($nbFailure >= 5) {
-                $this->delLoginError($em, $loginErrorRepo->findAll());
-                $this->upLoginError($em, $lastUsername, 0, true);
-            }
-
-        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername, 
-            'error' => $error,
-            'block_login' => $blockLogin
+            'error' => $error
         ]);
     }
 

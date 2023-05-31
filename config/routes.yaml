@@ -8,4 +8,4 @@ kernel:
 
 index:
    path: /
-   controller: App\Controller\ManageUserController::index0
+   controller: App\Controller\HomeController::home

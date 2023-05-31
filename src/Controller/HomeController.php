@@ -8,12 +8,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'index0')]
-    public function index(): Response
-    {
-        return $this->redirectToRoute('list_users');
-    }
-
     #[Route('/home', name: 'home')]
     public function home(): Response
     {
@@ -21,4 +15,11 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+
+    #[Route('/ajax', name: 'test_ajax')]
+    public function test(): Response
+    {
+        return $this->render('team/test.html.twig');
+    }
+
 }

@@ -1,0 +1,18 @@
+{% extends 'home/index.html.twig' %}
+
+{% block title %}Team index{% endblock %}
+
+{% block content %}
+    <h2>Team index</h2>
+
+
+    {% for team in teams %}
+        {{ include('team/_team_list.html.twig') }}
+    {% endfor %}
+    
+    <div class="navigation">
+        {{ knp_pagination_render(teams) }}
+    </div>
+
+    <a href="{{ path('team_new') }}">Create new</a>
+{% endblock %}

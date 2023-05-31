@@ -1,0 +1,75 @@
+<div class="row">
+  <div class="col-5">
+    <h2>Sell</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+                <tr>
+                    <td><a href="#" class="sell-player" data-team-id="{{ teamId }}" data-player-id="{{ player.id }}">{{ player.name }}</a></td>
+                    <td>{{ player.surname }}</td>
+                    <td>{{ player.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  <div class="col-7">
+    <h2>Buy</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in nonPlayers %}
+                <tr>
+                    <td><a href="#" class="buy-player" data-team-id="{{ teamId }}" data-player-id="{{ player.id }}">{{ player.name }}</a></td>
+                    <td>{{ player.surname }}</td>
+                    <td>{{ player.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  $(document).ready(function() {
+
+    $('.sell-player').on('click', function(event) {
+      event.preventDefault();
+
+      var teamId = $(this).data('team-id');
+      var playerId = $(this).data('player-id');
+      console.log(teamId);
+
+      if (confirm('Are you sure you want to sell this player?')) {
+        window.location.href = "/team/player/sell/" + teamId + "/" + playerId;
+      }
+    });
+
+    $('.buy-player').on('click', function(event) {
+      event.preventDefault();
+
+      var teamId = $(this).data('team-id');
+      var playerId = $(this).data('player-id');
+      console.log(teamId);
+
+      if (confirm('Are you sure you want to buy this player?')) {
+        window.location.href = "/team/player/buy/" + teamId + "/" + playerId;
+      }
+    });
+
+  });
+</script>

@@ -1,0 +1,39 @@
+{% extends 'home/index.html.twig' %}
+
+{% block title %}Player transactions{% endblock %}
+
+{% block content %}
+    
+    <form>
+      <label for="team"><h2>Choose a team: </h2></label>
+      <select name="team" id="team">
+        <option value="">-- Select a team --</option>
+        {% for team in teams %}
+          <option value="{{ team.id }}">{{ team.name }}</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <div id="ajax-output"></div>
+
+    <script>
+      $(document).ready(function() {
+
+        $('#team').on('change', function() {
+          var teamId = $(this).val();
+          var url = '/player/get-team-players/' + teamId;
+
+          $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+              $('#ajax-output').html(response);
+            }
+          });
+        });
+
+      });
+    </script>
+
+{% endblock %}
+  

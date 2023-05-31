@@ -12,20 +12,13 @@
 					<div class="col-md-4 login-form text-center p-14 position-relative overflow-hidden">
 						<!--begin::Login Header-->
 						<div class="d-flex flex-center mb-15">
-							<a href="#">
+							{# <a href="#">
 								<img alt="Logo" src="assets/media/logos/logo_pi-planner.png" class="max-h-75px" alt="" />
-							</a>
+							</a> #}
 						</div>
 						<!--end::Login Header-->
 						<!--begin::Login Sign in form-->
 						<div class="login-signin">
-							{% if block_login %}
-								<div class="mb-8">
-									<h3>Connexion impossible pour le moment.</h3>
-									<p>(5 tentatives successives d'authentification échouées)</p>
-									<p>Actualisez (F5) dans 15 minutes et rééssayez.</p>
-								</div>
-							{% else %}	
 								<div class="mb-8">
 									<h3>Connectez-vous</h3>
 								</div>
@@ -57,7 +50,6 @@
 									</div> #}
 									<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" type="submit">Se connecter</button>
 								</form>
-							{% endif %}
 						</div>
 						<!--end::Login Sign in form-->
 					</div>

@@ -1,0 +1,30 @@
+<h3>{{ team.name }}</h3>
+<p>{{ team.country }} {{ team.money }}</p>
+
+<table class="table align-middle table-row-dashed fs-6 gy-5" >
+	<thead>
+        <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+            <th class="min-w-50px">ID</th>
+            <th class="min-w-50px">Name</th>
+            <th class="min-w-50px">Surname</th>
+            <th class="min-w-50px">Actions</th>
+        </tr>
+	</thead>
+    <tbody class="text-gray-600 fw-bold">
+        {% for player in team.player %}
+            <tr>
+                <td>{{ player.id }}</td>
+                <td>{{ player.name }}</td>
+                <td>{{ player.surname }}</td>
+                <td>
+                    <a href="{{ path('player_show', {'id': player.id}) }}">show</a>
+                    <a href="{{ path('player_edit', {'id': player.id}) }}">edit</a>
+                    {{ include('player/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+

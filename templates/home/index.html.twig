@@ -1,20 +1,119 @@
-{% extends 'dashboard-base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="container">
+        <div class="app-header">
+            <ul class="nav justify-content-between">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('home') }}">LOGO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="dropdown-item mr-sm-2 d-flex align-items-center" href="{{ path('home') }}"
+                        onclick="event.preventDefault();
+                        document.getElementById('logout-form').submit();">
+                        <span>Logout</span>
+                    </a>
+                    <form id="logout-form" action="{{ path('app_logout') }}" method="POST">
+                    </form>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="row">
+            <div class="col-3">PROFILE & GREETING</div>
+            <div class="col-9">
+                BREADCRUMB
+            </div>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        HERE GOES THE CONTENT
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/html/new-project/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/html/new-project/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
-</div>
+        <div class="row">
+            <div class="col-3 left-menu">
+                <div class="col-12 mb-4">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Active</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12">
+                    <div class="accordion" id="accordionExample">
+                    {% if app.request.attributes.get('_route') == 'home' %}
+                        <div class="card active">
+                    {% else %}
+                        <div class="card">
+                    {% endif %}
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <a href="{{ path('team_index') }}">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            All Teams
+                                        </button>
+                                    </a>
+                                </h2>
+                            </div>
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            </div>
+                        </div>
+                    {% if app.request.attributes.get('_route') == 'team_new' %}
+                        <div class="card active">
+                    {% else %}
+                        <div class="card">
+                    {% endif %}
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <a href="{{ path('team_new') }}">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Add a Team
+                                        </button>
+                                    </a>
+                                </h2>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                            </div>
+                        </div>
+                    {% if app.request.attributes.get('_route') == 'team_deal' %}
+                        <div class="card active">
+                    {% else %}
+                        <div class="card">
+                    {% endif %}
+                            <div class="card-header">
+                                <h2 class="mb-0">
+                                    <a href="{{ path('team_deal') }}">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Sell/Buy Players
+                                        </button>
+                                    </a>
+                                </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="col-9">
+                <div class="menu-content">
+                    {% block content %}HERE GOES THE SELECTED PAGE{% endblock %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            <div class="nav">FOOTER</div>
+        </div>
+
+
+        {% block javascripts %}
+            {{parent()}}
+
+        {% endblock %}
+
+    </div>
 {% endblock %}
