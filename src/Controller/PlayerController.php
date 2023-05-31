@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Player;
 use App\Form\PlayerType;
+use App\Repository\TeamRepository;
 use App\Repository\PlayerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,18 +81,18 @@ class PlayerController extends AbstractController
     }
 
     #[Route('/get-team-players/{teamId}', name: 'get_team_players', methods: ['GET'])]
-    public function getPlayerData(PlayerRepository $playerRepository, Request $request, $teamId): Response
+    public function getPlayerData(TeamRepository $teamRepository, PlayerRepository $playerRepository, Request $request, $teamId): Response
     {
         if (!$request->isXmlHttpRequest()) {
             throw new \RuntimeException('Invalid request');
         }
 
+        $team = $teamRepository->find($teamId);
         $players = $playerRepository->findBy(['team' => $teamId]);
-
         $nonPlayers = $playerRepository->findPlayersAvailableForSaleById($teamId);
 
         return $this->render('player/available_player_for_sale.html.twig', [
-            'teamId' => $teamId,
+            'team' => $team,
             'players' => $players,
             'nonPlayers' => $nonPlayers 
         ]);

@@ -59,6 +59,7 @@ class TeamController extends AbstractController
             $entityManager->persist($team);
             $entityManager->flush();
 
+            $this->addFlash('success', 'New team created succesfully.');
             return $this->redirectToRoute('team_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -78,34 +79,43 @@ class TeamController extends AbstractController
         ]);
     }
 
-    #[Route('/player/sell/{teamId}/{playerId}', name: 'player_sell')]
+    #[Route('/player/sell/{teamId}/{playerId}', name: 'player_sell', methods: ['GET'])]
     public function sellPlayer($teamId, $playerId, EntityManagerInterface $entityManager, TeamRepository $teamRepository, PlayerRepository $playerRepository): Response
     {
         $team = $teamRepository->find($teamId);
         $player = $playerRepository->find($playerId);
 
-        $team->setMoney($team->getMoney() + $player->getPrice());
-        $player->setTeam(null);
         $player->setIsAvailableForSale(true);
         
         $entityManager->flush();
 
-        return $this->redirectToRoute('team_index');
+        $this->addFlash('success', 'Transaction completed succesfully.');
+        return $this->redirectToRoute('team_deal');
     }
 
-    #[Route('/player/buy/{teamId}/{playerId}', name: 'player_sell')]
+    #[Route('/player/buy/{teamId}/{playerId}', name: 'player_buy', methods: ['GET'])]
     public function buyPlayer($teamId, $playerId, EntityManagerInterface $entityManager, TeamRepository $teamRepository, PlayerRepository $playerRepository): Response
     {
         $team = $teamRepository->find($teamId);
         $player = $playerRepository->find($playerId);
+        $ancientTeamOwner = $player->getTeam();
 
-        $team->setMoney($team->getMoney() - $player->getPrice()); // need a condition here: enough money?
+        if (($team->getMoney() - $player->getPrice()) < 0) {
+            $this->addFlash('error', 'Aborted because this team doesn\' possess enough balance!');
+
+            return $this->redirectToRoute('team_deal');
+        }
+
+        $ancientTeamOwner->setMoney($ancientTeamOwner->getMoney() + $player->getPrice());
+        $team->setMoney($team->getMoney() - $player->getPrice());
         $player->setTeam($team);
         $player->setIsAvailableForSale(false);
         
+        $entityManager->persist($ancientTeamOwner);
         $entityManager->flush();
 
-        return $this->redirectToRoute('team_index');
+        $this->addFlash('success', 'Transaction completed succesfully.');
+        return $this->redirectToRoute('team_deal');
     }
 
 

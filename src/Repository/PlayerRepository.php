@@ -22,9 +22,10 @@ class PlayerRepository extends ServiceEntityRepository
     public function findPlayersAvailableForSaleById(int $teamId): array
     {
         return $this->createQueryBuilder('p')
-            ->where('p.team != :teamId')
+            ->where('p.team != :teamId OR p.team IS NULL')
             ->andWhere('p.isAvailableForSale = true')
             ->setParameter('teamId', $teamId)
+            ->orderBy('p.name')
             ->getQuery()
             ->getResult();
     }

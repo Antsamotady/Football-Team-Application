@@ -99,6 +99,12 @@
             <!-- Main content -->
             <div class="col-9">
                 <div class="menu-content">
+                    {% for notice in app.flashes('success') %}
+                        <div class="alert alert-success" role="alert">{{ notice }}</div>
+                    {% endfor %}
+                    {% for notice in app.flashes('error') %}
+                        <div class="alert alert-danger" role="alert">{{ notice }}</div>
+                    {% endfor %}
                     {% block content %}HERE GOES THE SELECTED PAGE{% endblock %}
                 </div>
             </div>
