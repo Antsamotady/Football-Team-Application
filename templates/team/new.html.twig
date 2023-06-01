@@ -3,8 +3,11 @@
 {% block title %}New Team{% endblock %}
 
 {% block content %}
-
-    <h2>Create new Team</h2>
+    
+    <div class="text-center mb-10">
+        <h1 class="mb-3">Create new team</h1>
+        <div class="text-muted fw-bold fs-5">Pick from available players who you want to be in</div>
+    </div>
     {{ include('team/_form.html.twig') }}
 
 {% endblock %}

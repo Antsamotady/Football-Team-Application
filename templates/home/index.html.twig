@@ -3,13 +3,27 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="app-header">
-            <ul class="nav justify-content-between">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('home') }}">LOGO</a>
-                </li>
-                <li class="nav-item">
+
+    <style>
+        .container.bg-body {
+            min-height: 100vh;
+            height: auto;
+        }
+
+        .position-sticky {
+            position: sticky !important;
+            top: 0;
+        }
+    </style>
+
+    <div class="container bg-body">
+
+        <div class="header">
+            <div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1">
+                <div class="d-flex align-items-stretch">
+                    <a class="nav-link" href="{{ path('home') }}">HOME</a>
+                </div>
+                <div class="d-flex align-items-stretch">
                     <a class="dropdown-item mr-sm-2 d-flex align-items-center" href="{{ path('home') }}"
                         onclick="event.preventDefault();
                         document.getElementById('logout-form').submit();">
@@ -17,103 +31,131 @@
                     </a>
                     <form id="logout-form" action="{{ path('app_logout') }}" method="POST">
                     </form>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
         
-        <div class="row">
-            <div class="col-3">PROFILE & GREETING</div>
+        <div class="row pb-10">
+            <div class="col-3">
+                <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Admin Dashboard</h1>
+            </div>
             <div class="col-9">
-                BREADCRUMB
+                <h4 class="fs-2x text-gray-800 w-bolder mb-6">Football Team Application</h4>
             </div>
         </div>
 
-        HERE GOES THE CONTENT
 
-        <div class="row">
-            <div class="col-3 left-menu">
-                <div class="col-12 mb-4">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Active</a>
-                        </li>
-                    </ul>
+        <div class="row position-relative">
+        
+            <div class="col-3">
+                <div class="menu menu-rounded menu-column menu-title-gray-700 menu-state-title-primary menu-active-bg-light-primary fw-bold position-sticky">
+                    <!--begin::Item-->
+                    <div class="menu-item mb-1">
+                        <!--begin::Link-->
+                        {% if app.request.attributes.get('_route') == 'team_index' %}
+                            <a href="{{ path('team_index') }}" class="menu-link py-3 active">All Teams</a>
+                        {% else %}
+                            <a href="{{ path('team_index') }}" class="menu-link py-3">All Teams</a>
+                        {% endif %}
+                        <!--end::Link-->
+                    </div>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <div class="menu-item mb-1">
+                        <!--begin::Link-->
+                        {% if app.request.attributes.get('_route') == 'team_new' %}
+                            <a href="{{ path('team_new') }}" class="menu-link py-3 active">Add a Teams</a>
+                        {% else %}
+                            <a href="{{ path('team_new') }}" class="menu-link py-3">Add a Teams</a>
+                        {% endif %}
+                        <!--end::Link-->
+                    </div>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <div class="menu-item mb-1">
+                        <!--begin::Link-->
+                        {% if app.request.attributes.get('_route') == 'team_deal' %}
+                            <a href="{{ path('team_deal') }}" class="menu-link py-3 active">Player Market</a>
+                        {% else %}
+                            <a href="{{ path('team_deal') }}" class="menu-link py-3">Player Market</a>
+                        {% endif %}
+                        <!--end::Link-->
+                    </div>
                 </div>
-                <div class="col-12">
-                    <div class="accordion" id="accordionExample">
-                    {% if app.request.attributes.get('_route') == 'home' %}
-                        <div class="card active">
-                    {% else %}
-                        <div class="card">
-                    {% endif %}
-                            <div class="card-header" id="headingOne">
-                                <h2 class="mb-0">
-                                    <a href="{{ path('team_index') }}">
-                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            All Teams
-                                        </button>
-                                    </a>
-                                </h2>
-                            </div>
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            </div>
-                        </div>
-                    {% if app.request.attributes.get('_route') == 'team_new' %}
-                        <div class="card active">
-                    {% else %}
-                        <div class="card">
-                    {% endif %}
-                            <div class="card-header" id="headingTwo">
-                                <h2 class="mb-0">
-                                    <a href="{{ path('team_new') }}">
-                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Add a Team
-                                        </button>
-                                    </a>
-                                </h2>
-                            </div>
-                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                            </div>
-                        </div>
-                    {% if app.request.attributes.get('_route') == 'team_deal' %}
-                        <div class="card active">
-                    {% else %}
-                        <div class="card">
-                    {% endif %}
-                            <div class="card-header">
-                                <h2 class="mb-0">
-                                    <a href="{{ path('team_deal') }}">
-                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Sell/Buy Players
-                                        </button>
-                                    </a>
-                                </h2>
-                            </div>
-                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                            </div>
+            </div>
+
+
+            <div class="col-9">
+                <div class="card bg-light">
+                    <div class="card-body p-lg-15">
+                        <div class="menu-content">
+                            {% for notice in app.flashes('success') %}
+                                <div class="alert alert-success" role="alert">{{ notice }}</div>
+                            {% endfor %}
+                            {% for notice in app.flashes('error') %}
+                                <div class="alert alert-danger" role="alert">{{ notice }}</div>
+                            {% endfor %}
+                            {% block content %}
+
+                                <div class="mb-6">
+                                    <a href="#" class="fw-bolder text-dark mb-4 fs-2 lh-base text-hover-primary">Welcome to this Football Team Manipulation</a>
+                                    <div class="fw-bold fs-5 mt-4 text-gray-600 text-dark">
+                                        In this app you'll be expiriencing
+                                        <div class="collapse show fs-6 ms-1 mt-5">
+                                            <!--begin::Item-->
+                                            <div class="mb-4">
+                                                <!--begin::Item-->
+                                                <div class="d-flex align-items-center ps-10 mb-n1">
+                                                    <!--begin::Bullet-->
+                                                    <span class="bullet me-3"></span>
+                                                    <!--end::Bullet-->
+                                                    <!--begin::Label-->
+                                                    <div class="text-gray-600 fw-bold fs-6">a page (with pagination) displaying all teams and their players.</div>
+                                                    <!--end::Label-->
+                                                </div>
+                                                <!--end::Item-->
+                                            </div>
+                                            <!--end::Item-->
+                                            <!--begin::Item-->
+                                            <div class="mb-4">
+                                                <!--begin::Item-->
+                                                <div class="d-flex align-items-center ps-10 mb-n1">
+                                                    <!--begin::Bullet-->
+                                                    <span class="bullet me-3"></span>
+                                                    <!--end::Bullet-->
+                                                    <!--begin::Label-->
+                                                    <div class="text-gray-600 fw-bold fs-6">a page where we can add a new team and its players.</div>
+                                                    <!--end::Label-->
+                                                </div>
+                                                <!--end::Item-->
+                                            </div>
+                                            <!--end::Item-->
+                                            <!--begin::Item-->
+                                            <div class="mb-4">
+                                                <!--begin::Item-->
+                                                <div class="d-flex align-items-center ps-10 mb-n1">
+                                                    <!--begin::Bullet-->
+                                                    <span class="bullet me-3"></span>
+                                                    <!--end::Bullet-->
+                                                    <!--begin::Label-->
+                                                    <div class="text-gray-600 fw-bold fs-6">a page where we can sell/buy a player for a certain amount between two teams.</div>
+                                                    <!--end::Label-->
+                                                </div>
+                                                <!--end::Item-->
+                                            </div>
+                                            <!--end::Item-->
+                                        </div>
+
+                                    </div>
+                                    <!--end::Text-->
+                                </div>
+                            
+                            {% endblock %}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main content -->
-            <div class="col-9">
-                <div class="menu-content">
-                    {% for notice in app.flashes('success') %}
-                        <div class="alert alert-success" role="alert">{{ notice }}</div>
-                    {% endfor %}
-                    {% for notice in app.flashes('error') %}
-                        <div class="alert alert-danger" role="alert">{{ notice }}</div>
-                    {% endfor %}
-                    {% block content %}HERE GOES THE SELECTED PAGE{% endblock %}
-                </div>
-            </div>
-        </div>
-
-
-        <div class="footer">
-            <div class="nav">FOOTER</div>
-        </div>
 
 
         {% block javascripts %}

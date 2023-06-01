@@ -3,9 +3,11 @@
 {% block title %}Team index{% endblock %}
 
 {% block content %}
-    <h2>Team index</h2>
 
-
+    <div class="text-center mb-10">
+        <h1 class="mb-3">List of Teams</h1>
+        <div class="text-muted fw-bold fs-5">*(pagination below the table)</div>
+    </div>
     {% for team in teams %}
         {{ include('team/_team_list.html.twig') }}
     {% endfor %}

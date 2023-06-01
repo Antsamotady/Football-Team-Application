@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'home/index.html.twig' %}
 
 {% block title %}Player index{% endblock %}
 
-{% block body %}
+{% block content %}
     <h1>Player index</h1>
 
     <table class="table">
@@ -11,6 +11,7 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Surname</th>
+                <th>Team</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,6 +21,7 @@
                 <td>{{ player.id }}</td>
                 <td>{{ player.name }}</td>
                 <td>{{ player.surname }}</td>
+                <td>{{ player.team }}</td>
                 <td>
                     <a href="{{ path('player_show', {'id': player.id}) }}">show</a>
                     <a href="{{ path('player_edit', {'id': player.id}) }}">edit</a>

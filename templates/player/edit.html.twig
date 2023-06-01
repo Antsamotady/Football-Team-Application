@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'home/index.html.twig' %}
 
 {% block title %}Edit Player{% endblock %}
 
-{% block body %}
+{% block content %}
     <h1>Edit Player</h1>
 
     {{ include('player/_form.html.twig', {'button_label': 'Update'}) }}

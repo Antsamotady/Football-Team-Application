@@ -72,7 +72,10 @@ class TeamController extends AbstractController
     #[Route('/deal', name: 'team_deal', methods: ['GET'])]
     public function deal(Request $request): Response
     {
-        $teams = $this->teamRepository->findAll();
+        $teams = $this->teamRepository->createQueryBuilder('t')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         return $this->render('team/deal.html.twig', [
             'teams' => $teams
@@ -89,7 +92,8 @@ class TeamController extends AbstractController
         
         $entityManager->flush();
 
-        $this->addFlash('success', 'Transaction completed succesfully.');
+        $this->addFlash('success', 'Player successfully sold! The transaction has been completed.');
+
         return $this->redirectToRoute('team_deal');
     }
 
@@ -101,7 +105,7 @@ class TeamController extends AbstractController
         $ancientTeamOwner = $player->getTeam();
 
         if (($team->getMoney() - $player->getPrice()) < 0) {
-            $this->addFlash('error', 'Aborted because this team doesn\' possess enough balance!');
+            $this->addFlash('error', 'Transaction Aborted: Insufficient balance in the '.$team->getName().'\'s account!');
 
             return $this->redirectToRoute('team_deal');
         }
@@ -114,7 +118,8 @@ class TeamController extends AbstractController
         $entityManager->persist($ancientTeamOwner);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Transaction completed succesfully.');
+        $this->addFlash('success', 'Player successfully bought! The transaction has been completed.');
+
         return $this->redirectToRoute('team_deal');
     }
 

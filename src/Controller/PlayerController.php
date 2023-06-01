@@ -88,10 +88,13 @@ class PlayerController extends AbstractController
         }
 
         $team = $teamRepository->find($teamId);
-        $players = $playerRepository->findBy(['team' => $teamId]);
-        $nonPlayers = $playerRepository->findPlayersAvailableForSaleById($teamId);
+        $players = $playerRepository->findBy(['team' => $teamId], ['name' => 'ASC']);
+        $nonPlayers = $playerRepository->findPlayersAvailableForSale($teamId);
+
 
         return $this->render('player/available_player_for_sale.html.twig', [
+            'nbPlayer' => count($players),
+            'nbNonPlayer' => count($nonPlayers),
             'team' => $team,
             'players' => $players,
             'nonPlayers' => $nonPlayers 

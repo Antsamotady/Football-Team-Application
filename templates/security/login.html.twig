@@ -20,7 +20,7 @@
 						<!--begin::Login Sign in form-->
 						<div class="login-signin">
 								<div class="mb-8">
-									<h3>Connectez-vous</h3>
+									<h3>Let's connect</h3>
 								</div>
 								<form method="post" class="form" id="kt_login_signin_form">
 									{% if error %}
@@ -29,7 +29,7 @@
 
 									{% if app.user %}
 										<div class="mb-3">
-											Vous êtes déjà connecté entant que {{ app.user.name }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+											Vous êtes déjà connecté entant que {{ app.user.name }}, <a href="{{ path('app_logout') }}">Logout</a>
 										</div>
 									{% endif %}
 
@@ -37,7 +37,7 @@
 										<input class="form-control h-auto form-control-solid py-4 px-8" type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" name="email" autocomplete="email" required autofocus />
 									</div>
 									<div class="form-group mb-5">
-										<input id="inputPassword" class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="Mot de passe" name="password" autocomplete="current-password" required />
+										<input id="inputPassword" class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="Password" name="password" autocomplete="current-password" required />
 										<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
 									</div>
 									{# <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
@@ -48,7 +48,7 @@
 										{# </div>
 										<a href="javascript:;" id="kt_login_forgot" class="text-muted text-hover-primary">Forget Password ?</a>
 									</div> #}
-									<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" type="submit">Se connecter</button>
+									<button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" type="submit">Connect</button>
 								</form>
 						</div>
 						<!--end::Login Sign in form-->

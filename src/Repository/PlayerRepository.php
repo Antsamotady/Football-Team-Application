@@ -19,11 +19,12 @@ class PlayerRepository extends ServiceEntityRepository
         parent::__construct($registry, Player::class);
     }
 
-    public function findPlayersAvailableForSaleById(int $teamId): array
+    public function findPlayersAvailableForSale(int $teamId): array
     {
         return $this->createQueryBuilder('p')
-            ->where('p.team != :teamId OR p.team IS NULL')
-            ->andWhere('p.isAvailableForSale = true')
+            ->where('p.team != :teamId')
+            ->orWhere('p.team IS NULL')
+            ->orWhere('p.isAvailableForSale = true')
             ->setParameter('teamId', $teamId)
             ->orderBy('p.name')
             ->getQuery()
