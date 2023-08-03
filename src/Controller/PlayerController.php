@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Form\PlayerSearchType;
 use App\Form\PlayerType;
 use App\Repository\TeamRepository;
 use App\Repository\PlayerRepository;
@@ -15,11 +16,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/player')]
 class PlayerController extends AbstractController
 {
-    #[Route('/', name: 'player_index', methods: ['GET'])]
-    public function index(PlayerRepository $playerRepository): Response
+    #[Route('/', name: 'player_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, PlayerRepository $playerRepository): Response
     {
+        $playerSearchForm = $this->createForm(PlayerSearchType::class);
+        $playerSearchForm->handleRequest($request);
+
+        $searchData = $playerSearchForm->getData();
+        $players = $playerRepository->findBySearchData($searchData);
+
         return $this->render('player/index.html.twig', [
-            'players' => $playerRepository->findAll(),
+            'players' => $players,
+            'player_search_form' => $playerSearchForm->createView()
         ]);
     }
 

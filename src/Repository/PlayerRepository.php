@@ -30,4 +30,25 @@ class PlayerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findBySearchData($player = null)
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+
+        if (null !== $player) {
+            if ($player->getName()) {
+                $name = strtolower($player->getName());
+
+                $queryBuilder->andWhere('LOWER(p.name) LIKE :name')
+                    ->setParameter('name', '%' . $name . '%');
+            }
+    
+            // Add more conditions for other search fields as needed
+    
+        }
+    
+        $query = $queryBuilder->getQuery();
+        
+        return $query->getResult();
+    }
 }

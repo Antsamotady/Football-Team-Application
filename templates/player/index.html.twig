@@ -3,11 +3,21 @@
 {% block title %}Player index{% endblock %}
 
 {% block content %}
-    <h1>Player index</h1>
+
+    <div class="text-center mb-10">
+        <h2 class="mb-3">Search for player</h2>
+        <div class="text-muted fw-bold fs-5">Use these filter to quickly get who you need</div>
+    </div>
+    {{ include('player/_player-search-form.html.twig') }}
+
+
+    <div class="text-center mb-10">
+        <h1 class="mb-3">Player index</h1>
+    </div>
 
     <table class="table">
         <thead>
-            <tr>
+            <tr class="text-muted">
                 <th>Id</th>
                 <th>Name</th>
                 <th>Surname</th>
