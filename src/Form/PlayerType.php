@@ -15,6 +15,7 @@ class PlayerType extends AbstractType
             ->add('name')
             ->add('surname')
             ->add('price')
+            ->add('team')
         ;
     }
 
