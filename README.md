@@ -1,6 +1,16 @@
-# Football-Team-Application in Symfony 6.0.2, PHP 8.0.13
+# Student marks taking and processing
 
-We have football teams. Each team has a name, country, money balance and players. Each player has name and surname. Teams can sell/buy players. 
+These are what is it all about globally:
+   -  app anaovana relevé de notes
+   -  moyennes
+   -  délibérations
+   -  classement
+
+
+What we know:
+   - 12 centres d'examen
+   - 4 classes
+   - 6 matières
 
 
 ## Installation
@@ -39,23 +49,5 @@ File **sf6_db.sql**
    ```
    php bin/console server:start
    ```
-
-
-## Login Instruction
-Here is the login you should use because 
-
-**test@mail.com / lalala**
-
-
-## Note
-
-To get the project done in time, I used a previous project I had in the past.
-The purpose was just to avoid time consumming on the installation of fresh one.
-
-Actually the main controllers involve in this particular project are:
-HomeController.php, PlayerController.php and TeamController.php
-
-The rest are not relevent which the latest commits confirmed.
-
 
 
