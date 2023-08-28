@@ -22,6 +22,14 @@ class StudentController extends AbstractController
         ]);
     }
 
+    #[Route('/list', name: 'student_list', methods: ['GET'])]
+    public function list(StudentRepository $studentRepository): Response
+    {
+        return $this->render('student/list.html.twig', [
+            'students' => $studentRepository->findAll(),
+        ]);
+    }
+
     #[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

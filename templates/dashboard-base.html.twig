@@ -13,7 +13,7 @@ License: For each use you must have a valid license purchased only from above li
 <html lang="en">
 	<!--begin::Head-->
 	<head><base href="">
-		<title>{% block _title %}PI-Motion{% endblock %}</title>
+		<title>{% block _title %}Application{% endblock %}</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="The most advanced Bootstrap Admin Theme on Themeforest trusted by 94,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue &amp; Laravel versions. Grab your copy now and get life-time updates for free." />
 		<meta name="keywords" content="Metronic, bootstrap, bootstrap 5, Angular, VueJs, React, Laravel, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
@@ -53,7 +53,7 @@ License: For each use you must have a valid license purchased only from above li
 					<div class="aside-logo flex-column-auto" id="kt_aside_logo">
 						<!--begin::Logo-->
 						<a href="../../demo1/dist/index.html">
-							{% block logo %}<img alt="Logo" src="assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
+							{% block logo %}<img alt="Bienvenue Pst Solofo" src="assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
 						</a>
 						<!--end::Logo-->
 						<!--begin::Aside toggler-->
@@ -79,7 +79,7 @@ License: For each use you must have a valid license purchased only from above li
 								
 								<div class="menu-item">
 									<div class="menu-content pt-8 pb-2">
-										<span class="menu-section text-muted text-uppercase fs-8 ls-1">Administration</span>
+										<span class="menu-section text-muted text-uppercase fs-8 ls-1">Menu</span>
 									</div>
 								</div>
 								<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
@@ -94,32 +94,24 @@ License: For each use you must have a valid license purchased only from above li
 											</span>
 											<!--end::Svg Icon-->
 										</span>
-										<span class="menu-title">Utilisateurs</span>
+										<span class="menu-title">Etudiants</span>
 										<span class="menu-arrow"></span>
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('list_users') }}">
+											<a class="menu-link" href="{{ path('student_index') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
-												<span class="menu-title">Liste de utilisateurs</span>
+												<span class="menu-title">Liste des étudiants</span>
 											</a>
 										</div>
-										{# <div class="menu-item">
-											<a class="menu-link" href="{{ path('log') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
-												<span class="menu-title">Journaux de connexion</span>
-											</a>
-										</div> #}
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('add_user') }}">
+											<a class="menu-link" href="{{ path('student_new') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
-												<span class="menu-title">Nouvel utilisateur</span>
+												<span class="menu-title">Ajouter un étudiant</span>
 											</a>
 										</div>
 									</div>
@@ -136,26 +128,26 @@ License: For each use you must have a valid license purchased only from above li
 											</span>
 											<!--end::Svg Icon-->
 										</span>
-										<span class="menu-title">Abonnements client</span>
+										<span class="menu-title">Classes</span>
 										<span class="menu-arrow"></span>
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('list_client') }}">
+											<a class="menu-link" href="{{ path('student_index') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
-												<span class="menu-title">Liste des abonnements</span>
+												<span class="menu-title">Liste des classes</span>
 											</a>
 										</div>
 									</div>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('add_client') }}">
+											<a class="menu-link" href="{{ path('student_new') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
-												<span class="menu-title">Créer un compte client</span>
+												<span class="menu-title">Actions sur les classes</span>
 											</a>
 										</div>
 									</div>
@@ -174,24 +166,24 @@ License: For each use you must have a valid license purchased only from above li
 											</span>
 											<!--end::Svg Icon-->
 										</span>
-										<span class="menu-title">Extensions</span>
+										<span class="menu-title">Matières</span>
 										<span class="menu-arrow"></span>
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('list_annuite') }}">
+											<a class="menu-link" href="{{ path('student_index') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
-												<span class="menu-title">Liste des extensions</span>
+												<span class="menu-title">Liste des matières</span>
 											</a>
 										</div>
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('add_annuite') }}">
+											<a class="menu-link" href="{{ path('student_new') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
-												<span class="menu-title">Nouvelle extension</span>
+												<span class="menu-title">Ajout nouvelle matière</span>
 											</a>
 										</div>
 									</div>
@@ -239,7 +231,7 @@ License: For each use you must have a valid license purchased only from above li
 									<!--begin::Menu wrapper-->
 									<div class="header-menu align-items-stretch" data-kt-drawer="true" data-kt-drawer-name="header-menu" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_header_menu_mobile_toggle" data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_body', lg: '#kt_header_nav'}">
 										<h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">
-											BACK OFFICE PI-PLANNER
+											ADMINISTRATION
 										</h1>
 									</div>
 									<!--end::Menu wrapper-->
@@ -273,12 +265,12 @@ License: For each use you must have a valid license purchased only from above li
 											<!--end::Menu separator-->
 											<!--begin::Menu item-->
 											<div class="menu-item px-5">
-												<a href="{{ path('show_user', {'id': app.user.id}) }}" class="menu-link px-5">Mon compte</a>
+												<a href="{{ path('student_show', {'id': 1}) }}" class="menu-link px-5">Mon compte</a>
 											</div>
 											<!--end::Menu item-->
 											<!--begin::Menu item-->
 											<div class="menu-item px-5 my-1">
-												<a href="{{ path('edit_user', {'id': app.user.id}) }}" class="menu-link px-5">Gestion du compte</a>
+												<a href="{{ path('student_edit', {'id': 1}) }}" class="menu-link px-5">Gestion du compte</a>
 											</div>
 											<!--begin::Menu separator-->
 											<div class="separator my-2"></div>
