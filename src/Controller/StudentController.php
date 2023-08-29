@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
 use App\Entity\Student;
+use App\Form\StudentFilterFormType;
+use App\Form\StudentSearchFormType;
 use App\Form\StudentType;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,9 +27,24 @@ class StudentController extends AbstractController
     }
 
     #[Route('/list', name: 'student_list', methods: ['GET'])]
-    public function list(StudentRepository $studentRepository): Response
+    public function list(Request $request, StudentRepository $studentRepository): Response
     {
         $data = new StudentSearchData();
+        $form = $this->createForm(StudentSearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $filteredData = new StudentFilterData();
+        $filterdForm = $this->createForm(StudentFilterFormType::class, $filteredData);
+        $filterdForm->handleRequest($request);
+
+        $items = [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $name = $data->getName();
+
+            if (!isset($name)) $items = $studentRepository->findAll();
+            else 
+        }
 
         return $this->render('student/list.html.twig', [
             'students' => $studentRepository->findAll(),
