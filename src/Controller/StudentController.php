@@ -34,20 +34,28 @@ class StudentController extends AbstractController
         $form->handleRequest($request);
 
         $filteredData = new StudentFilterData();
-        $filterdForm = $this->createForm(StudentFilterFormType::class, $filteredData);
-        $filterdForm->handleRequest($request);
+        $filterForm = $this->createForm(StudentFilterFormType::class, $filteredData);
+        $filterForm->handleRequest($request);
 
-        $items = [];
+        $students = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
             $name = $data->getName();
 
-            if (!isset($name)) $items = $studentRepository->findAll();
-            else 
-        }
+            if (!isset($name)) $students = $studentRepository->findAll();
+            else $students = $studentRepository->findSearch($data);
+
+        } elseif ($filterForm->isSubmitted() && $filterForm->isValid()) 
+            $students = $studentRepository->findFiltered($filteredData);
+        else
+            $students = $studentRepository->findAll();
 
         return $this->render('student/list.html.twig', [
-            'students' => $studentRepository->findAll(),
+            'template_title' => 'Liste des étudiants',
+            'meth_name' => 'list',
+            'form' => $form->createView(),
+            'filter_form' => $filterForm->createView(),
+            'students' => $students,
         ]);
     }
 

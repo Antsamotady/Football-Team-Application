@@ -18,7 +18,7 @@ class StudentFilterFormType extends AbstractType
                 'class' => Student::class,
                 'required' => false,
                 'label' => false,
-                'choice_label' => 'nom de l\'étudiant',
+                'choice_label' => 'name',
             ])
             ;
         }
