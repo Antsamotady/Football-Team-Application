@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Data\StudentSearchData;
 use App\Entity\Student;
 use App\Form\StudentType;
 use App\Repository\StudentRepository;
@@ -25,6 +26,8 @@ class StudentController extends AbstractController
     #[Route('/list', name: 'student_list', methods: ['GET'])]
     public function list(StudentRepository $studentRepository): Response
     {
+        $data = new StudentSearchData();
+
         return $this->render('student/list.html.twig', [
             'students' => $studentRepository->findAll(),
         ]);
