@@ -74,6 +74,7 @@ class StudentController extends AbstractController
         }
 
         return $this->renderForm('student/new.html.twig', [
+            'template_title' => 'Ajouter',
             'student' => $student,
             'form' => $form,
         ]);
@@ -83,6 +84,7 @@ class StudentController extends AbstractController
     public function show(Student $student): Response
     {
         return $this->render('student/show.html.twig', [
+            'template_title' => 'Détails étudiant',
             'student' => $student,
         ]);
     }
@@ -100,6 +102,7 @@ class StudentController extends AbstractController
         }
 
         return $this->renderForm('student/edit.html.twig', [
+            'template_title' => 'Modifier un étudiant',
             'student' => $student,
             'form' => $form,
         ]);
