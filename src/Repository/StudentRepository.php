@@ -63,6 +63,13 @@ class StudentRepository extends ServiceEntityRepository
                 ->setParameter('name', "%{$search->getName()}%");
         }
 
+        if (!empty($search->getFanampiny()))
+        {
+            $qb = $qb
+                ->andWhere('UPPER(u.fanampiny) LIKE UPPER(:fanampiny)')
+                ->setParameter('fanampiny', "%{$search->getFanampiny()}%");
+        }
+
         $result = $qb->getQuery()->getResult();
         
         return $result;

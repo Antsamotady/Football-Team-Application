@@ -26,13 +26,5 @@
 
     {{ include('student/_form.html.twig') }}
 
-    <a href="{{ path('student_list') }}">Revenir à la liste</a>
-
 {% endblock %}
 
-{% block foot_script %}
-	{{parent()}}
-	<script type="text/javascript">
-		$("#kt_subscriptions_table").DataTable();
-	</script>
-{% endblock %}

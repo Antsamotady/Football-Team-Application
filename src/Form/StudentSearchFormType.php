@@ -13,13 +13,13 @@ class StudentSearchFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('name', TextType::class, [
-            'label' => false,
-            'required' => false,
-            'attr' => [
-                'placeholder' => 'Rechercher un étudiant'
-            ]
-        ]);
+            ->add('name', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Recherche par nom d\'étudiant'
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

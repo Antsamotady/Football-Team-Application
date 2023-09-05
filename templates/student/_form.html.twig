@@ -1,4 +1,9 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('student_list') }}" class="btn btn-secondary w-66">Revenir à la liste</a>
+        <button class="btn btn-primary w-66">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+    
 {{ form_end(form) }}

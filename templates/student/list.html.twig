@@ -40,7 +40,7 @@
 				<!--end::Svg Icon-->
 				{# <input type="text" data-kt-subscription-table-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search Subscriptions" /> #}
 				{{ form_start(form) }}
-					{{ form_widget(form.name, {'attr': {'class': 'form-control form-control-solid w-250px ps-14'}}) }}
+					{{ form_widget(form.name, {'attr': {'class': 'form-control form-control-solid w-350px ps-14'}}) }}
 				{{ form_end(form) }}
 			</div>
 			<!--end::Search-->
@@ -74,8 +74,10 @@
 					<div class="px-7 py-5" data-kt-subscription-table-filter="form">
 						<!--begin::Input group-->
 						<div class="mb-3">
-							<label class="form-label fs-6 fw-bold">Nom:</label>
-							{{ form_widget(filter_form.name, {'attr': {'class': 'form-select form-select-solid fw-bolder'}}) }}
+							{{ form_widget(filter_form.name, {'attr': {'class': 'form-control fw-bolder'}}) }}
+						</div>
+						<div class="mb-3">
+							{{ form_widget(filter_form.fanampiny, {'attr': {'class': 'form-control fw-bolder'}}) }}
 						</div>
 						<!--end::Input group-->
 						<!--begin::Actions-->
