@@ -9,6 +9,7 @@ use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Form\StudentType;
 use App\Repository\StudentRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,15 +20,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class StudentController extends AbstractController
 {
     #[Route('/', name: 'student_index', methods: ['GET'])]
-    public function index(StudentRepository $studentRepository): Response
+    public function index(StudentRepository $studentRepo): Response
     {
         return $this->render('student/index.html.twig', [
-            'students' => $studentRepository->findAll(),
+            'students' => $studentRepo->findAll(),
         ]);
     }
 
     #[Route('/list', name: 'student_list', methods: ['GET'])]
-    public function list(Request $request, StudentRepository $studentRepository): Response
+    public function list(Request $request, StudentRepository $studentRepo): Response
     {
         $data = new StudentSearchData();
         $form = $this->createForm(StudentSearchFormType::class, $data);
@@ -42,13 +43,13 @@ class StudentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $name = $data->getName();
 
-            if (!isset($name)) $students = $studentRepository->findAll();
-            else $students = $studentRepository->findSearch($data);
+            if (!isset($name)) $students = $studentRepo->findAll();
+            else $students = $studentRepo->findSearch($data);
 
         } elseif ($filterForm->isSubmitted() && $filterForm->isValid()) 
-            $students = $studentRepository->findFiltered($filteredData);
+            $students = $studentRepo->findFiltered($filteredData);
         else
-            $students = $studentRepository->findAll();
+            $students = $studentRepo->findAll();
 
         return $this->render('student/list.html.twig', [
             'template_title' => 'Liste des étudiants',
@@ -59,16 +60,72 @@ class StudentController extends AbstractController
         ]);
     }
 
+    #[Route('/import', name: 'student_import', methods: ['POST'])]
+    public function import(Request $request, EntityManagerInterface $em, StudentRepository $studentRepo): Response
+    {
+        $header = array('name' => 0, 'fanampiny' => 1, 'gender' => 2, 'classe' => 3, 'examLocation' => 4);
+        $path = __DIR__ . '/../../public/upload/';
+        $file = $request->files->get('clientimport');
+        $file->move($path, "tmp.csv");
+
+        $row = 1;
+        
+        if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                $data = $this->decrypteinutf8($data); // put in utf8;
+
+                if ($row == 1) {
+                        
+                } else {
+                    if ($data[$header['name']] != '' && 
+                        $data[$header['gender']] != '' ) {
+
+                        $student = $studentRepo->findOneBy(['name' => $data[$header['name']] ]);
+
+                        if (!$student) $student = new Student();
+
+                        $student->setName($data[$header['name']]);
+                        $student->setFanampiny($data[$header['fanampiny']]);
+                        $student->setGender($data[$header['gender']]);
+                        $student->setClasse($data[$header['classe']]);
+                        $student->setExamLocation($data[$header['examLocation']]);
+
+                        $em->persist($student);
+                        $em->flush();
+                    } else {
+                        $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+                        return $this->redirectToRoute('student_list');
+                    }
+                }
+                $row++;
+            }
+
+            fclose($handle);
+
+            //delete tmp file
+            unlink($path . "tmp.csv");
+
+            $this->addFlash('success', 'La liste a bien été importé.');
+
+            return $this->redirectToRoute('student_list');
+        } else {
+            $this->addFlash('error', 'Erreur: le fichier n\'est pas valide');
+        }
+
+        return $this->redirectToRoute('student_list');
+    }
+
+
     #[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $student = new Student();
         $form = $this->createForm(StudentType::class, $student);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($student);
-            $entityManager->flush();
+            $em->persist($student);
+            $em->flush();
 
             return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
         }
@@ -90,13 +147,13 @@ class StudentController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Student $student, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Student $student, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(StudentType::class, $student);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $em->flush();
 
             return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
         }
@@ -109,13 +166,22 @@ class StudentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'student_delete', methods: ['POST'])]
-    public function delete(Request $request, Student $student, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Student $student, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$student->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($student);
-            $entityManager->flush();
+            $em->remove($student);
+            $em->flush();
         }
 
         return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /* Import csv */
+    protected function decrypteinutf8($datas) {
+        $datas_return = array();
+        foreach ($datas as $value) {
+            $datas_return[] = (preg_match('!!u', $value)) ? $value : utf8_encode($value);
+        }
+        return $datas_return;
     }
 }
