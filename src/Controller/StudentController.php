@@ -87,8 +87,8 @@ class StudentController extends AbstractController
                         $student->setName($data[$header['name']]);
                         $student->setFanampiny($data[$header['fanampiny']]);
                         $student->setGender($data[$header['gender']]);
-                        $student->setClasse($data[$header['classe']]);
-                        $student->setExamLocation($data[$header['examLocation']]);
+                        // $student->setClasse($data[$header['classe']]);
+                        // $student->setExamLocation($data[$header['examLocation']]);
 
                         $em->persist($student);
                         $em->flush();
