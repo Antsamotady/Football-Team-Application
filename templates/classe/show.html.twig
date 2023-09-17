@@ -3,7 +3,15 @@
 {% block title %}Classe{% endblock %}
 
 {% block body %}
-    <h1>Classe</h1>
+
+    {% for notice in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ notice }}</div>
+    {% endfor %}
+    {% for notice in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ notice }}</div>
+    {% endfor %}
+
+    <h1>Renseignement sur la classe</h1>
 
     <table class="table">
         <tbody>
@@ -15,12 +23,22 @@
                 <th>Name</th>
                 <td>{{ classe.name }}</td>
             </tr>
+            <tr>
+                <th>Nb étudiants</th>
+                <td>...</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>...</td>
+            </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('classe_index') }}">back to list</a>
-
-    <a href="{{ path('classe_edit', {'id': classe.id}) }}">edit</a>
-
-    {{ include('classe/_delete_form.html.twig') }}
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('classe_index') }}" class="btn btn-secondary w-66">Voir toutes les classes</a>
+        <div class="d-flex justify-content-end">
+            <a href="{{ path('classe_edit', {'id': classe.id}) }}" class="btn btn-primary w-66">Editer</a>
+            {{ include('classe/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

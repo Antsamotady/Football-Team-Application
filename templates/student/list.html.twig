@@ -173,7 +173,7 @@
 					<!--begin::Billing=-->
 					<td>{{ student.fanampiny }}</td>
 					<td>{{ student.gender }}</td>
-					<td>{% if student.classe %}{{ student.classe.name }}{% endif %}</td>
+					<td>{% if student.classe %}<a href="{{ path('classe_show', {'id': student.classe.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.classe.name }}</a>{% endif %}</td>
 					<td>{% if student.examLocation %}{{ student.examLocation.name }}{% endif %}</td>
 					<td class="text-end">
 						<a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions

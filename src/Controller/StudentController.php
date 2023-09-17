@@ -115,7 +115,6 @@ class StudentController extends AbstractController
         return $this->redirectToRoute('student_list');
     }
 
-
     #[Route('/export', name: 'student_export', methods: ['GET'])]
     public function export(StudentRepository $studentRepo): Response
     {
@@ -153,6 +152,7 @@ class StudentController extends AbstractController
             $em->persist($student);
             $em->flush();
 
+            $this->addFlash('success', 'Ajout étudiant réussi.');
             return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -181,6 +181,8 @@ class StudentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
+            $this->addFlash('success', 'Modification réussie.');
+
             return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -197,6 +199,8 @@ class StudentController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$student->getId(), $request->request->get('_token'))) {
             $em->remove($student);
             $em->flush();
+
+            $this->addFlash('success', 'Suppression réussie.');
         }
 
         return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);

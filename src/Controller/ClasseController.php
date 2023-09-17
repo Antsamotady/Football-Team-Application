@@ -34,6 +34,8 @@ class ClasseController extends AbstractController
             $entityManager->persist($classe);
             $entityManager->flush();
 
+
+            $this->addFlash('success', 'Nouvelle classe enregistrée.');
             return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -60,6 +62,8 @@ class ClasseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+
+            $this->addFlash('success', 'Enregistrement réussi.');
             return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,6 +79,8 @@ class ClasseController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$classe->getId(), $request->request->get('_token'))) {
             $entityManager->remove($classe);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Supression réussie.');
         }
 
         return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
