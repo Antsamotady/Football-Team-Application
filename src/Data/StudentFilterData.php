@@ -6,6 +6,7 @@ class StudentFilterData
 {
   private $name;
   private $fanampiny;
+  private $classe;
 
   /**
    * Get the value of name
@@ -43,6 +44,26 @@ class StudentFilterData
   public function setFanampiny($fanampiny)
   {
     $this->fanampiny = $fanampiny;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of classe
+   */ 
+  public function getClasse()
+  {
+    return $this->classe;
+  }
+
+  /**
+   * Set the value of classe
+   *
+   * @return  self
+   */ 
+  public function setClasse($classe)
+  {
+    $this->classe = $classe;
 
     return $this;
   }

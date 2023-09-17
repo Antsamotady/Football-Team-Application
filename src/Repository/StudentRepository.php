@@ -56,15 +56,13 @@ class StudentRepository extends ServiceEntityRepository
             ->createQueryBuilder('u')
             ->select('u');
 
-        if (!empty($search->getName()))
-        {
+        if (!empty($search->getName())) {
             $qb = $qb
                 ->andWhere('UPPER(u.name) LIKE UPPER(:name)')
                 ->setParameter('name', "%{$search->getName()}%");
         }
 
-        if (!empty($search->getFanampiny()))
-        {
+        if (!empty($search->getFanampiny())) {
             $qb = $qb
                 ->andWhere('UPPER(u.fanampiny) LIKE UPPER(:fanampiny)')
                 ->setParameter('fanampiny', "%{$search->getFanampiny()}%");

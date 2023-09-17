@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Student;
 use App\Data\StudentFilterData;
+use App\Entity\Classe;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,6 +29,12 @@ class StudentFilterFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Prénom'
                 ]
+            ])
+            ->add('classe', EntityType::class, [
+                'class' => Classe::class,
+                'required' => false,
+                'attr' => ['placeholder' => 'Classe'],
+                'choice_label' => 'name'
             ])
             ;
         }
