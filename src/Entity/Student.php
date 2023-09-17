@@ -95,4 +95,15 @@ class Student
         return $this;
     }
 
+    public function getExport() 
+    {
+        $result = [];
+        $result[] = $this->name;
+        $result[] = $this->fanampiny;
+        $result[] = $this->classe;
+        $result[] = $this->examLocation;
+
+        return $result;
+    }
+
 }

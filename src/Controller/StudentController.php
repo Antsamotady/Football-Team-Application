@@ -116,6 +116,32 @@ class StudentController extends AbstractController
     }
 
 
+    #[Route('/export', name: 'student_export', methods: ['GET'])]
+    public function export(StudentRepository $studentRepo): Response
+    {
+        $items = $studentRepo->findAll();
+
+        $handle = fopen('php://memory', 'r+');
+        $header = array('name' => 0, 'fanampiny' => 1, 'gender' => 2, 'classe' => 3, 'examLocation' => 4);
+
+        fputs($handle, chr(239) . chr(187) . chr(191));
+        fputcsv($handle, $header, ';');
+        foreach ($items as $item) {
+            $result = $item->getExport();
+            fputcsv($handle, $result, ';');
+        }
+
+        rewind($handle);
+        $content = stream_get_contents($handle);
+        fclose($handle);
+
+        return new Response($content, 200, array(
+            'Content-Type' => 'application/force-download; ',
+            'Content-Disposition' => 'attachment; filename="liste_etudiants.csv"'
+        ));
+    }
+
+
     #[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
