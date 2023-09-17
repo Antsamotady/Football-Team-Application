@@ -1,0 +1,35 @@
+{% extends 'dashboard-base.html.twig' %}
+
+{% block title %}{{ template_title }}{% endblock %}
+
+{% block body %}
+    <h1>Classe index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for classe in classes %}
+            <tr>
+                <td>{{ classe.id }}</td>
+                <td>{{ classe.name }}</td>
+                <td>
+                    <a href="{{ path('classe_show', {'id': classe.id}) }}">show</a>
+                    <a href="{{ path('classe_edit', {'id': classe.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Pas encore de classe</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('classe_new') }}" class="btn btn-primary">Nouvelle classe</a>
+{% endblock %}
