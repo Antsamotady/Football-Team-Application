@@ -52,6 +52,8 @@ class StudentRepository extends ServiceEntityRepository
     */
     public function findFiltered(StudentFilterData $search): array
     {
+        $em = $this->getEntityManager();
+
         $qb = $this
             ->createQueryBuilder('u')
             ->select('u');
@@ -67,6 +69,15 @@ class StudentRepository extends ServiceEntityRepository
                 ->andWhere('UPPER(u.fanampiny) LIKE UPPER(:fanampiny)')
                 ->setParameter('fanampiny', "%{$search->getFanampiny()}%");
         }
+
+        if (!empty($search->getClasse())) {
+            $qb = $qb
+                ->join('u.classe', 'c')
+                ->andWhere('c.name LIKE :searchedString')
+                ->setParameter('searchedString', $search->getClasse()->getName());
+        }
+
+        // dump($qb->getQuery()->getSQL());
 
         $result = $qb->getQuery()->getResult();
         

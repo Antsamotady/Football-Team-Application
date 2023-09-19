@@ -19,21 +19,17 @@ class StudentFilterFormType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'Nom'
-                ]
+                'attr' => ['placeholder' => 'Nom']
             ])
             ->add('fanampiny', TextType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => [
-                    'placeholder' => 'Prénom'
-                ]
+                'attr' => ['placeholder' => 'Prénom']
             ])
             ->add('classe', EntityType::class, [
                 'class' => Classe::class,
                 'required' => false,
-                'attr' => ['placeholder' => 'Classe'],
+                // 'attr' => ['placeholder' => 'Classe'],
                 'choice_label' => 'name'
             ])
             ;
