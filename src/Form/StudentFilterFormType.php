@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Student;
 use App\Data\StudentFilterData;
 use App\Entity\Classe;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

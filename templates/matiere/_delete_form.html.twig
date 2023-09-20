@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('matiere_delete', {'id': matiere.id}) }}" onsubmit="return confirm('Etes-vous sûr de vouloir effacer cette entrée?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ matiere.id) }}">
+    <button class="btn btn-warning">Effacer</button>
+</form>

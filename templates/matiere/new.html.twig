@@ -1,0 +1,17 @@
+{% extends 'dashboard-base.html.twig' %}
+
+{% block title %}New Matiere{% endblock %}
+
+{% block body %}
+    <h1>Renseignement de la matiere</h1>
+
+    {% for notice in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">{{ notice }}</div>
+    {% endfor %}
+    {% for notice in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">{{ notice }}</div>
+    {% endfor %}
+
+    {{ include('matiere/_form.html.twig') }}
+
+{% endblock %}

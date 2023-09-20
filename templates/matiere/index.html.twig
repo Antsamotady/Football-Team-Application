@@ -1,9 +1,10 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}{{ template_title }}{% endblock %}
+{% block title %}Matiere index{% endblock %}
 
 {% block body %}
-    <h1>Classe index</h1>
+    <h1>Matiere index</h1>
+
 
     {% for notice in app.flashes('success') %}
         <div class="alert alert-success" role="alert">{{ notice }}</div>
@@ -21,22 +22,22 @@
             </tr>
         </thead>
         <tbody>
-        {% for classe in classes %}
+        {% for matiere in matieres %}
             <tr>
-                <td>{{ classe.id }}</td>
-                <td>{{ classe.name }}</td>
+                <td>{{ matiere.id }}</td>
+                <td>{{ matiere.name }}</td>
                 <td>
-                    <a href="{{ path('classe_show', {'id': classe.id}) }}">show</a>
-                    <a href="{{ path('classe_edit', {'id': classe.id}) }}">edit</a>
+                    <a href="{{ path('matiere_show', {'id': matiere.id}) }}">show</a>
+                    <a href="{{ path('matiere_edit', {'id': matiere.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">Pas encore de classe</td>
+                <td colspan="3">Pas encore de matiere</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('classe_new') }}" class="btn btn-primary">Nouvelle classe</a>
+    <a href="{{ path('matiere_new') }}" class="btn btn-primary">Nouvelle matiere</a>
 {% endblock %}

@@ -62,8 +62,8 @@ class ClasseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-
-            $this->addFlash('success', 'Enregistrement réussi.');
+            $this->addFlash('success', 'Modification réussie.');
+            
             return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
         }
 
