@@ -30,6 +30,14 @@ class Student
     #[ORM\ManyToOne(targetEntity: ExamLocation::class, inversedBy: 'students')]
     private $examLocation;
 
+    #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'students')]
+    private $matiere;
+
+    public function __construct()
+    {
+        $this->matiere = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +112,30 @@ class Student
         $result[] = $this->examLocation;
 
         return $result;
+    }
+
+    /**
+     * @return Collection|Matiere[]
+     */
+    public function getMatiere(): Collection
+    {
+        return $this->matiere;
+    }
+
+    public function addMatiere(Matiere $matiere): self
+    {
+        if (!$this->matiere->contains($matiere)) {
+            $this->matiere[] = $matiere;
+        }
+
+        return $this;
+    }
+
+    public function removeMatiere(Matiere $matiere): self
+    {
+        $this->matiere->removeElement($matiere);
+
+        return $this;
     }
 
 }
