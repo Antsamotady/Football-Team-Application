@@ -30,14 +30,6 @@ class Student
     #[ORM\ManyToOne(targetEntity: ExamLocation::class, inversedBy: 'students')]
     private $examLocation;
 
-    #[ORM\ManyToMany(targetEntity: Mark::class, inversedBy: 'students')]
-    private $marks;
-
-    public function __construct()
-    {
-        $this->marks = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -112,30 +104,6 @@ class Student
         $result[] = $this->examLocation;
 
         return $result;
-    }
-
-    /**
-     * @return Collection|Mark[]
-     */
-    public function getMarks(): Collection
-    {
-        return $this->marks;
-    }
-
-    public function addMark(Mark $mark): self
-    {
-        if (!$this->marks->contains($mark)) {
-            $this->marks[] = $mark;
-        }
-
-        return $this;
-    }
-
-    public function removeMark(Mark $mark): self
-    {
-        $this->marks->removeElement($mark);
-
-        return $this;
     }
 
 }

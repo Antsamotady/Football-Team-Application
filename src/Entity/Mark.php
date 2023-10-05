@@ -21,14 +21,6 @@ class Mark
     #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'marks')]
     private $matiere;
 
-    #[ORM\ManyToMany(targetEntity: Student::class, mappedBy: 'marks')]
-    private $students;
-
-    public function __construct()
-    {
-        $this->students = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -70,30 +62,4 @@ class Mark
         return $this;
     }
 
-    /**
-     * @return Collection|Student[]
-     */
-    public function getStudents(): Collection
-    {
-        return $this->students;
-    }
-
-    public function addStudent(Student $student): self
-    {
-        if (!$this->students->contains($student)) {
-            $this->students[] = $student;
-            $student->addMark($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStudent(Student $student): self
-    {
-        if ($this->students->removeElement($student)) {
-            $student->removeMark($this);
-        }
-
-        return $this;
-    }
 }
