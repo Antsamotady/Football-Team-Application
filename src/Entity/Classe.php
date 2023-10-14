@@ -21,16 +21,12 @@ class Classe
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $location;
 
-    #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'classe')]
-    private $subjects;
-
-    #[ORM\OneToMany(mappedBy: 'classe', targetEntity: StudentClasse::class)]
-    private $studentClasses;
+    #[ORM\OneToMany(mappedBy: 'classe', targetEntity: Student::class)]
+    private $students;
 
     public function __construct()
     {
-        $this->subjects = new ArrayCollection();
-        $this->studentClasses = new ArrayCollection();
+        $this->students = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,59 +59,33 @@ class Classe
     }
 
     /**
-     * @return Collection|Subject[]
+     * @return Collection|Student[]
      */
-    public function getSubjects(): Collection
+    public function getStudents(): Collection
     {
-        return $this->subjects;
+        return $this->students;
     }
 
-    public function addSubject(Subject $subject): self
+    public function addStudent(Student $student): self
     {
-        if (!$this->subjects->contains($subject)) {
-            $this->subjects[] = $subject;
-            $subject->addClasse($this);
+        if (!$this->students->contains($student)) {
+            $this->students[] = $student;
+            $student->setClasse($this);
         }
 
         return $this;
     }
 
-    public function removeSubject(Subject $subject): self
+    public function removeStudent(Student $student): self
     {
-        if ($this->subjects->removeElement($subject)) {
-            $subject->removeClasse($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|StudentClasse[]
-     */
-    public function getStudentClasses(): Collection
-    {
-        return $this->studentClasses;
-    }
-
-    public function addStudentClass(StudentClasse $studentClass): self
-    {
-        if (!$this->studentClasses->contains($studentClass)) {
-            $this->studentClasses[] = $studentClass;
-            $studentClass->setClasse($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStudentClass(StudentClasse $studentClass): self
-    {
-        if ($this->studentClasses->removeElement($studentClass)) {
+        if ($this->students->removeElement($student)) {
             // set the owning side to null (unless already changed)
-            if ($studentClass->getClasse() === $this) {
-                $studentClass->setClasse(null);
+            if ($student->getClasse() === $this) {
+                $student->setClasse(null);
             }
         }
 
         return $this;
     }
+
 }

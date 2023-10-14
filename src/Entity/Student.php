@@ -24,12 +24,15 @@ class Student
     #[ORM\Column(type: 'text', nullable: true)]
     private $gender;
 
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: StudentClasse::class)]
-    private $studentClasses;
+    #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
+    private $classe;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Subject::class)]
+    private $subjects;
 
     public function __construct()
     {
-        $this->studentClasses = new ArrayCollection();
+        $this->subjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -73,33 +76,46 @@ class Student
         return $this;
     }
 
-    /**
-     * @return Collection|StudentClasse[]
-     */
-    public function getStudentClasses(): Collection
+    public function getClasse(): ?Classe
     {
-        return $this->studentClasses;
+        return $this->classe;
     }
 
-    public function addStudentClass(StudentClasse $studentClass): self
+    public function setClasse(?Classe $classe): self
     {
-        if (!$this->studentClasses->contains($studentClass)) {
-            $this->studentClasses[] = $studentClass;
-            $studentClass->setStudent($this);
+        $this->classe = $classe;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Subject[]
+     */
+    public function getSubjects(): Collection
+    {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): self
+    {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects[] = $subject;
+            $subject->setStudent($this);
         }
 
         return $this;
     }
 
-    public function removeStudentClass(StudentClasse $studentClass): self
+    public function removeSubject(Subject $subject): self
     {
-        if ($this->studentClasses->removeElement($studentClass)) {
+        if ($this->subjects->removeElement($subject)) {
             // set the owning side to null (unless already changed)
-            if ($studentClass->getStudent() === $this) {
-                $studentClass->setStudent(null);
+            if ($subject->getStudent() === $this) {
+                $subject->setStudent(null);
             }
         }
 
         return $this;
     }
+
 }

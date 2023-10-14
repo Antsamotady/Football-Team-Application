@@ -17,14 +17,12 @@ class Subject
 
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
+    
+    #[ORM\Column(type: 'float', nullable: true)]
+    private $score;
 
-    #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'subjects')]
-    private $classe;
-
-    public function __construct()
-    {
-        $this->classe = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'subjects')]
+    private $student;
 
     public function getId(): ?int
     {
@@ -44,25 +42,33 @@ class Subject
     }
 
     /**
-     * @return Collection|Classe[]
-     */
-    public function getClasse(): Collection
+     * Get the value of score
+     */ 
+    public function getScore()
     {
-        return $this->classe;
+        return $this->score;
     }
 
-    public function addClasse(Classe $classe): self
+    /**
+     * Set the value of score
+     *
+     * @return  self
+     */ 
+    public function setScore($score)
     {
-        if (!$this->classe->contains($classe)) {
-            $this->classe[] = $classe;
-        }
+        $this->score = $score;
 
         return $this;
     }
 
-    public function removeClasse(Classe $classe): self
+    public function getStudent(): ?Student
     {
-        $this->classe->removeElement($classe);
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): self
+    {
+        $this->student = $student;
 
         return $this;
     }

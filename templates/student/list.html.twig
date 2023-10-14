@@ -153,12 +153,12 @@
 			<thead>
 				<!--begin::Table row-->
 				<tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-					<th class="min-w-85px">Nom</th>
-					<th class="min-w-55px">Prénom</th>
-					<th class="min-w-30px">Civilité</th>
-					<th class="min-w-100px">Classe</th>
-					<th class="min-w-170px">Matières</th>
-					<th class="min-w-85px">Centre</th>
+					<th class="min-w-60px">Nom</th>
+					<th class="min-w-50px">Prénom</th>
+					<th class="min-w-8px">Civilité</th>
+					<th class="min-w-60px">Classe</th>
+					<th class="min-w-100px">Matière : notes</th>
+					<th class="min-w-45px">Centre</th>
 					<th class="text-end min-w-70px">Actions</th>
 				</tr>
 				<!--end::Table row-->
@@ -171,15 +171,29 @@
 				<tr>
 					<!--begin::Customer=-->
 					<td>
-						<a href="{{ path('student_show', {'id': student.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.name }}</a>
+						<a href="{{ path('student_show', {'id': student.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.firstname }}</a>
 					</td>
 					<!--end::Customer=-->
 					<!--begin::Billing=-->
-					<td>{{ student.fanampiny }}</td>
+					<td>{{ student.lastname }}</td>
 					<td>{{ student.gender }}</td>
-					<td>{% if student.classe %}<a href="{{ path('classe_show', {'id': student.classe.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.classe.name }}</a>{% endif %}</td>
-					<td>{% if student.matiere %}aaa{% endif %}</td>
-					<td>{% if student.examLocation %}{{ student.examLocation.name }}{% endif %}</td>
+					{# <td>{% if student.studentClasses %}<a href="{{ path('classe_show', {'id': student.studentClasses.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.studentClasses.name }}</a>{% endif %}</td> #}
+					<td>
+						{% if student.classe %}
+							{{ student.classe.name }}
+						{% endif %}
+					</td>
+					<td>{% if student.subjects %}
+							{% for subject in student.subjects %}
+								<li>{{ subject.name }} : {{ subject.score }}</li>
+							{% endfor %}
+						{% endif %}
+					</td>
+					<td>
+						{% if student.classe %}
+							{{ student.classe.location }}
+						{% endif %}
+					</td>
 					<td class="text-end">
 						<a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
 						<!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
