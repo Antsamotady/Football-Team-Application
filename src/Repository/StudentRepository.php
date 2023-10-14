@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Student;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Data\StudentFilterData;
+use App\Data\StudentSearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Student|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,73 @@ class StudentRepository extends ServiceEntityRepository
         parent::__construct($registry, Student::class);
     }
 
-    // /**
-    //  * @return Student[] Returns an array of Student objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Student linked to search
+     *
+     * @return Student[]
+     */
+    public function findSearch(StudentSearchData $search): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u');
 
-    /*
-    public function findOneBySomeField($value): ?Student
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if (!empty($search->getName()))
+        {
+            $qb = $qb
+                ->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
+                ->setParameter('firstname', "%{$search->getName()}%");
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+
     }
+
+    /**
+    * User linked to search
+    *
+    * @return Student[]
     */
+    public function findFiltered(StudentFilterData $search): array
+    {
+        $em = $this->getEntityManager();
+
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u');
+
+        if (!empty($search->getFirstname())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
+                ->setParameter('firstname', "%{$search->getFirstname()}%");
+        }
+
+        if (!empty($search->getLastname())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.lastname) LIKE UPPER(:lastname)')
+                ->setParameter('lastname', "%{$search->getLastname()}%");
+        }
+
+        if (!empty($search->getGender())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.gender) LIKE UPPER(:gender)')
+                ->setParameter('gender', "{$search->getGender()}");
+        }
+
+        if (!empty($search->getClasse())) {
+            $qb = $qb
+                ->join('u.classe', 'c')
+                ->andWhere('c.name LIKE :searchedString')
+                ->setParameter('searchedString', $search->getClasse()->getName());
+        }
+
+        // dump($qb->getQuery()->getSQL());
+
+        $result = $qb->getQuery()->getResult();
+        
+        return $result;
+
+    }
 }

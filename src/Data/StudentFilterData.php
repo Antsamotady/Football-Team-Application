@@ -4,46 +4,47 @@ namespace App\Data;
 
 class StudentFilterData
 {
-  private $name;
-  private $fanampiny;
+  private $firstname;
+  private $lastname;
+  private $gender;
   private $classe;
 
   /**
-   * Get the value of name
+   * Get the value of firstname
    */ 
-  public function getName()
+  public function getFirstname()
   {
-    return $this->name;
+    return $this->firstname;
   }
 
   /**
-   * Set the value of name
+   * Set the value of firstname
    *
    * @return  self
    */ 
-  public function setName($name)
+  public function setFirstname($firstname)
   {
-    $this->name = $name;
+    $this->firstname = $firstname;
 
     return $this;
   }
 
   /**
-   * Get the value of fanampiny
+   * Get the value of lastname
    */ 
-  public function getFanampiny()
+  public function getLastname()
   {
-    return $this->fanampiny;
+    return $this->lastname;
   }
 
   /**
-   * Set the value of fanampiny
+   * Set the value of lastname
    *
    * @return  self
    */ 
-  public function setFanampiny($fanampiny)
+  public function setLastname($lastname)
   {
-    $this->fanampiny = $fanampiny;
+    $this->lastname = $lastname;
 
     return $this;
   }
@@ -64,6 +65,26 @@ class StudentFilterData
   public function setClasse($classe)
   {
     $this->classe = $classe;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of gender
+   */ 
+  public function getGender()
+  {
+    return $this->gender;
+  }
+
+  /**
+   * Set the value of gender
+   *
+   * @return  self
+   */ 
+  public function setGender($gender)
+  {
+    $this->gender = $gender;
 
     return $this;
   }

@@ -2,33 +2,38 @@
 
 namespace App\Form;
 
-use App\Data\StudentFilterData;
 use App\Entity\Classe;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Data\StudentFilterData;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class StudentFilterFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('firstname', TextType::class, [
                 'label' => false,
                 'required' => false,
                 'attr' => ['placeholder' => 'Nom']
             ])
-            ->add('fanampiny', TextType::class, [
+            ->add('lastname', TextType::class, [
                 'label' => false,
                 'required' => false,
                 'attr' => ['placeholder' => 'Prénom']
             ])
+            ->add('gender', ChoiceType::class, [
+                'required' => false,
+                'label' => false,
+                'choices' => ["Mr", "Me"],
+            ])
             ->add('classe', EntityType::class, [
                 'class' => Classe::class,
                 'required' => false,
-                // 'attr' => ['placeholder' => 'Classe'],
                 'choice_label' => 'name'
             ])
             ;

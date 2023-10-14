@@ -74,10 +74,13 @@
 					<div class="px-7 py-5" data-kt-subscription-table-filter="form">
 						<!--begin::Input group-->
 						<div class="mb-3">
-							{{ form_widget(filter_form.name, {'attr': {'class': 'form-control fw-bolder'}}) }}
+							{{ form_widget(filter_form.firstname, {'attr': {'class': 'form-control fw-bolder'}}) }}
 						</div>
 						<div class="mb-3">
-							{{ form_widget(filter_form.fanampiny, {'attr': {'class': 'form-control fw-bolder'}}) }}
+							{{ form_widget(filter_form.lastname, {'attr': {'class': 'form-control fw-bolder'}}) }}
+						</div>
+						<div class="mb-3">
+							{{ form_widget(filter_form.gender, {'attr': {'class': 'form-control fw-bolder'}}) }}
 						</div>
 						<div class="mb-3">
 							{{ form_widget(filter_form.classe, {'attr': {'class': 'form-control fw-bolder'}}) }}

@@ -21,7 +21,7 @@ class Student
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $lastname;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'string', length: 11, nullable: true)]
     private $gender;
 
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
