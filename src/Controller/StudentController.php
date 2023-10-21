@@ -181,10 +181,20 @@ class StudentController extends AbstractController
 
         $subjects = $subjectRepo->findBy(['student' => $student]);
 
+        $scores = [];
         $forms = [];
         $formViews = [];
+        $bestScore = 0;
+        $averageScore = 0;
+        $totalScore = 0;
 
         foreach($subjects as $subject) {
+            
+            $totalScore += $subject->getScore();
+
+            if ($subject->getScore() > $bestScore)
+                $bestScore = $subject->getScore();
+
             $subjectId = $subject->getId();
             
             $forms[$subjectId] = $this->createForm(SubjectType::class, $subject);
@@ -205,6 +215,9 @@ class StudentController extends AbstractController
             'student' => $student,
             'previous' => $previousStudent ? $previousStudent->getId() : null,
             'next' => $nextStudent ? $nextStudent->getId() : null,
+            'best_score' => $bestScore,
+            'total_score' => $totalScore,
+            'average_score' => $totalScore / count($subjects),
             'score_forms' => $formViews
         ]);
     }

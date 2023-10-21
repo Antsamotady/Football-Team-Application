@@ -14,7 +14,7 @@ class SubjectType extends AbstractType
     {
         $builder
             ->add('score', NumberType::class, [
-                'label' => 'note',
+                'label' => '0 à 20',
             ]);
     }
 
