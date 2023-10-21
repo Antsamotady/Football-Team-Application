@@ -3,8 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SubjectRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubjectRepository::class)]
@@ -22,6 +21,11 @@ class Subject
     private $score;
 
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'subjects')]
+    #[Assert\Range(
+        min: 0,
+        max: 20,
+        notInRangeMessage: 'The score must be between {{ min }} and {{ max }}'
+    )]
     private $student;
 
     public function getId(): ?int

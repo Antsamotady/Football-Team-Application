@@ -2,19 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\Student;
+use App\Entity\Subject;
+use App\Form\StudentType;
+use App\Form\SubjectType;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
-use App\Entity\Student;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
-use App\Form\StudentType;
 use App\Repository\StudentRepository;
-use Doctrine\ORM\EntityManager;
+use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/student')]
 class StudentController extends AbstractController
@@ -164,11 +166,46 @@ class StudentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'student_show', methods: ['GET'])]
-    public function show(Student $student): Response
+    public function show(Request $request, Student $student, StudentRepository $studentRepo, SubjectRepository $subjectRepo, EntityManagerInterface $em): Response
     {
+        $previousStudent = null;
+        $nextStudent = null;
+        $firstStudent = $studentRepo->findOneBy([], ['id' => 'ASC']);
+        $lastStudent = $studentRepo->findOneBy([], ['id' => 'DESC']);
+
+        if ($student != $firstStudent)
+            $previousStudent = $studentRepo->findOneBy(['id' => $student->getId() - 1]);
+
+        if ($student != $lastStudent)
+            $nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
+
+        $subjects = $subjectRepo->findBy(['student' => $student]);
+
+        $forms = [];
+        $formViews = [];
+
+        foreach($subjects as $subject) {
+            $subjectId = $subject->getId();
+            
+            $forms[$subjectId] = $this->createForm(SubjectType::class, $subject);
+            $formViews[$subjectId] = $forms[$subjectId]->createView();
+            $forms[$subjectId]->handleRequest($request);
+
+            if ($forms[$subjectId]->isSubmitted() && $forms[$subjectId]->isValid()) {
+                dd('here');
+                $em->persist($subject);
+                $em->flush();
+
+                $this->addFlash('success', 'Enregistrement effectué.');
+            }
+        }
+
         return $this->render('student/show.html.twig', [
             'template_title' => 'Détails étudiant',
             'student' => $student,
+            'previous' => $previousStudent ? $previousStudent->getId() : null,
+            'next' => $nextStudent ? $nextStudent->getId() : null,
+            'score_forms' => $formViews
         ]);
     }
 

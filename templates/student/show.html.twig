@@ -25,37 +25,335 @@
 
     <h1>Fiche étudiant</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ student.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ student.firstname }}</td>
-            </tr>
-            <tr>
-                <th>Fanampiny</th>
-                <td>{{ student.lastname }}</td>
-            </tr>
-            <tr>
-                <th>Gender</th>
-                <td>{{ student.gender }}</td>
-            </tr>
-            <tr>
-                <th>Classe</th>
-                <td>{{ student.classe.name }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <hr>
+
+
+    <!--begin::Row-->
+    <div class="row gy-5 g-xl-8">
+        <!--begin::Col-->
+        <div class="col-xl-6 mb-5 mb-xl-10">
+            <!--begin::User Info-->
+            <div class="d-flex flex-center flex-column py-5">
+                <!--begin::Avatar-->
+                <div class="symbol symbol-100px symbol-circle mb-7">
+                    {% if student.gender == "Me" %}
+                        {% set avatar = '002-girl' %}
+                    {% else %}
+                        {% set avatar = '001-boy' %}
+                    {% endif %}
+                    <img src="../../assets/media/svg/avatars/{{ avatar }}.svg" alt="image" />
+                </div>
+                <!--end::Avatar-->
+                <!--begin::Name-->
+                <div class="anarana py-5">
+                    <span class="fw-bolder text-muted">{{ student.gender }}</span>
+                    <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bolder mb-3">{{ student.firstname }} {{ student.lastname }}</a>
+                </div>
+                <!--end::Name-->
+                <!--begin::Position-->
+                <div class="mb-9">
+                    <!--begin::Badge-->
+                    <div class="badge badge-lg badge-light-primary d-inline">{{ student.classe.name }}</div>
+                    <!--begin::Badge-->
+                </div>
+                <!--end::Position-->
+                <!--begin::Info-->
+                <div class="d-flex flex-wrap flex-center">
+                    <!--begin::Stats-->
+                    <div class="border border-gray-300 border-dashed rounded py-3 px-3 mb-3">
+                        <div class="fs-4 fw-bolder text-gray-700">
+                            <span class="w-75px">243</span>
+                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+                            <span class="svg-icon svg-icon-3 svg-icon-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="black" />
+                                    <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="black" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </div>
+                        <div class="fw-bold text-muted">Total</div>
+                    </div>
+                    <!--end::Stats-->
+                    <!--begin::Stats-->
+                    <div class="border border-gray-300 border-dashed rounded py-3 px-3 mx-4 mb-3">
+                        <div class="fs-4 fw-bolder text-gray-700">
+                            <span class="w-50px">56</span>
+                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr065.svg-->
+                            <span class="svg-icon svg-icon-3 svg-icon-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="11" y="18" width="13" height="2" rx="1" transform="rotate(-90 11 18)" fill="black" />
+                                    <path d="M11.4343 15.4343L7.25 11.25C6.83579 10.8358 6.16421 10.8358 5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75L11.2929 18.2929C11.6834 18.6834 12.3166 18.6834 12.7071 18.2929L18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25C17.8358 10.8358 17.1642 10.8358 16.75 11.25L12.5657 15.4343C12.2533 15.7467 11.7467 15.7467 11.4343 15.4343Z" fill="black" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </div>
+                        <div class="fw-bold text-muted">Moyenne</div>
+                    </div>
+                    <!--end::Stats-->
+                    <!--begin::Stats-->
+                    <div class="border border-gray-300 border-dashed rounded py-3 px-3 mb-3">
+                        <div class="fs-4 fw-bolder text-gray-700">
+                            <span class="w-50px">188</span>
+                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+                            <span class="svg-icon svg-icon-3 svg-icon-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="black" />
+                                    <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="black" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </div>
+                        <div class="fw-bold text-muted">Meilleure note</div>
+                    </div>
+                    <!--end::Stats-->
+                </div>
+                <!--end::Info-->
+                <div class="d-flex justify-content-end pt-10">
+                    <a href="{{ path('student_edit', {'id': student.id}) }}" class="btn btn-primary w-66">Editer</a>
+                    {{ include('student/_delete_form.html.twig') }}
+                </div>
+            </div>
+            <!--end::User Info-->
+        </div>
+        <!--end::Col-->
+        <!--begin::Col-->
+        <div class="col-xl-4">
+            <!--begin::List Widget 6-->
+            <div class="card card-xl-stretch mb-xl-8">
+                <!--begin::Header-->
+                <div class="card-header border-0">
+                    <h3 class="card-title fw-bolder text-dark">Notes par matères</h3>
+                    <div class="card-toolbar">
+                        <!--begin::Menu-->
+                        <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="5" y="5" width="5" height="5" rx="1" fill="#000000" />
+                                        <rect x="14" y="5" width="5" height="5" rx="1" fill="#000000" opacity="0.3" />
+                                        <rect x="5" y="14" width="5" height="5" rx="1" fill="#000000" opacity="0.3" />
+                                        <rect x="14" y="14" width="5" height="5" rx="1" fill="#000000" opacity="0.3" />
+                                    </g>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </button>
+                        <!--begin::Menu 3-->
+                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-bold w-200px py-3" data-kt-menu="true">
+                            <!--begin::Heading-->
+                            <div class="menu-item px-3">
+                                <div class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase">Payments</div>
+                            </div>
+                            <!--end::Heading-->
+                            <!--begin::Menu item-->
+                            <div class="menu-item px-3">
+                                <a href="#" class="menu-link px-3">Create Invoice</a>
+                            </div>
+                            <!--end::Menu item-->
+                            <!--begin::Menu item-->
+                            <div class="menu-item px-3">
+                                <a href="#" class="menu-link flex-stack px-3">Create Payment
+                                <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Specify a target name for future usage and reference"></i></a>
+                            </div>
+                            <!--end::Menu item-->
+                            <!--begin::Menu item-->
+                            <div class="menu-item px-3">
+                                <a href="#" class="menu-link px-3">Generate Bill</a>
+                            </div>
+                            <!--end::Menu item-->
+                            <!--begin::Menu item-->
+                            <div class="menu-item px-3" data-kt-menu-trigger="hover" data-kt-menu-placement="right-end">
+                                <a href="#" class="menu-link px-3">
+                                    <span class="menu-title">Subscription</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <!--begin::Menu sub-->
+                                <div class="menu-sub menu-sub-dropdown w-175px py-4">
+                                    <!--begin::Menu item-->
+                                    <div class="menu-item px-3">
+                                        <a href="#" class="menu-link px-3">Plans</a>
+                                    </div>
+                                    <!--end::Menu item-->
+                                    <!--begin::Menu item-->
+                                    <div class="menu-item px-3">
+                                        <a href="#" class="menu-link px-3">Billing</a>
+                                    </div>
+                                    <!--end::Menu item-->
+                                    <!--begin::Menu item-->
+                                    <div class="menu-item px-3">
+                                        <a href="#" class="menu-link px-3">Statements</a>
+                                    </div>
+                                    <!--end::Menu item-->
+                                    <!--begin::Menu separator-->
+                                    <div class="separator my-2"></div>
+                                    <!--end::Menu separator-->
+                                    <!--begin::Menu item-->
+                                    <div class="menu-item px-3">
+                                        <div class="menu-content px-3">
+                                            <!--begin::Switch-->
+                                            <label class="form-check form-switch form-check-custom form-check-solid">
+                                                <!--begin::Input-->
+                                                <input class="form-check-input w-30px h-20px" type="checkbox" value="1" checked="checked" name="notifications" />
+                                                <!--end::Input-->
+                                                <!--end::Label-->
+                                                <span class="form-check-label text-muted fs-6">Recuring</span>
+                                                <!--end::Label-->
+                                            </label>
+                                            <!--end::Switch-->
+                                        </div>
+                                    </div>
+                                    <!--end::Menu item-->
+                                </div>
+                                <!--end::Menu sub-->
+                            </div>
+                            <!--end::Menu item-->
+                            <!--begin::Menu item-->
+                            <div class="menu-item px-3 my-1">
+                                <a href="#" class="menu-link px-3">Settings</a>
+                            </div>
+                            <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu 3-->
+                        <!--end::Menu-->
+                    </div>
+                </div>
+                <!--end::Header-->
+                <!--begin::Body-->
+                <div class="card-body pt-0">
+                    {% if student.subjects %}
+
+                        {% set color = 'info' %}
+
+                        {% for subject in student.subjects %}
+                            {% if subject.score < 6 %}
+                                {% set color = 'danger' %}
+                            {% elseif subject.score >= 6 and subject.score < 12 %}
+                                {% set color = 'warning' %}
+                            {% elseif subject.score >= 12 and subject.score < 20 %}
+                                {% set color = 'success' %}
+                            {% endif %}
+
+                            {% if subject.score == 20 %}
+                                {% set color = 'info' %}
+                            {% endif %}
+                            
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center bg-light-{{ color }} rounded p-5 mb-7">
+                                <!--begin::Icon-->
+                                <span class="svg-icon svg-icon-{{ color }} me-5">
+                                    <!--begin::Svg Icon | path: icons/duotune/abstract/abs027.svg-->
+                                    <span class="svg-icon svg-icon-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="black" />
+                                            <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="black" />
+                                        </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <!--end::Icon-->
+                                <!--begin::Title-->
+                                <div class="flex-grow-1 me-2">
+                                    <a href="#" class="fw-bolder text-gray-800 text-hover-primary fs-6">{{ subject.name }}</a>
+                                    <span class="text-muted fw-bold d-block">Appréciation : </span>
+                                </div>
+                                <!--end::Title-->
+                                <!--begin::Lable-->
+                                
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_edit_student_score_{{ subject.id }}"><span class="score-element fw-bolder text-{{ color }} fs-1 py-1">{{ subject.score }}</span></a>
+                                
+                                <!--end::Lable-->
+                            </div>
+                            <!--end::Item-->
+
+                            {{ include('student/_modal_edit_student_score_form2.html.twig') }}
+
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+
+                <!--end::Body-->
+            </div>
+            <!--end::List Widget 6-->
+        </div>
+        <!--end::Col-->
+    </div>
+    <!--end::Row-->
+
+    <hr>
 
     <div class="d-flex justify-content-between">
+        {% if previous %}
+            <a href="{{ path('student_show', {'id': previous}) }}" class="btn btn-primary px-3">Précédent</a>
+        {% endif %}
         <a href="{{ path('student_list') }}" class="btn btn-secondary w-66">Voir tous les étudiants</a>
-        <div class="d-flex justify-content-end">
-            <a href="{{ path('student_edit', {'id': student.id}) }}" class="btn btn-primary w-66">Editer</a>
-            {{ include('student/_delete_form.html.twig') }}
-        </div>
+        {% if next %}
+            <a href="{{ path('student_show', {'id': next}) }}" class="btn btn-primary px-3">Suivant</a>
+        {% endif %}
     </div>
+
+    <script>
+        const submitButtons = document.querySelectorAll('#subject_edit');
+
+        submitButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                
+                const subjectId = button.getAttribute('data-subject-id');
+                const elem0 = document.querySelector(`div[data-subject-id="${subjectId}"]`);
+                const scoreInput = elem0.querySelector('input[name="subject[score]"]').value;
+                
+                fetch('/subject/ajax/update-score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        subjectId: subjectId,
+                        newScore: scoreInput,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                    const modalId = `#kt_modal_edit_student_score_${subjectId}`;
+                    const modal = document.querySelector(modalId);
+
+                    if (modal) {
+                        const modalBackdrop = document.querySelector('.modal-backdrop');
+                        document.body.classList.remove('modal-open');
+                        modalBackdrop.remove();
+
+                        modal.classList.add('d-none');
+                    }
+
+                    const targetSelector = `a[data-bs-target="#kt_modal_edit_student_score_${subjectId}"]`;
+                    const targetElement = document.querySelector(targetSelector);
+
+                    if (targetElement) {
+                        
+                        const scoreElement = targetElement.querySelector('span');
+                        if (scoreElement) {
+                            scoreElement.textContent = scoreInput;
+                        } else {
+                            console.error('Error updating score: Score element not found');
+                        }
+                    } else {
+                        console.error('Error updating score: Target element not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating score:', error);
+                });
+
+
+            });
+        });
+
+    </script>
+
+
 
 {% endblock %}

@@ -19,22 +19,19 @@ class SubjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Subject::class);
     }
 
-    // /**
-    //  * @return Subject[] Returns an array of Subject objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Subject[] Returns an array of Subject objects
+     */
+    public function findByStudent($student)
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('s.student = :val')
+            ->setParameter('val', $student)
             ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Subject
