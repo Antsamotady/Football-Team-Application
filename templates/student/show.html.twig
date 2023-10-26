@@ -344,37 +344,29 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-
-                    const modalId = `#kt_modal_edit_student_score_${subjectId}`;
-                    const modal = document.querySelector(modalId);
-
-                    if (modal) {
-                        const modalBackdrop = document.querySelector('.modal-backdrop');
-                        document.body.classList.remove('modal-open');
-                        modalBackdrop.remove();
-
-                        modal.classList.add('d-none');
-                    }
-
                     const targetSelector = `a[data-bs-target="#kt_modal_edit_student_score_${subjectId}"]`;
                     const targetElement = document.querySelector(targetSelector);
+                    const scoreElement = targetElement.querySelector('span');
 
-                    if (targetElement) {
-                        
-                        const scoreElement = targetElement.querySelector('span');
-                        if (scoreElement) {
-                            scoreElement.textContent = scoreInput;
+                    if (data.status == 'KO') {
+                        if (targetElement) {
+                            if (scoreElement) {
+                                let spanTarget = document.querySelector(`#socere-error-message_${ subjectId }`);
+                                spanTarget.textContent = "Saisie invalide: " + data.input;
+                            } else {
+                                console.error('Error updating score: Score element not found');
+                            }
                         } else {
-                            console.error('Error updating score: Score element not found');
+                            console.error('Error updating score: Target element not found');
                         }
                     } else {
-                        console.error('Error updating score: Target element not found');
+                        scoreElement.textContent = scoreInput;
+                        window.location.reload(true);
                     }
                 })
                 .catch(error => {
                     console.error('Error updating score:', error);
                 });
-
 
             });
         });

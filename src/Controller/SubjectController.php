@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/subject')]
 class SubjectController extends AbstractController
@@ -71,28 +70,31 @@ class SubjectController extends AbstractController
     }
 
     #[Route('/ajax/update-score', name: 'score_update', methods: ['POST'])]
-    public function updateScore(Request $request, ValidatorInterface $validator,  EntityManagerInterface $em, SubjectRepository $subjectRepo): JsonResponse
+    public function updateScore(Request $request, EntityManagerInterface $em, SubjectRepository $subjectRepo): JsonResponse
     {
         $content = $request->getContent();
         $data = json_decode($content, true);
 
         $subjectId = $data['subjectId'];
-        $newScore = (float) $data['newScore'];
+        $newScore = $data['newScore'];
 
         $subject = $subjectRepo->find($subjectId);
         $subject->setScore($newScore);
 
-        $errors = $validator->validate($subject);
-
-        // if (count($errors) > 0) {
-        //     dd($errors);
-        //     return new JsonResponse(['errors' => $errors], 400);
-        // }
-
         $em->persist($subject);
-        $em->flush();
 
-        return new JsonResponse(['message' => 'Score updated successfully']);
+        try {
+            $em->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => 'KO',
+                'message' => $e->getMessage(),
+                'input' => $data['newScore']
+            ]);
+        }
+
+
+        return new JsonResponse(['status' => 'OK']);
     }
 
     #[Route('/{id}', name: 'subject_delete', methods: ['POST'])]

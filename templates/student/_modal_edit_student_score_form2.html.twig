@@ -26,15 +26,13 @@
       <!--begin::Modal body-->
       <div class="modal-body py-lg-10 px-lg-10">
 
-          {{ form_start(score_forms[subject.id]) }}
-
-            {{ form_widget(score_forms[subject.id], {'attr': {'data-subject-id': subject.id}}) }}
-
-            <div class="text-end">
-              <button id="subject_edit" data-student-subject="{{ subject.id }}" data-subject-id="{{ subject.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>
-            </div>
-            
-          {{ form_end(score_forms[subject.id]) }}
+        {{ form_start(score_forms[subject.id]) }}
+          {{ form_widget(score_forms[subject.id], {'attr': {'data-subject-id': subject.id}}) }}
+          <div class="text-end">
+            <button id="subject_edit" data-student-subject="{{ subject.id }}" data-subject-id="{{ subject.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>
+          </div>
+        {{ form_end(score_forms[subject.id]) }}
+        <span id="socere-error-message_{{ subject.id }}" class="text-danger fs-2"></span>
 
       </div>
       <!--end::Modal body-->
