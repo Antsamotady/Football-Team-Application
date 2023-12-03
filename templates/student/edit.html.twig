@@ -22,5 +22,18 @@
     {% endfor %}
 
     {{ include('student/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+    {{ include('student/edit_student_scores_form.html.twig') }}
+
+    <hr>
+
+    <div class="d-flex justify-content-between">
+        {% if previous %}
+            <a href="{{ path('student_edit', {'id': previous}) }}" class="btn btn-primary px-3">Précédent</a>
+        {% endif %}
+        <a href="{{ path('student_list') }}" class="btn btn-secondary w-66">Voir tous les étudiants</a>
+        {% if next %}
+            <a href="{{ path('student_edit', {'id': next}) }}" class="btn btn-primary px-3">Suivant</a>
+        {% endif %}
+    </div>
     
 {% endblock %}

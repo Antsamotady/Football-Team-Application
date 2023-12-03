@@ -160,7 +160,6 @@
 					<th class="min-w-50px">Prénom</th>
 					<th class="min-w-8px">Civilité</th>
 					<th class="min-w-60px">Classe</th>
-					<th class="min-w-100px">Matière : notes</th>
 					<th class="min-w-45px">Centre</th>
 					<th class="text-end min-w-70px">Actions</th>
 				</tr>
@@ -184,12 +183,6 @@
 					<td>
 						{% if student.classe %}
 							{{ student.classe.name }}
-						{% endif %}
-					</td>
-					<td>{% if student.subjects %}
-							{% for subject in student.subjects %}
-								<li>{{ subject.name }} : {{ subject.score }}</li>
-							{% endfor %}
 						{% endif %}
 					</td>
 					<td>
