@@ -258,11 +258,16 @@ class StudentController extends AbstractController
 		$forms = [];
 		$formViews = [];
 
-		foreach($subjects as $subject) {
-			$subjectId = $subject->getId();
+		// foreach($subjects as $subject) {
+		// 	$subjectId = $subject->getId();
 			
-			$forms[$subjectId] = $this->createForm(SubjectType::class, $subject);
-			$formViews[$subjectId] = $forms[$subjectId]->createView();
+		// 	$forms[$subjectId] = $this->createForm(SubjectType::class, $subject);
+		// 	$formViews[$subjectId] = $forms[$subjectId]->createView();
+		// }
+
+		foreach ($student->getSubjects() as $subject) {
+			dump($subject->getScore());
+			$student->getSubjects()->add($subject);
 		}
 
 		// About a student
@@ -283,7 +288,7 @@ class StudentController extends AbstractController
 			'previous' => $previousStudent ? $previousStudent->getId() : null,
 			'next' => $nextStudent ? $nextStudent->getId() : null,
 			'form' => $form,
-			'score_forms' => $formViews
+			// 'score_forms' => $formViews
 		]);
 	}
 
