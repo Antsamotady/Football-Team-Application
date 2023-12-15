@@ -7,7 +7,6 @@ use App\Form\StudentType;
 use App\Form\SubjectType;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
-use App\Entity\Subject;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\StudentRepository;
@@ -218,27 +217,6 @@ class StudentController extends AbstractController
 		]);
 	}
 
-	#[Route('/{id}/edit_old', name: 'student_edit_old', methods: ['GET', 'POST'])]
-	public function edit_old(Request $request, Student $student, EntityManagerInterface $em): Response
-	{
-		$form = $this->createForm(StudentType::class, $student);
-		$form->handleRequest($request);
-
-		if ($form->isSubmitted() && $form->isValid()) {
-			$em->flush();
-
-			$this->addFlash('success', 'Modification réussie.');
-
-			return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
-		}
-
-		return $this->renderForm('student/edit.html.twig', [
-			'template_title' => 'Modifier un étudiant',
-			'student' => $student,
-			'form' => $form,
-		]);
-	}
-
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
 	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, SubjectRepository $subjectRepo): Response
 	{
@@ -253,23 +231,6 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 		
-		// About its scores
-		$subjects = $subjectRepo->findBy(['student' => $student]);
-		$forms = [];
-		$formViews = [];
-
-		// foreach($subjects as $subject) {
-		// 	$subjectId = $subject->getId();
-			
-		// 	$forms[$subjectId] = $this->createForm(SubjectType::class, $subject);
-		// 	$formViews[$subjectId] = $forms[$subjectId]->createView();
-		// }
-
-		foreach ($student->getSubjects() as $subject) {
-			dump($subject->getScore());
-			$student->getSubjects()->add($subject);
-		}
-
 		// About a student
 		$form = $this->createForm(StudentType::class, $student);
 		$form->handleRequest($request);
@@ -288,7 +249,6 @@ class StudentController extends AbstractController
 			'previous' => $previousStudent ? $previousStudent->getId() : null,
 			'next' => $nextStudent ? $nextStudent->getId() : null,
 			'form' => $form,
-			// 'score_forms' => $formViews
 		]);
 	}
 
