@@ -1,6 +1,13 @@
 {{ form_start(form) }}
-    {{ form_row(form) }}
+    {{ form_widget(form.firstname) }}
+    {{ form_widget(form.lastname) }}
 
+    {% for subject in form.subjects %}
+        {{ form_label(subject.name) }}
+        {{ form_widget(subject.name) }}
+        {{ form_widget(subject.score) }}
+    {% endfor %}
+    
     <div class="d-flex justify-content-between">
         <button class="btn btn-primary w-66">{{ button_label|default('Enregistrer') }}</button>
     </div>
