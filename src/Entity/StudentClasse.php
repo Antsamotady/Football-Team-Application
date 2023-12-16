@@ -13,9 +13,6 @@ class StudentClasse
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'float', nullable: true)]
-    private $score;
-
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'studentClasses')]
     private $classe;
 
@@ -25,18 +22,6 @@ class StudentClasse
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getScore(): ?float
-    {
-        return $this->score;
-    }
-
-    public function setScore(?float $score): self
-    {
-        $this->score = $score;
-
-        return $this;
     }
 
     public function getClasse(): ?Classe
