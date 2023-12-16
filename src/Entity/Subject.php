@@ -24,6 +24,9 @@ class Subject
     #[ORM\ManyToMany(targetEntity: StudentSubject::class, mappedBy: 'subject')]
     private $studentSubjects;
 
+    #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'subjects')]
+    private $teacher;
+
     public function __construct()
     {
         $this->studentSubjects = new ArrayCollection();
@@ -81,6 +84,18 @@ class Subject
         if ($this->studentSubjects->removeElement($studentSubject)) {
             $studentSubject->removeSubject($this);
         }
+
+        return $this;
+    }
+
+    public function getTeacher(): ?Teacher
+    {
+        return $this->teacher;
+    }
+
+    public function setTeacher(?Teacher $teacher): self
+    {
+        $this->teacher = $teacher;
 
         return $this;
     }

@@ -27,9 +27,13 @@ class Teacher
     #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'teachers')]
     private $classe;
 
+    #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: Subject::class)]
+    private $subjects;
+
     public function __construct()
     {
         $this->classe = new ArrayCollection();
+        $this->subjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,6 +97,36 @@ class Teacher
     public function removeClasse(Classe $classe): self
     {
         $this->classe->removeElement($classe);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Subject[]
+     */
+    public function getSubjects(): Collection
+    {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): self
+    {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects[] = $subject;
+            $subject->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): self
+    {
+        if ($this->subjects->removeElement($subject)) {
+            // set the owning side to null (unless already changed)
+            if ($subject->getTeacher() === $this) {
+                $subject->setTeacher(null);
+            }
+        }
 
         return $this;
     }
