@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StudentSubjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,6 +29,14 @@ class StudentSubject
         notInRangeMessage: 'The score must be between {{ min }} and {{ max }}'
     )]
     private $student;
+
+    #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'studentSubjects')]
+    private $subject;
+
+    public function __construct()
+    {
+        $this->subject = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -73,6 +83,30 @@ class StudentSubject
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Subject[]
+     */
+    public function getSubject(): Collection
+    {
+        return $this->subject;
+    }
+
+    public function addSubject(Subject $subject): self
+    {
+        if (!$this->subject->contains($subject)) {
+            $this->subject[] = $subject;
+        }
+
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): self
+    {
+        $this->subject->removeElement($subject);
 
         return $this;
     }

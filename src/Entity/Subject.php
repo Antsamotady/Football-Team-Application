@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SubjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubjectRepository::class)]
@@ -18,6 +20,14 @@ class Subject
 
     #[ORM\Column(type: 'integer')]
     private $coefficient;
+
+    #[ORM\ManyToMany(targetEntity: StudentSubject::class, mappedBy: 'subject')]
+    private $studentSubjects;
+
+    public function __construct()
+    {
+        $this->studentSubjects = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,6 +54,33 @@ class Subject
     public function setCoefficient(int $coefficient): self
     {
         $this->coefficient = $coefficient;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StudentSubject[]
+     */
+    public function getStudentSubjects(): Collection
+    {
+        return $this->studentSubjects;
+    }
+
+    public function addStudentSubject(StudentSubject $studentSubject): self
+    {
+        if (!$this->studentSubjects->contains($studentSubject)) {
+            $this->studentSubjects[] = $studentSubject;
+            $studentSubject->addSubject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudentSubject(StudentSubject $studentSubject): self
+    {
+        if ($this->studentSubjects->removeElement($studentSubject)) {
+            $studentSubject->removeSubject($this);
+        }
 
         return $this;
     }
