@@ -24,9 +24,13 @@ class Classe
     #[ORM\OneToMany(mappedBy: 'classe', targetEntity: Student::class)]
     private $students;
 
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classe')]
+    private $teachers;
+
     public function __construct()
     {
         $this->students = new ArrayCollection();
+        $this->teachers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -83,6 +87,33 @@ class Classe
             if ($student->getClasse() === $this) {
                 $student->setClasse(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Teacher[]
+     */
+    public function getTeachers(): Collection
+    {
+        return $this->teachers;
+    }
+
+    public function addTeacher(Teacher $teacher): self
+    {
+        if (!$this->teachers->contains($teacher)) {
+            $this->teachers[] = $teacher;
+            $teacher->addClasse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeacher(Teacher $teacher): self
+    {
+        if ($this->teachers->removeElement($teacher)) {
+            $teacher->removeClasse($this);
         }
 
         return $this;
