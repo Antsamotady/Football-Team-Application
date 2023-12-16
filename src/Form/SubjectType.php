@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Subject;
+use App\Entity\StudentSubject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,7 +25,7 @@ class SubjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Subject::class
+            'data_class' => StudentSubject::class
         ]);
     }
 }

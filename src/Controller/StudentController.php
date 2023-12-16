@@ -10,7 +10,7 @@ use App\Data\StudentSearchData;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\StudentRepository;
-use App\Repository\SubjectRepository;
+use App\Repository\StudentSubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -163,7 +163,7 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/{id}', name: 'student_show', methods: ['GET'])]
-	public function show(Request $request, Student $student, StudentRepository $studentRepo, SubjectRepository $subjectRepo, EntityManagerInterface $em): Response
+	public function show(Request $request, Student $student, StudentRepository $studentRepo, StudentSubjectRepository $subjectRepo, EntityManagerInterface $em): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;
@@ -218,7 +218,7 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
-	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, SubjectRepository $subjectRepo): Response
+	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, StudentSubjectRepository $subjectRepo): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;

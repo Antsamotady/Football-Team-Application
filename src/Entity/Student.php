@@ -27,7 +27,7 @@ class Student
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
     private $classe;
 
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Subject::class)]
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: StudentSubject::class)]
     private $subjects;
 
     public function __construct()
@@ -89,14 +89,14 @@ class Student
     }
 
     /**
-     * @return Collection|Subject[]
+     * @return Collection|StudentSubject[]
      */
     public function getSubjects(): Collection
     {
         return $this->subjects;
     }
 
-    public function addSubject(Subject $subject): self
+    public function addSubject(StudentSubject $subject): self
     {
         if (!$this->subjects->contains($subject)) {
             $this->subjects[] = $subject;
@@ -106,7 +106,7 @@ class Student
         return $this;
     }
 
-    public function removeSubject(Subject $subject): self
+    public function removeSubject(StudentSubject $subject): self
     {
         if ($this->subjects->removeElement($subject)) {
             // set the owning side to null (unless already changed)

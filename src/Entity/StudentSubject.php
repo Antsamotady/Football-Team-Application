@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\SubjectRepository;
+use App\Repository\StudentSubjectRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SubjectRepository::class)]
-class Subject
+#[ORM\Entity(repositoryClass: StudentSubjectRepository::class)]
+class StudentSubject
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

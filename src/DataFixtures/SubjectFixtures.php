@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Student;
-use App\Entity\Subject;
+use App\Entity\StudentSubject;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -18,7 +18,7 @@ class SubjectFixtures extends Fixture
 
         foreach ($students as $student) {
             for ($i = 1; $i <= 6; $i++) {
-                $subject = new Subject();
+                $subject = new StudentSubject();
                 $subject->setName("Topic $i");
                 $subject->setScore($faker->numberBetween(0, 20));
                 $subject->setStudent($student);
