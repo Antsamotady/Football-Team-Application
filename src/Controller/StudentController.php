@@ -163,7 +163,7 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/{id}', name: 'student_show', methods: ['GET'])]
-	public function show(Request $request, Student $student, StudentRepository $studentRepo, StudentSubjectRepository $subjectRepo, EntityManagerInterface $em): Response
+	public function show(Request $request, Student $student, StudentRepository $studentRepo, StudentSubjectRepository $studentSubjectRepo, EntityManagerInterface $em): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;
@@ -176,7 +176,7 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 
-		$subjects = $subjectRepo->findBy(['student' => $student]);
+		$subjects = $studentSubjectRepo->findByStudent(['student' => $student]);
 
 		$forms = [];
 		$formViews = [];
@@ -218,7 +218,7 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
-	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, StudentSubjectRepository $subjectRepo): Response
+	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, StudentSubjectRepository $studentSubjectRepo): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;
