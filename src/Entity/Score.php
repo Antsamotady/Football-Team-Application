@@ -21,6 +21,13 @@ class Score
     #[ORM\OneToMany(mappedBy: 'score', targetEntity: StudentSubject::class)]
     private $studentSubject;
 
+    #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores')]
+    #[ORM\JoinColumn(nullable: true)]
+    private $subject;
+
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'scores')]
+    private $student;
+
     public function __construct()
     {
         $this->studentSubject = new ArrayCollection();
@@ -69,6 +76,30 @@ class Score
                 $studentSubject->setScore(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSubject(): ?Subject
+    {
+        return $this->subject;
+    }
+
+    public function setSubject(?Subject $subject): self
+    {
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): self
+    {
+        $this->student = $student;
 
         return $this;
     }

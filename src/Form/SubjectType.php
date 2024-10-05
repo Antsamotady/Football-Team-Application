@@ -14,10 +14,10 @@ class SubjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('subject', TextType::class, [
                 'label' => 'Nom matière',
             ])
-            ->add('score', NumberType::class, [
+            ->add('score', TextType::class, [
                 'label' => '0 à 20',
             ]);
     }

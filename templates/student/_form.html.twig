@@ -1,12 +1,10 @@
 {{ form_start(form) }}
     {{ form_widget(form.firstname) }}
     {{ form_widget(form.lastname) }}
-
-    {% for subject in form.subjects %}
-        {{ form_label(subject.name) }}
-        {{ form_widget(subject.name) }}
-        {{ form_widget(subject.score) }}
-    {% endfor %}
+    {{ form_label(form.gender) }}
+    {{ form_widget(form.gender) }}
+    {{ form_label(form.classe) }}
+    {{ form_widget(form.classe) }}
     
     <div class="d-flex justify-content-between">
         <button class="btn btn-primary w-66">{{ button_label|default('Enregistrer') }}</button>

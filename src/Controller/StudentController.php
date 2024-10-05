@@ -3,18 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Student;
+use App\Form\ScoreType;
 use App\Form\StudentType;
 use App\Form\SubjectType;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
+use App\Repository\ScoreRepository;
 use App\Repository\StudentRepository;
-use App\Repository\StudentSubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\StudentSubjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/student')]
@@ -163,7 +166,13 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/{id}', name: 'student_show', methods: ['GET'])]
-	public function show(Request $request, Student $student, StudentRepository $studentRepo, StudentSubjectRepository $studentSubjectRepo, EntityManagerInterface $em): Response
+	public function show(
+		Request $request, 
+		Student $student, 
+		StudentRepository $studentRepo, 
+		StudentSubjectRepository $studentSubjectRepo, 
+		EntityManagerInterface $em, 
+		ScoreRepository $scoreRepo): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;
@@ -177,28 +186,28 @@ class StudentController extends AbstractController
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 
 		$subjects = $studentSubjectRepo->findByStudent(['student' => $student]);
+		$scores = $scoreRepo->findBy(['student' => $student]);
 
 		$forms = [];
 		$formViews = [];
 		$bestScore = 0;
 		$totalScore = 0;
 
-		foreach($subjects as $subject) {
-				
-			$totalScore += $subject->getScore();
+		foreach($scores as $score) {
+			$scoreValue = $score->getValue();
+			$totalScore += $scoreValue;
 
-			if ($subject->getScore() > $bestScore)
-				$bestScore = $subject->getScore();
+			if ($scoreValue > $bestScore)
+				$bestScore = $scoreValue;
 
-			$subjectId = $subject->getId();
+			$scoreId = $score->getId();
 			
-			$forms[$subjectId] = $this->createForm(SubjectType::class, $subject);
-			$formViews[$subjectId] = $forms[$subjectId]->createView();
-			$forms[$subjectId]->handleRequest($request);
+			$forms[$scoreId] = $this->createForm(ScoreType::class, $score);
+			$formViews[$scoreId] = $forms[$scoreId]->createView();
+			$forms[$scoreId]->handleRequest($request);
 
-			if ($forms[$subjectId]->isSubmitted() && $forms[$subjectId]->isValid()) {
-				dd('here');
-				$em->persist($subject);
+			if ($forms[$scoreId]->isSubmitted() && $forms[$scoreId]->isValid()) {
+				$em->persist($score);
 				$em->flush();
 
 				$this->addFlash('success', 'Enregistrement effectué.');
@@ -206,17 +215,47 @@ class StudentController extends AbstractController
 		}
 
 		return $this->render('student/show.html.twig', [
-			'template_title' => 'Détails étudiant',
-			'student' => $student,
-			'previous' => $previousStudent ? $previousStudent->getId() : null,
-			'next' => $nextStudent ? $nextStudent->getId() : null,
-			'best_score' => $bestScore,
-			'total_score' => $totalScore,
-			'average_score' => $subjects ? $totalScore / count($subjects) : 0,
-			'score_forms' => $formViews
+			'template_title' 	=> 'Détails étudiant',
+			'student' 				=> $student,
+			'subjects' 				=> $subjects,
+			'scores'					=> $scores,
+			'previous' 				=> $previousStudent ? $previousStudent->getId() : null,
+			'next' 						=> $nextStudent ? $nextStudent->getId() : null,
+			'best_score' 			=> $bestScore,
+			'total_score' 		=> $totalScore,
+			'average_score' 	=> $scores ? $totalScore / count($scores) : 0,
+			'forms'						=> $forms,
+			'score_forms' 		=> $formViews
 		]);
 	}
 
+	#[Route('/ajax/update-score', name: 'score_update', methods: ['POST'])]
+	public function updateScore(Request $request, EntityManagerInterface $em, ScoreRepository $scoreRepo): JsonResponse
+	{
+		$content = $request->getContent();
+		$data = json_decode($content, true);
+
+		$scoreId = $data['scoreId'];
+		$newScore = (float) $data['newScore'];
+
+		$score = $scoreRepo->find($scoreId);
+		$score->setValue($newScore);
+
+		$em->persist($score);
+
+		try {
+			$em->flush();
+		} catch (\Exception $e) {
+			return new JsonResponse([
+				'status' => 'KO',
+				'message' => $e->getMessage(),
+				'input' => $data['newScore']
+			]);
+		}
+
+		return new JsonResponse(['status' => 'OK']);
+	}
+	
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
 	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, StudentSubjectRepository $studentSubjectRepo): Response
 	{
@@ -232,7 +271,10 @@ class StudentController extends AbstractController
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 		
 		// About a student
-		$form = $this->createForm(StudentType::class, $student);
+		$form = $this->createForm(StudentType::class, $student, [
+			'studentGender'   => $student->getGender(),
+		]);
+		
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {

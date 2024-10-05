@@ -1,5 +1,5 @@
 <!--begin::Modal - Create App-->
-<div class="modal fade" id="kt_modal_edit_student_score_{{ subject.id }}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="kt_modal_edit_student_score_{{ score.id }}" tabindex="-1" aria-hidden="true">
   <!--begin::Modal dialog-->
   <div class="modal-dialog modal-dialog-centered">
     <!--begin::Modal content-->
@@ -7,7 +7,7 @@
       <!--begin::Modal header-->
       <div class="modal-header">
         <!--begin::Modal title-->
-        <h2>Editer la note de {{ subject.name }}</h2>
+        <h2>Editer la note en {{ score.subject.name }}</h2>
         <!--end::Modal title-->
         <!--begin::Close-->
         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -26,13 +26,13 @@
       <!--begin::Modal body-->
       <div class="modal-body py-lg-10 px-lg-10">
 
-        {{ form_start(score_forms[subject.id]) }}
-          {{ form_widget(score_forms[subject.id], {'attr': {'data-subject-id': subject.id}}) }}
+        {{ form_start(score_forms[score.id]) }}
+          {{ form_widget(score_forms[score.id], {'attr': {'data-score-id': score.id}}) }}
+          <div id="socere-error-message_{{ score.id }}" class="text-danger fs-3 text-end pb-5"></div>
           <div class="text-end">
-            <button id="subject_edit" data-student-subject="{{ subject.id }}" data-subject-id="{{ subject.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>
+            <button id="score_edit" data-student-score="{{ score.id }}" data-score-id="{{ score.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>
           </div>
-        {{ form_end(score_forms[subject.id]) }}
-        <span id="socere-error-message_{{ subject.id }}" class="text-danger fs-2"></span>
+        {{ form_end(score_forms[score.id]) }}
 
       </div>
       <!--end::Modal body-->

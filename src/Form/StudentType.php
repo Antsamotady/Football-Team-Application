@@ -4,34 +4,52 @@ namespace App\Form;
 
 use App\Entity\Classe;
 use App\Entity\Student;
-use App\Form\SubjectType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class StudentType extends AbstractType
 {
+    private $studentGender;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if ($options['studentGender']) {
+            $this->studentGender = $options['studentGender'];
+            dump($this->studentGender);
+        }
+
         $builder
-            ->add('firstname')
-            ->add('lastname')
-            ->add('gender')
+            ->add('firstname', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => ['placeholder' => 'Nom']
+            ])
+            ->add('lastname', TextType::class, [
+                'label' => false,
+                'required' => false,
+                'attr' => ['placeholder' => 'Prénom']
+            ])
+            ->add('gender', ChoiceType::class, [
+                'required'    => true,
+                'label'       => false,
+                'placeholder' => 'Choisir la civilité',
+                'choices'     => [
+                    'Mr' => 0,
+                    'Me' => 1
+                ],
+                'expanded' => true,
+                'data'     => $this->studentGender
+            ])
             ->add('classe', EntityType::class, [
                 'class'         => Classe::class,
-                'required'      => false,
-                'choice_label'  => 'name'
-            ])
-            ->add('subjects', CollectionType::class, [
-                'entry_type'    => SubjectType::class,
-                'allow_add'     => true,
-                'allow_delete'  => true,
-                'by_reference'  => false,
-                'entry_options'  => [
-                    'label'     => false
-                ]
+                'required'      => true,
+                'label'         => false,
+                'choice_label'  => 'name',
+                'placeholder'   => 'Choisir la classe',
             ])
         ;
     }
@@ -39,7 +57,8 @@ class StudentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Student::class,
+            'data_class'    => Student::class,
+            'studentGender' => ''
         ]);
     }
 }

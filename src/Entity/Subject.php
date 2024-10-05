@@ -27,9 +27,13 @@ class Subject
     #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'subjects')]
     private $teacher;
 
+    #[ORM\OneToMany(mappedBy: 'subject', targetEntity: Score::class)]
+    private $scores;
+
     public function __construct()
     {
         $this->studentSubjects = new ArrayCollection();
+        $this->j = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,6 +100,36 @@ class Subject
     public function setTeacher(?Teacher $teacher): self
     {
         $this->teacher = $teacher;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Score[]
+     */
+    public function getJ(): Collection
+    {
+        return $this->scores;
+    }
+
+    public function addJ(Score $scores): self
+    {
+        if (!$this->scores->contains($scores)) {
+            $this->scores[] = $scores;
+            $scores->setSubject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJ(Score $scores): self
+    {
+        if ($this->scores->removeElement($scores)) {
+            // set the owning side to null (unless already changed)
+            if ($scores->getSubject() === $this) {
+                $scores->setSubject(null);
+            }
+        }
 
         return $this;
     }

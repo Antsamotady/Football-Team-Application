@@ -23,7 +23,7 @@
         <div class="alert alert-danger" role="alert">{{ notice }}</div>
     {% endfor %}
 
-    <h1>Fiche étudiant</h1>
+    <h1>Fiche de {{ student.firstname }} {{ student.lastname }}</h1>
 
     <hr>
 
@@ -150,7 +150,7 @@
             <div class="card card-xl-stretch mb-xl-8">
                 <!--begin::Header-->
                 <div class="card-header border-0">
-                    <h3 class="card-title fw-bolder text-dark">Notes par matères</h3>
+                    <h3 class="card-title fw-bolder text-dark">Notes par matières</h3>
                     <div class="card-toolbar">
                         <!--begin::Menu-->
                         <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
@@ -249,20 +249,20 @@
                 <!--end::Header-->
                 <!--begin::Body-->
                 <div class="card-body pt-0">
-                    {% if student.subjects %}
+                    {% if scores %}
 
                         {% set color = 'info' %}
 
-                        {% for subject in student.subjects %}
-                            {% if subject.score < 6 %}
+                        {% for score in scores %}
+                            {% if score.value < 6 %}
                                 {% set color = 'danger' %}
-                            {% elseif subject.score >= 6 and subject.score < 12 %}
+                            {% elseif score.value >= 6 and score.value < 12 %}
                                 {% set color = 'warning' %}
-                            {% elseif subject.score >= 12 and subject.score < 20 %}
+                            {% elseif score.value >= 12 and score.value < 20 %}
                                 {% set color = 'success' %}
                             {% endif %}
 
-                            {% if subject.score == 20 %}
+                            {% if score.value == 20 %}
                                 {% set color = 'info' %}
                             {% endif %}
                             
@@ -282,13 +282,15 @@
                                 <!--end::Icon-->
                                 <!--begin::Title-->
                                 <div class="flex-grow-1 me-2">
-                                    <a href="#" class="fw-bolder text-gray-800 text-hover-primary fs-6">{{ subject.name }}</a>
+                                    <a href="#" class="fw-bolder text-gray-800 text-hover-primary fs-6">{{ score.subject.name }}</a>
                                     <span class="text-muted fw-bold d-block">Appréciation : </span>
                                 </div>
                                 <!--end::Title-->
                                 <!--begin::Lable-->
                                 
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_edit_student_score_{{ subject.id }}"><span class="score-element fw-bolder text-{{ color }} fs-1 py-1">{{ subject.score }}</span></a>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_edit_student_score_{{ score.id }}">
+                                        <span class="score-element fw-bolder text-{{ color }} fs-1 py-1">{{ score.value }}</span>
+                                    </a>
                                 
                                 <!--end::Lable-->
                             </div>
@@ -322,37 +324,40 @@
     </div>
 
     <script>
-        const submitButtons = document.querySelectorAll('#subject_edit');
+        const submitButtons = document.querySelectorAll('#score_edit');
 
         submitButtons.forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
                 
-                const subjectId = button.getAttribute('data-subject-id');
-                const elem0 = document.querySelector(`div[data-subject-id="${subjectId}"]`);
-                const scoreInput = elem0.querySelector('input[name="subject[score]"]').value;
-                
-                fetch('/subject/ajax/update-score', {
+                const scoreId = button.getAttribute('data-score-id');
+                const elem0 = document.querySelector(`div[data-score-id="${scoreId}"]`);
+                const scoreInput = elem0.querySelector('input').value;
+
+                const url = "{{ path('score_update') }}";
+
+                fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        subjectId: subjectId,
+                        scoreId: scoreId,
                         newScore: scoreInput,
                     }),
                 })
                 .then(response => response.json())
                 .then(data => {
-                    const targetSelector = `a[data-bs-target="#kt_modal_edit_student_score_${subjectId}"]`;
+                    const targetSelector = `a[data-bs-target="#kt_modal_edit_student_score_${scoreId}"]`;
                     const targetElement = document.querySelector(targetSelector);
                     const scoreElement = targetElement.querySelector('span');
 
                     if (data.status == 'KO') {
                         if (targetElement) {
                             if (scoreElement) {
-                                let spanTarget = document.querySelector(`#socere-error-message_${ subjectId }`);
-                                spanTarget.textContent = "Saisie invalide: " + data.input;
+                                let spanTarget = document.querySelector(`#socere-error-message_${ scoreId }`);
+                                spanTarget.textContent = `Saisie invalide: ${data.input} n'est pas un nombre`;
+                                console.log(data.message);
                             } else {
                                 console.error('Error updating score: Score element not found');
                             }
@@ -367,10 +372,12 @@
                 .catch(error => {
                     console.error('Error updating score:', error);
                 });
-
             });
         });
 
+        function isFloat(n) {
+            return Number(n) === n && n % 1 !== 0;
+        }
     </script>
 
 

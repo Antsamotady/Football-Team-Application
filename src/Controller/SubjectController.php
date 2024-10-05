@@ -69,34 +69,6 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    #[Route('/ajax/update-score', name: 'score_update', methods: ['POST'])]
-    public function updateScore(Request $request, EntityManagerInterface $em, StudentSubjectRepository $subjectRepo): JsonResponse
-    {
-        $content = $request->getContent();
-        $data = json_decode($content, true);
-
-        $subjectId = $data['subjectId'];
-        $newScore = $data['newScore'];
-
-        $subject = $subjectRepo->find($subjectId);
-        $subject->setScore($newScore);
-
-        $em->persist($subject);
-
-        try {
-            $em->flush();
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'status' => 'KO',
-                'message' => $e->getMessage(),
-                'input' => $data['newScore']
-            ]);
-        }
-
-
-        return new JsonResponse(['status' => 'OK']);
-    }
-
     #[Route('/{id}', name: 'subject_delete', methods: ['POST'])]
     public function delete(Request $request, StudentSubject $subject, EntityManagerInterface $entityManager): Response
     {
