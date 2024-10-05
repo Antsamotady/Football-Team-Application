@@ -1,0 +1,36 @@
+<div class="menu menu-sub menu-sub-dropdown w-370px w-md-370px" data-kt-menu="true">
+  <!--begin::Header-->
+  <div class="px-7 py-5">
+    <div class="fs-5 text-dark fw-bolder">Options de filtrage</div>
+  </div>
+  <!--end::Header-->
+  <!--begin::Separator-->
+  <div class="separator border-gray-200"></div>
+  <!--end::Separator-->
+  {{ form_start(filter_form) }}
+  <!--begin::Content-->
+  <div class="px-7 py-5" data-kt-subscription-table-filter="form">
+    <!--begin::Input group-->
+    <div class="mb-3">
+      {{ form_widget(filter_form.firstname, {'attr': {'class': 'form-control fw-bolder'}}) }}
+    </div>
+    <div class="mb-3">
+      {{ form_widget(filter_form.lastname, {'attr': {'class': 'form-control fw-bolder'}}) }}
+    </div>
+    <div class="mb-3">
+      {{ form_widget(filter_form.gender, {'attr': {'class': 'form-control fw-bolder'}}) }}
+    </div>
+    <div class="mb-3">
+      {{ form_widget(filter_form.classe, {'attr': {'class': 'form-control fw-bolder'}}) }}
+    </div>
+    <!--end::Input group-->
+    <!--begin::Actions-->
+    <div class="d-flex justify-content-end">
+      <a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ path('student_list') }}">Réinitialiser</a>
+      <button type="submit" class="btn btn-primary fw-bold px-6" data-kt-menu-dismiss="true" data-kt-subscription-table-filter="filter">Filtrer</button>
+    </div>
+    <!--end::Actions-->
+  </div>
+  <!--end::Content-->
+  {{ form_end(filter_form) }}
+</div>
