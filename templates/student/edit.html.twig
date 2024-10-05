@@ -21,7 +21,7 @@
         <div class="alert alert-danger" role="alert">{{ notice }}</div>
     {% endfor %}
 
-    {{ include('student/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+    {{ include('student/_form.html.twig', {'button_label': 'Enregistrer', 'is_edit': true}) }}
 
     <hr>
 

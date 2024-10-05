@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Student;
 use App\Form\ScoreType;
 use App\Form\StudentType;
-use App\Form\SubjectType;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
 use App\Form\StudentFilterFormType;
@@ -170,7 +169,6 @@ class StudentController extends AbstractController
 		Request $request, 
 		Student $student, 
 		StudentRepository $studentRepo, 
-		StudentSubjectRepository $studentSubjectRepo, 
 		EntityManagerInterface $em, 
 		ScoreRepository $scoreRepo): Response
 	{
@@ -185,7 +183,6 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 
-		$subjects = $studentSubjectRepo->findByStudent(['student' => $student]);
 		$scores = $scoreRepo->findBy(['student' => $student]);
 
 		$forms = [];
@@ -217,14 +214,12 @@ class StudentController extends AbstractController
 		return $this->render('student/show.html.twig', [
 			'template_title' 	=> 'Détails étudiant',
 			'student' 				=> $student,
-			'subjects' 				=> $subjects,
 			'scores'					=> $scores,
 			'previous' 				=> $previousStudent ? $previousStudent->getId() : null,
 			'next' 						=> $nextStudent ? $nextStudent->getId() : null,
 			'best_score' 			=> $bestScore,
 			'total_score' 		=> $totalScore,
 			'average_score' 	=> $scores ? $totalScore / count($scores) : 0,
-			'forms'						=> $forms,
 			'score_forms' 		=> $formViews
 		]);
 	}
