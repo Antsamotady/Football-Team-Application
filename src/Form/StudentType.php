@@ -13,15 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class StudentType extends AbstractType
 {
-    private $studentGender;
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if ($options['studentGender']) {
-            $this->studentGender = $options['studentGender'];
-            dump($this->studentGender);
-        }
-
         $builder
             ->add('firstname', TextType::class, [
                 'label' => false,
@@ -38,11 +31,10 @@ class StudentType extends AbstractType
                 'label'       => false,
                 'placeholder' => 'Choisir la civilité',
                 'choices'     => [
-                    'Mr' => 0,
-                    'Me' => 1
+                    'Mr' => 'Mr',
+                    'Me' => 'Me'
                 ],
                 'expanded' => true,
-                'data'     => $this->studentGender
             ])
             ->add('classe', EntityType::class, [
                 'class'         => Classe::class,
@@ -57,8 +49,7 @@ class StudentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'    => Student::class,
-            'studentGender' => ''
+            'data_class'    => Student::class
         ]);
     }
 }

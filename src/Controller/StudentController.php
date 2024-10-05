@@ -271,9 +271,7 @@ class StudentController extends AbstractController
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 		
 		// About a student
-		$form = $this->createForm(StudentType::class, $student, [
-			'studentGender'   => $student->getGender(),
-		]);
+		$form = $this->createForm(StudentType::class, $student);
 		
 		$form->handleRequest($request);
 
