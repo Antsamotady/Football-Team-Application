@@ -54,12 +54,15 @@ class StudentController extends AbstractController
 		else
 			$students = $studentRepo->findAll();
 
+		$result = count($students);
+
 		return $this->render('student/list.html.twig', [
 			'template_title' => 'Liste des étudiants',
-			'meth_name' => 'list',
-			'form' => $form->createView(),
-			'filter_form' => $filterForm->createView(),
-			'students' => $students,
+			'meth_name' 		=> 'list',
+			'form' 					=> $form->createView(),
+			'filter_form' 	=> $filterForm->createView(),
+			'students' 			=> $students,
+			'result'				=> $result
 		]);
 	}
 

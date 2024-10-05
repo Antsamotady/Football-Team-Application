@@ -31,14 +31,15 @@ class StudentFilterFormType extends AbstractType
                 'label' => 'Civilité',
                 'placeholder'   => 'Choisir la civilité',
                 'choices' => [
-                    "Mr" => 0,
-                    "Me" => 1
+                    'Mr' => 'Mr',
+                    'Me' => 'Me'
                 ],
             ])
             ->add('classe', EntityType::class, [
                 'class' => Classe::class,
                 'required' => false,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'placeholder'   => 'Choisir la classe',
             ])
             ;
         }
