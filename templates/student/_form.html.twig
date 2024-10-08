@@ -6,6 +6,13 @@
     {{ form_label(form.classe) }}
     {{ form_widget(form.classe) }}
     
+    {{ form_label(form.scores) }}
+    {{ form_errors(form.scores) }}
+    {% for scoreField in form.scores %}
+        {{ form_widget(scoreField) }}
+        {{ form_errors(scoreField) }}
+    {% endfor %}
+    
     <div class="d-flex justify-content-between">
         {% if is_edit is defined and is_edit == true %}
             <a href="{{ path('student_show', {'id': student.id}) }}" class="btn btn-secondary px-3">Annuler</a>

@@ -4,12 +4,14 @@ namespace App\Form;
 
 use App\Entity\Classe;
 use App\Entity\Student;
+use App\Form\ScoreType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class StudentType extends AbstractType
 {
@@ -42,6 +44,11 @@ class StudentType extends AbstractType
                 'label'         => false,
                 'choice_label'  => 'name',
                 'placeholder'   => 'Choisir la classe',
+            ])
+            ->add('scores', CollectionType::class, [
+                'entry_type'    => ScoreType::class,
+                'label'         => 'Notes',
+                'required'      => false
             ])
         ;
     }
