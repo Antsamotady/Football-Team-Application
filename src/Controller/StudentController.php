@@ -7,12 +7,14 @@ use App\Form\ScoreType;
 use App\Form\StudentType;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
+use App\Entity\Score;
+use App\Entity\Subject;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\StudentSubjectRepository;
+use App\Repository\SubjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +24,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/student')]
 class StudentController extends AbstractController
 {
+	public $em;
+
+	public function __construct(EntityManagerInterface $entityManager) {
+		$this->em = $entityManager;
+	}
+	
 	#[Route('/', name: 'student_index', methods: ['GET'])]
 	public function index(StudentRepository $studentRepo): Response
 	{
@@ -144,7 +152,6 @@ class StudentController extends AbstractController
 		));
 	}
 
-
 	#[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
 	public function new(Request $request, EntityManagerInterface $em): Response
 	{
@@ -186,7 +193,12 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 
-		$scores = $scoreRepo->findBy(['student' => $student]);
+		$this->ensureStudentScoresComplete($student, $em);
+
+		$scores = $scoreRepo->findBy(
+			['student' => $student], 
+			['subject' => 'ASC']
+		);
 
 		$forms = [];
 		$formViews = [];
@@ -204,14 +216,14 @@ class StudentController extends AbstractController
 			
 			$forms[$scoreId] = $this->createForm(ScoreType::class, $score);
 			$formViews[$scoreId] = $forms[$scoreId]->createView();
-			$forms[$scoreId]->handleRequest($request);
+			// $forms[$scoreId]->handleRequest($request);
 
-			if ($forms[$scoreId]->isSubmitted() && $forms[$scoreId]->isValid()) {
-				$em->persist($score);
-				$em->flush();
+			// if ($forms[$scoreId]->isSubmitted() && $forms[$scoreId]->isValid()) {
+			// 	$em->persist($score);
+			// 	$em->flush();
 
-				$this->addFlash('success', 'Enregistrement effectué.');
-			}
+			// 	$this->addFlash('success', 'Enregistrement effectué.');
+			// }
 		}
 
 		return $this->render('student/show.html.twig', [
@@ -255,7 +267,7 @@ class StudentController extends AbstractController
 	}
 	
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
-	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, StudentSubjectRepository $studentSubjectRepo): Response
+	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, SubjectRepository $subjectRepo, ScoreRepository $scoreRepo): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;
@@ -268,9 +280,7 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 		
-		// About a student
 		$form = $this->createForm(StudentType::class, $student);
-		
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
@@ -311,4 +321,30 @@ class StudentController extends AbstractController
 		}
 		return $datas_return;
 	}
+
+	private function ensureStudentScoresComplete(Student $student, $em)
+	{
+    $subjectRepository = $em->getRepository(Subject::class);
+    $subjects = $subjectRepository->findAll();
+		
+    $scoreRepository = $em->getRepository(Score::class);
+    $scores = $scoreRepository->findBy(['student' => $student]);
+
+    $existingScores = [];
+    foreach ($scores as $score) {
+			$existingScores[$score->getSubject()->getId()] = $score;
+    }
+
+    foreach ($subjects as $subject) {
+			if (!isset($existingScores[$subject->getId()])) {
+				$newScore = new Score();
+				$newScore->setStudent($student);
+				$newScore->setSubject($subject);
+				$newScore->setValue(0);
+				$em->persist($newScore);
+			}
+    }
+    $em->flush();
+	}
+
 }

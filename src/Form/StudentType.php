@@ -45,11 +45,11 @@ class StudentType extends AbstractType
                 'choice_label'  => 'name',
                 'placeholder'   => 'Choisir la classe',
             ])
-            ->add('scores', CollectionType::class, [
-                'entry_type'    => ScoreType::class,
-                'label'         => 'Notes',
-                'required'      => false
-            ])
+            // ->add('scores', CollectionType::class, [
+            //     'entry_type'    => ScoreType::class,
+            //     'label'         => 'Notes',
+            //     'required'      => false
+            // ])
         ;
     }
 

@@ -22,6 +22,6 @@ class ClasseFixtures extends Fixture
             $manager->persist($classe);
         }
 
-        $manager->flush();
+        //$manager->flush();
     }
 }

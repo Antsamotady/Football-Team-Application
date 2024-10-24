@@ -22,7 +22,6 @@ class Score
     private $studentSubject;
 
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores')]
-    #[ORM\JoinColumn(nullable: true)]
     private $subject;
 
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'scores')]

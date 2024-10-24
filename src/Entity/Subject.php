@@ -33,7 +33,7 @@ class Subject
     public function __construct()
     {
         $this->studentSubjects = new ArrayCollection();
-        $this->j = new ArrayCollection();
+        $this->scores = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,12 +107,12 @@ class Subject
     /**
      * @return Collection|Score[]
      */
-    public function getJ(): Collection
+    public function getScores(): Collection
     {
         return $this->scores;
     }
 
-    public function addJ(Score $scores): self
+    public function addScore(Score $scores): self
     {
         if (!$this->scores->contains($scores)) {
             $this->scores[] = $scores;
@@ -122,7 +122,7 @@ class Subject
         return $this;
     }
 
-    public function removeJ(Score $scores): self
+    public function removeScore(Score $scores): self
     {
         if ($this->scores->removeElement($scores)) {
             // set the owning side to null (unless already changed)
