@@ -36,6 +36,7 @@ class StudentRepository extends ServiceEntityRepository
         {
             $qb = $qb
                 ->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
+                ->orWhere('UPPER(u.lastname) LIKE UPPER(:firstname)')
                 ->setParameter('firstname', "%{$search->getName()}%");
         }
 
