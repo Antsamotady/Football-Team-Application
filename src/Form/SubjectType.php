@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\StudentSubject;
+use App\Entity\Subject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,18 +14,18 @@ class SubjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', TextType::class, [
-                'label' => 'Nom matière',
+            ->add('name', TextType::class, [
+                'label' => 'Nom de la matière',
             ])
-            ->add('score', TextType::class, [
-                'label' => '0 à 20',
+            ->add('coefficient', NumberType::class, [
+                'label' => 'Coefficient',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => StudentSubject::class
+            'data_class' => Subject::class
         ]);
     }
 }

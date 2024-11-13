@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard-base.html.twig' %}
 
 {% block title %}Subject index{% endblock %}
 
@@ -10,6 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Coefficient</th>
                 <th>Score</th>
                 <th>actions</th>
             </tr>
@@ -19,7 +20,9 @@
             <tr>
                 <td>{{ subject.id }}</td>
                 <td>{{ subject.name }}</td>
-                <td>{{ subject.score }}</td>
+                <td>{{ subject.coefficient }}</td>
+                <td>score</td>
+                {# <td>{{ subject.score }}</td> #}
                 <td>
                     <a href="{{ path('subject_show', {'id': subject.id}) }}">show</a>
                     <a href="{{ path('subject_edit', {'id': subject.id}) }}">edit</a>

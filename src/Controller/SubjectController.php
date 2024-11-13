@@ -2,21 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\StudentSubject;
+use App\Entity\Subject;
+use App\Form\SubjectType;
 use App\Form\Subject1Type;
-use App\Repository\StudentSubjectRepository;
+use App\Entity\StudentSubject;
+use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/subject')]
 class SubjectController extends AbstractController
 {
     #[Route('/', name: 'subject_index', methods: ['GET'])]
-    public function index(StudentSubjectRepository $subjectRepository): Response
+    public function index(SubjectRepository $subjectRepository): Response
     {
         return $this->render('subject/index.html.twig', [
             'subjects' => $subjectRepository->findAll(),
@@ -26,8 +27,8 @@ class SubjectController extends AbstractController
     #[Route('/new', name: 'subject_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $subject = new StudentSubject();
-        $form = $this->createForm(Subject1Type::class, $subject);
+        $subject = new Subject();
+        $form = $this->createForm(SubjectType::class, $subject);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -44,7 +45,7 @@ class SubjectController extends AbstractController
     }
 
     #[Route('/{id}', name: 'subject_show', methods: ['GET'])]
-    public function show(StudentSubject $subject): Response
+    public function show(Subject $subject): Response
     {
         return $this->render('subject/show.html.twig', [
             'subject' => $subject,
@@ -52,9 +53,9 @@ class SubjectController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'subject_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, StudentSubject $subject, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Subject $subject, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Subject1Type::class, $subject);
+        $form = $this->createForm(SubjectType::class, $subject);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -70,7 +71,7 @@ class SubjectController extends AbstractController
     }
 
     #[Route('/{id}', name: 'subject_delete', methods: ['POST'])]
-    public function delete(Request $request, StudentSubject $subject, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Subject $subject, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$subject->getId(), $request->request->get('_token'))) {
             $entityManager->remove($subject);
