@@ -52,8 +52,8 @@ License: For each use you must have a valid license purchased only from above li
 					<!--begin::Brand-->
 					<div class="aside-logo flex-column-auto" id="kt_aside_logo">
 						<!--begin::Logo-->
-						<a href="../../demo1/dist/index.html">
-							{% block logo %}<img alt="Bonjour" src="assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
+						<a href="{{ path('student_list') }}">
+							{% block logo %}<img alt="Bonjour {{app.user.name}}" src="assets/media/logos/logo_pi-planner.png" class="h-25px logo" />{% endblock %}
 						</a>
 						<!--end::Logo-->
 						<!--begin::Aside toggler-->

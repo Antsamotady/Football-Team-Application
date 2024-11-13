@@ -9,12 +9,14 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Bonjour {{ app.user.name }}!</h1>
 
-    This friendly message is coming from:
+    <div>Bienvenue sur votre application de gestion d'étudiants.</div>
+    Veuillez suivres les liens ci-dessous, selon ce que vous souhaitez faire : 
     <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/html/new-project/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/html/new-project/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
+        <li>Liste <code><a href="{{ path('student_list') }}">des étudiants</a></code></li>
+        <li>Liste <code><a href="{{ path('classe_index') }}">des classes</a></code></li>
+        <li>Liste <code><a href="{{ path('subject_index') }}">des matières</a></code></li>
     </ul>
 </div>
 {% endblock %}
