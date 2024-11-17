@@ -2,19 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Score;
 use App\Entity\Student;
-use App\Form\ScoreType;
+use App\Entity\Subject;
 use App\Form\StudentType;
+use App\Service\ScoreService;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
-use App\Entity\Score;
-use App\Entity\Subject;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Repository\StudentRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\SubjectRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,10 +24,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/student')]
 class StudentController extends AbstractController
 {
-	public $em;
-
-	public function __construct(EntityManagerInterface $entityManager) {
-		$this->em = $entityManager;
+	public function __construct(
+		public EntityManagerInterface $em,
+		private ScoreService $scoreService
+	) {
 	}
 	
 	#[Route('/', name: 'student_index', methods: ['GET'])]
@@ -200,31 +200,7 @@ class StudentController extends AbstractController
 			['subject' => 'ASC']
 		);
 
-		$forms = [];
-		$formViews = [];
-		$bestScore = 0;
-		$totalScore = 0;
-
-		foreach($scores as $score) {
-			$scoreValue = $score->getValue();
-			$totalScore += $scoreValue;
-
-			if ($scoreValue > $bestScore)
-				$bestScore = $scoreValue;
-
-			$scoreId = $score->getId();
-			
-			$forms[$scoreId] = $this->createForm(ScoreType::class, $score);
-			$formViews[$scoreId] = $forms[$scoreId]->createView();
-			// $forms[$scoreId]->handleRequest($request);
-
-			// if ($forms[$scoreId]->isSubmitted() && $forms[$scoreId]->isValid()) {
-			// 	$em->persist($score);
-			// 	$em->flush();
-
-			// 	$this->addFlash('success', 'Enregistrement effectué.');
-			// }
-		}
+		$scoreResults = $this->scoreService->processScores($scores);
 
 		return $this->render('student/show.html.twig', [
 			'template_title' 	=> 'Détails étudiant',
@@ -232,10 +208,10 @@ class StudentController extends AbstractController
 			'scores'					=> $scores,
 			'previous' 				=> $previousStudent ? $previousStudent->getId() : null,
 			'next' 						=> $nextStudent ? $nextStudent->getId() : null,
-			'best_score' 			=> $bestScore,
-			'total_score' 		=> $totalScore,
-			'average_score' 	=> $scores ? $totalScore / count($scores) : 0,
-			'score_forms' 		=> $formViews
+			'best_score' 			=> $scoreResults['bestScore'],
+			'total_score' 		=> $scoreResults['totalScore'],
+			'average_score' 	=> $scores ? $scoreResults['totalScore'] / count($scores) : 0,
+			'score_forms' 		=> $scoreResults['formViews']
 		]);
 	}
 
