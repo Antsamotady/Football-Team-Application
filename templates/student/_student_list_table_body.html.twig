@@ -11,6 +11,7 @@
 				<th class="min-w-8px">Civilité</th>
 				<th class="min-w-60px">Classe</th>
 				<th class="min-w-45px">Centre</th>
+				<th class="text-center min-w-45px">Stats</th>
 				<th class="text-end min-w-70px">Actions</th>
 			</tr>
 			<!--end::Table row-->
@@ -39,6 +40,15 @@
 					{% if student.classe %}
 						{{ student.classe.location }}
 					{% endif %}
+				</td>
+				<td>
+					{% include 'student/_individual_student_score_stats.html.twig' with { 
+						student: students_scores[student.id].student, 
+						best_score: students_scores[student.id].best_score, 
+						total_score: students_scores[student.id].total_score, 
+						average_score: students_scores[student.id].average_score, 
+						score_forms: students_scores[student.id].score_forms } 
+					%} 
 				</td>
 				<td class="text-end">
 					<a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions

@@ -4,17 +4,25 @@ namespace App\Controller;
 
 use App\Entity\Classe;
 use App\Form\ClasseType;
+use App\Service\ScoreService;
+use App\Repository\ScoreRepository;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/classe')]
 class ClasseController extends AbstractController
 {
+	public function __construct(
+		public EntityManagerInterface $em,
+		private ScoreService $scoreService
+	) {
+	}
+    
     #[Route('/', name: 'classe_index', methods: ['GET'])]
     public function index(ClasseRepository $classeRepository): Response
     {
@@ -47,13 +55,31 @@ class ClasseController extends AbstractController
     }
 
     #[Route('/{id}', name: 'classe_show', methods: ['GET'])]
-    public function show(Classe $classe, StudentRepository $studentRepo): Response
+    public function show(
+        Classe $classe, 
+        StudentRepository $studentRepo, 
+		ScoreRepository $scoreRepo): Response
     {
         $students = $studentRepo->findBy(['classe' => $classe]);
+		$studentsScores = []; 
+
+		foreach ($students as $student) { 
+			$scores = $scoreRepo->findBy(['student' => $student], ['subject' => 'ASC']); 
+			$scoreResults = $this->scoreService->processScores($scores); 
+
+			$studentsScores[$student->getId()] = [
+				'student' => $student, 
+				'best_score' => $scoreResults['bestScore'], 
+				'total_score' => $scoreResults['totalScore'], 
+				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0, 
+				'score_forms' => $scoreResults['formViews'] 
+			]; 
+		}
 
         return $this->render('classe/show.html.twig', [
             'classe'    => $classe,
-            'students'  => $students
+            'students'  => $students,
+			'students_scores' => $studentsScores,
         ]);
     }
 

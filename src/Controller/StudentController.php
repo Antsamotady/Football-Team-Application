@@ -39,7 +39,10 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/list', name: 'student_list', methods: ['GET'])]
-	public function list(Request $request, StudentRepository $studentRepo): Response
+	public function list(
+		Request $request, 
+		StudentRepository $studentRepo, 
+		ScoreRepository $scoreRepo): Response
 	{
 		$data = new StudentSearchData();
 		$form = $this->createForm(StudentSearchFormType::class, $data);
@@ -63,6 +66,20 @@ class StudentController extends AbstractController
 			$students = $studentRepo->findAll();
 
 		$result = count($students);
+		$studentsScores = []; 
+
+		foreach ($students as $student) { 
+			$scores = $scoreRepo->findBy(['student' => $student], ['subject' => 'ASC']); 
+			$scoreResults = $this->scoreService->processScores($scores); 
+
+			$studentsScores[$student->getId()] = [
+				'student' => $student, 
+				'best_score' => $scoreResults['bestScore'], 
+				'total_score' => $scoreResults['totalScore'], 
+				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0, 
+				'score_forms' => $scoreResults['formViews'] 
+			]; 
+		}
 
 		return $this->render('student/list.html.twig', [
 			'template_title' => 'Liste des étudiants',
@@ -70,7 +87,8 @@ class StudentController extends AbstractController
 			'form' 					=> $form->createView(),
 			'filter_form' 	=> $filterForm->createView(),
 			'students' 			=> $students,
-			'result'				=> $result
+			'result'				=> $result,
+			'students_scores' => $studentsScores,
 		]);
 	}
 
