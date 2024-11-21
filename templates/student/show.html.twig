@@ -53,7 +53,7 @@
                 <!--begin::Position-->
                 <div class="mb-9">
                     <!--begin::Badge-->
-                    <div class="badge badge-lg badge-light-primary d-inline">{{ student.classe.name }}</div>
+                    <div class="badge badge-lg badge-light-primary d-inline"><a href="{{ path('classe_show', {'id': student.classe.id}) }}">{{ student.classe.name }}</a></div>
                     <!--begin::Badge-->
                 </div>
                 <!--end::Position-->
