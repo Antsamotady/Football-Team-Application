@@ -158,4 +158,25 @@ class Student
         return $this;
     }
 
+    public function getName(){
+        return $this->getFirstname() . ' ' . $this->getLastname();
+    }
+
+    public function getExport() 
+    {
+        $result = [];
+        $result[] = $this->getGender();
+        $result[] = $this->getName();
+        $result[] = $this->getClasse()->getName();
+        $scores = $this->getScores();
+        $sum=0;
+
+        foreach($scores as $score) {
+            $sum += $score->getValue();
+        }
+        
+        $result[] = $sum/count($scores);
+
+        return $result;
+    }
 }

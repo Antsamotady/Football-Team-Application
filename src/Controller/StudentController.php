@@ -12,6 +12,7 @@ use App\Data\StudentSearchData;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
+use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/student')]
@@ -93,11 +95,11 @@ class StudentController extends AbstractController
 	}
 
 	#[Route('/import', name: 'student_import', methods: ['POST'])]
-	public function import(Request $request, EntityManagerInterface $em, StudentRepository $studentRepo): Response
+	public function import(Request $request, EntityManagerInterface $em, StudentRepository $studentRepo, ClasseRepository $classeRepo): Response
 	{
-		$header = array('name' => 0, 'fanampiny' => 1, 'gender' => 2, 'classe' => 3, 'examLocation' => 4);
-		$path = __DIR__ . '/../../public/upload/';
-		$file = $request->files->get('clientimport');
+		$header = array('firstname' => 0, 'lastname' => 1, 'gender' => 2, 'classe' => 3);
+		$path = __DIR__ . '/../../public/upload/student/';
+		$file = $request->files->get('student-import');
 		$file->move($path, "tmp.csv");
 
 		$row = 1;
@@ -106,68 +108,40 @@ class StudentController extends AbstractController
 			while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
 				$data = $this->decrypteinutf8($data); // put in utf8;
 
-				if ($row == 1) {
-								
+				if ($row == 1) { // just skip the head title
 				} else {
-					if ($data[$header['name']] != '' && 
+					if ($data[$header['firstname']] != '' && 
 							$data[$header['gender']] != '' ) {
-
-						$student = $studentRepo->findOneBy(['name' => $data[$header['name']] ]);
+						$student = $studentRepo->findOneBy(['firstname' => $data[$header['firstname']] ]);
 
 						if (!$student) $student = new Student();
-
-						$student->setName($data[$header['name']]);
-						$student->setFanampiny($data[$header['fanampiny']]);
+						$student->setFirstname($data[$header['firstname']]);
+						$student->setlastname($data[$header['lastname']]);
 						$student->setGender($data[$header['gender']]);
+						$student->setClasse($classeRepo->findOneBy(['name' => $data[$header['classe']]]));
 
 						$em->persist($student);
-						$em->flush();
 					} else {
 						$this->addFlash('error', 'Erreur à la ligne : ' . $row);
+
 						return $this->redirectToRoute('student_list');
 					}
 				}
 				$row++;
 			}
+			$em->flush();
 
 			fclose($handle);
-
-			//delete tmp file
 			unlink($path . "tmp.csv");
 
 			$this->addFlash('success', 'La liste a bien été importé.');
 
 			return $this->redirectToRoute('student_list');
 		} else {
-				$this->addFlash('error', 'Erreur: le fichier n\'est pas valide');
+			$this->addFlash('error', 'Erreur: le fichier n\'est pas valide');
 		}
 
 		return $this->redirectToRoute('student_list');
-	}
-
-	#[Route('/export', name: 'student_export', methods: ['GET'])]
-	public function export(StudentRepository $studentRepo): Response
-	{
-		$items = $studentRepo->findAll();
-
-		$handle = fopen('php://memory', 'r+');
-		$header = array('name' => 0, 'fanampiny' => 1, 'gender' => 2, 'classe' => 3, 'examLocation' => 4);
-
-		fputs($handle, chr(239) . chr(187) . chr(191));
-		fputcsv($handle, $header, ';');
-		foreach ($items as $item) {
-			$result = $item->getExport();
-			fputcsv($handle, $result, ';');
-		}
-
-		rewind($handle);
-		$content = stream_get_contents($handle);
-		fclose($handle);
-
-		return new Response($content, 200, array(
-			'Content-Type' => 'application/force-download; ',
-			'Content-Disposition' => 'attachment; filename="liste_etudiants.csv"'
-		));
 	}
 
 	#[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
@@ -305,6 +279,28 @@ class StudentController extends AbstractController
 		}
 
 		return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
+	}
+
+	#[Route('/export-all', name: 'student_export', methods: ['GET'])]
+	public function exportStudentCsv(): Response
+	{
+		dd('hereh');
+		$students = $this->em->getRepository(Student::class)->findAll();
+
+		$response = new StreamedResponse(function () use ($students) {
+			$output = fopen('php/output', 'w');
+			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
+
+			foreach ($students as $student) {
+				fputcsv($output, $student->getExport(), ';');
+			}
+			fclose($output);
+		});
+
+		$response->headers->set('Content-type', 'text/csv');
+		$response->headers->set('Content-Disposition', 'attachement; filename="export_etudiants.csv');
+
+		return $response;
 	}
 
 	/* Import csv */
