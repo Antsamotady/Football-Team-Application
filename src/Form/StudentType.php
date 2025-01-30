@@ -30,7 +30,7 @@ class StudentType extends AbstractType
             ])
             ->add('gender', ChoiceType::class, [
                 'required'    => true,
-                'label'       => false,
+                'label'       => 'Sexe',
                 'placeholder' => 'Choisir la civilité',
                 'choices'     => [
                     'Mr' => 'Mr',
@@ -41,7 +41,7 @@ class StudentType extends AbstractType
             ->add('classe', EntityType::class, [
                 'class'         => Classe::class,
                 'required'      => true,
-                'label'         => false,
+                'label'         => 'Classe',
                 'choice_label'  => 'name',
                 'placeholder'   => 'Choisir la classe',
             ])

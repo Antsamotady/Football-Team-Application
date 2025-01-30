@@ -168,7 +168,6 @@ class StudentController extends AbstractController
 
 	#[Route('/{id}', name: 'student_show', methods: ['GET'])]
 	public function show(
-		Request $request, 
 		Student $student, 
 		StudentRepository $studentRepo, 
 		EntityManagerInterface $em, 
@@ -260,7 +259,7 @@ class StudentController extends AbstractController
 		}
 
 		return $this->renderForm('student/edit.html.twig', [
-			'template_title' => 'Modifier un étudiant',
+			'template_title' => 'Editer un étudiant',
 			'student' => $student,
 			'previous' => $previousStudent ? $previousStudent->getId() : null,
 			'next' => $nextStudent ? $nextStudent->getId() : null,
