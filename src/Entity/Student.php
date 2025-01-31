@@ -175,7 +175,7 @@ class Student
             $sum += $score->getValue();
         }
         
-        $result[] = $sum/count($scores);
+        $result[] = count($scores) ? $sum/count($scores) : 0;
 
         return $result;
     }

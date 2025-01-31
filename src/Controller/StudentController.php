@@ -94,6 +94,27 @@ class StudentController extends AbstractController
 		]);
 	}
 
+	#[Route('/export-all', name: 'student_export', methods: ['GET'])]
+	public function exportStudentCsv(): Response
+	{
+		$students = $this->em->getRepository(Student::class)->findAll();
+
+		$response = new StreamedResponse(function () use ($students) {
+			$output = fopen('php://output', 'w');
+			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
+
+			foreach ($students as $student) {
+				fputcsv($output, $student->getExport(), ';');
+			}
+			fclose($output);
+		});
+
+		$response->headers->set('Content-type', 'text/csv');
+		$response->headers->set('Content-Disposition', 'attachement; filename="export_etudiants.csv"');
+
+		return $response;
+	}
+
 	#[Route('/import', name: 'student_import', methods: ['POST'])]
 	public function import(Request $request, EntityManagerInterface $em, StudentRepository $studentRepo, ClasseRepository $classeRepo): Response
 	{
@@ -278,28 +299,6 @@ class StudentController extends AbstractController
 		}
 
 		return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
-	}
-
-	#[Route('/export-all', name: 'student_export', methods: ['GET'])]
-	public function exportStudentCsv(): Response
-	{
-		dd('hereh');
-		$students = $this->em->getRepository(Student::class)->findAll();
-
-		$response = new StreamedResponse(function () use ($students) {
-			$output = fopen('php/output', 'w');
-			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
-
-			foreach ($students as $student) {
-				fputcsv($output, $student->getExport(), ';');
-			}
-			fclose($output);
-		});
-
-		$response->headers->set('Content-type', 'text/csv');
-		$response->headers->set('Content-Disposition', 'attachement; filename="export_etudiants.csv');
-
-		return $response;
 	}
 
 	/* Import csv */
