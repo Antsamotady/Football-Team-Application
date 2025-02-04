@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Subject;
 use App\Form\SubjectType;
-use App\Form\Subject1Type;
-use App\Entity\StudentSubject;
 use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;

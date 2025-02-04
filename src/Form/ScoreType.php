@@ -26,11 +26,15 @@ class ScoreType extends AbstractType
                 },
                 'label' => false,
                 'attr' => [
+                    'class' => '',
                     'disabled' => 'disabled',
                 ],
             ])
             ->add('value', null, [
-                'label' => false
+                'label' => false,
+                'attr' => [
+                    'class' => '',
+                ],
             ])
         ;
     }

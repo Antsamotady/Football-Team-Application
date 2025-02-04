@@ -5,7 +5,7 @@
     <!--begin::Modal content-->
     <div class="modal-content">
       <!--begin::Modal header-->
-      <div class="modal-header">
+      <div class="modal-header" style="justify-content: flex-end;">
         <!--begin::Modal title-->
         {# <h2>Editer la note en {{ score.subject.name }}</h2> #}
         <!--end::Modal title-->
@@ -31,7 +31,7 @@
             <div id="socere-error-message_{{ score.id }}" class="text-danger fs-3 text-end pb-5"></div>
           {{ form_end(score_forms[score.id]) }}
         {% endfor %}
-        <div class="text-end">
+        <div class="text-center">
           {# <button id="score_edit" data-student-score="{{ score.id }}" data-score-id="{{ score.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button> #}
           <button id="scores-edition" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>
         </div>
