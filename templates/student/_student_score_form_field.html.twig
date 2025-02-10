@@ -1,0 +1,9 @@
+{% for score in scores %}
+  {{ form_start(score_forms[score.id]) }}
+    <div id="tartgeted-subject-name_{{score.id}}"></div>
+    {{ form_widget(score_forms[score.id], {'attr': {'data-score-id': score.id}}) }}
+    <div id="socere-error-message_{{ score.id }}" class="text-danger fs-3 text-end pb-5"></div>
+  {{ form_end(score_forms[score.id]) }}
+{% endfor %}
+
+<script src="{{ asset('assets/js/custom/student/change-elements.js') }}"></script>

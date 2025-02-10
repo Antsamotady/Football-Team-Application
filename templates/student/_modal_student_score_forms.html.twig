@@ -25,12 +25,7 @@
       <!--end::Modal header-->
       <!--begin::Modal body-->
       <div class="modal-body py-lg-10 px-lg-10">
-        {% for score in scores %}
-          {{ form_start(score_forms[score.id]) }}
-            {{ form_widget(score_forms[score.id], {'attr': {'data-score-id': score.id}}) }}
-            <div id="socere-error-message_{{ score.id }}" class="text-danger fs-3 text-end pb-5"></div>
-          {{ form_end(score_forms[score.id]) }}
-        {% endfor %}
+        {% include "student/_student_score_form_field.html.twig" %}
         <div class="text-center">
           {# <button id="score_edit" data-student-score="{{ score.id }}" data-score-id="{{ score.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button> #}
           <button id="scores-edition" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>

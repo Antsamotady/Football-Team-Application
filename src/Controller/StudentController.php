@@ -78,7 +78,7 @@ class StudentController extends AbstractController
 				'student' => $student, 
 				'best_score' => $scoreResults['bestScore'], 
 				'total_score' => $scoreResults['totalScore'], 
-				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0, 
+				'average_score'=> $scoreResults['averageScore'],
 				'score_forms' => $scoreResults['formViews'] 
 			]; 
 		}
@@ -279,12 +279,21 @@ class StudentController extends AbstractController
 			return $this->redirectToRoute('student_show', ['id' => $student->getId()], Response::HTTP_SEE_OTHER);
 		}
 
+		$scores = $scoreRepo->findBy(
+			['student' => $student], 
+			['subject' => 'ASC']
+		);
+
+		$scoreResults = $this->scoreService->processScores($scores);
+
 		return $this->renderForm('student/edit.html.twig', [
 			'template_title' => 'Editer un étudiant',
 			'student' => $student,
 			'previous' => $previousStudent ? $previousStudent->getId() : null,
 			'next' => $nextStudent ? $nextStudent->getId() : null,
 			'form' => $form,
+			'scores' => $scores,
+			'score_forms' => $scoreResults['formViews']
 		]);
 	}
 

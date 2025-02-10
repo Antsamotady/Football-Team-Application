@@ -20,9 +20,8 @@
     {% endfor %}
 
     {{ include('student/_form.html.twig', {'button_label': 'Enregistrer', 'is_edit': true}) }}
-
+        {% include "student/_student_score_form_field.html.twig" %}
     <hr>
-
     <div class="d-flex justify-content-between">
         {% if previous %}
             <a href="{{ path('student_edit', {'id': previous}) }}" class="btn btn-primary px-3">Précédent</a>
