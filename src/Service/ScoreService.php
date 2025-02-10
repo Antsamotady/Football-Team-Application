@@ -20,9 +20,15 @@ class ScoreService
         $formViews = [];
         $bestScore = 0;
         $totalScore = 0;
+        $sumCoefficient = 0;
+        $sumWeightedMarks = 0;
+        $weightedAverageScore = 0;
 
         foreach ($scores as $score) {
+            $weight = $score->getSubject()->getCoefficient();
             $scoreValue = $score->getValue();
+            $sumWeightedMarks += $scoreValue * $weight;
+            $sumCoefficient += $weight;
             $totalScore += $scoreValue;
 
             if ($scoreValue > $bestScore) {
@@ -34,9 +40,12 @@ class ScoreService
             $formViews[$scoreId] = $forms[$scoreId]->createView();
         }
 
+        $weightedAverageScore = $scores ? round($sumWeightedMarks / $sumCoefficient, 2) : 0;
+
         return [
             'formViews' => $formViews,
             'bestScore' => $bestScore,
+            'averageScore' => $weightedAverageScore,
             'totalScore' => $totalScore,
         ];
     }

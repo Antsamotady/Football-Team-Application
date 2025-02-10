@@ -222,7 +222,7 @@ class StudentController extends AbstractController
 			'next' 						=> $nextStudent ? $nextStudent->getId() : null,
 			'best_score' 			=> $scoreResults['bestScore'],
 			'total_score' 		=> $scoreResults['totalScore'],
-			'average_score' 	=> $scores ? $scoreResults['totalScore'] / count($scores) : 0,
+			'average_score' 	=> $scoreResults['averageScore'],
 			'score_forms' 		=> $scoreResults['formViews']
 		]);
 	}
