@@ -1,10 +1,14 @@
 window.onload = function() {
-  console.log('hehe!!!!!!!!!!');
-  
-  // const selectElem = document.getElementById('score_subject');
-  const selectElem = document.querySelector('div[data-score-id] select');
-  const targetElem = document.getElementById('tartgeted-subject-name_296');
-  const selectedOption = selectElem.options[selectElem.selectedIndex].text;
-  targetElem.text = selectedOption;
-  selectElem.style.display = 'none';
+    const allScoreForms = document.querySelectorAll(`form[name="score"]`);
+
+    allScoreForms.forEach(scoreForm => {
+        const selectElem = scoreForm.querySelector(`div[data-score-id] select`);
+        const selectedOption = selectElem.options[selectElem.selectedIndex].text;
+        const scoreDiv = scoreForm.querySelector(`div[id="score"]`);
+        const scoreId = scoreDiv.getAttribute('data-score-id');
+        const targetElem = document.getElementById(`tartgeted-subject-name_${scoreId}`);
+        
+        targetElem.innerHTML = selectedOption;
+        selectElem.style.display = 'none';
+    });
 }
