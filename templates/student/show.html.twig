@@ -213,7 +213,7 @@
                                 <!--begin::Lable-->
                                 
                                     {# <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_edit_student_score_{{ score.id }}"> #}
-                                        <span class="score-element fw-bolder text-{{ color }} fs-1 py-1">{{ score.value }}</span>
+                                        <span id="score-element_{{ score.id}}" class="score-element fw-bolder text-{{ color }} fs-1 py-1">{{ score.value }}</span>
                                     {# </a> #}
                                 
                                 <!--end::Lable-->
@@ -227,8 +227,6 @@
 
                     {% endif %}
                 </div>
-
-
                 <!--end::Body-->
             </div>
             <!--end::List Widget 6-->
@@ -315,13 +313,14 @@
                 const scoreInput = scoreDiv.querySelector(`input`);
                 const scoreInputValue = scoreDiv.querySelector(`input`).value;
                 const url = "{{ path('score_update') }}";
-
-                //fetchUpdateScore(url, scoreId, scoreInput, targetedModal);
+                
+                fetchUpdateScore(url, scoreId, scoreInput, targetedModal);
             });
         });
 
         function fetchUpdateScore(url, scoreId, scoreInput, targetedModal) {
-            const displayedScoreSpan = document.querySelector(`a[data-bs-target="#kt_modal_edit_student_score_${scoreId}"]`).querySelector('span');
+            {# const displayedScoreSpan = document.querySelector(`a[data-bs-target="#kt_modal_edit_student_score_${scoreId}"]`).querySelector('span'); #}
+            const displayedScoreSpan = document.getElementById(`score-element_${scoreId}`);
 
             fetch(url, {
                 method: 'POST',
