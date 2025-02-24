@@ -1,8 +1,71 @@
-{% for score in scores %}
-  {{ form_start(score_forms[score.id]) }}
-    <div id="tartgeted-subject-name_{{score.id}}"></div>
-    {{ form_widget(score_forms[score.id], {'attr': {'data-score-id': score.id}}) }}
-    <div id="socere-error-message_{{ score.id }}" class="text-danger fs-3 text-end pb-5"></div>
-  {{ form_end(score_forms[score.id]) }}
-{% endfor %}
-<script src="{{ asset('assets/js/custom/student/change-elements.js') }}"></script>
+<div class="card mb-xl-8">
+  <!--begin::Card body-->
+  <div class="card-body pt-2">
+    <!--begin::Notice-->
+    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 p-6">
+      <!--begin::Icon-->
+      <!--begin::Svg Icon | path: icons/duotune/art/art006.svg-->
+      <span class="svg-icon svg-icon-2tx svg-icon-primary me-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path opacity="0.3" d="M22 19V17C22 16.4 21.6 16 21 16H8V3C8 2.4 7.6 2 7 2H5C4.4 2 4 2.4 4 3V19C4 19.6 4.4 20 5 20H21C21.6 20 22 19.6 22 19Z" fill="black"></path>
+          <path d="M20 5V21C20 21.6 19.6 22 19 22H17C16.4 22 16 21.6 16 21V8H8V4H19C19.6 4 20 4.4 20 5ZM3 8H4V4H3C2.4 4 2 4.4 2 5V7C2 7.6 2.4 8 3 8Z" fill="black"></path>
+        </svg>
+      </span>
+      <!--end::Svg Icon-->
+      <!--end::Icon-->
+      <!--begin::Wrapper-->
+      <div class="d-flex flex-stack flex-grow-1">
+        <!--begin::Content-->
+        <div class="fw-bold">
+          <div class="fs-6 text-gray-700">Toutes les notes doivent être sur 20 points. Pour éditer les coefficients, veuillez 
+            <a href="{{path('subject_index')}}" class="me-1">aller à la page d'édition des matières</a>. Ou cliquez simplement sur le nom de la matière.
+          </div>
+        </div>
+        <!--end::Content-->
+      </div>
+      <!--end::Wrapper-->
+    </div>
+    <!--end::Notice-->
+    <!--begin::Items-->
+    <div class="py-2">
+    {% for score in scores %}
+        {{ form_start(score_forms[score.id]) }}
+          <!--begin::Item-->
+          <div class="d-flex flex-stack">
+            <div class="d-flex">
+              <div class="d-flex flex-column">
+                <a href="{{path('subject_edit', {'id': score.subject.id})}}" id="tartgeted-subject-name_{{score.id}}" class="fs-5 text-dark text-hover-primary fw-bolder">Matière</a>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <!--begin::Switch-->
+              <label class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                <!--begin::Input-->
+                <input id="tartgeted-subject-mark-value_{{score.id}}" class="form-control form-control-solid" placeholder="" name="" value="0">
+                <!--end::Input-->
+                <!--begin::Label-->
+                <span class="form-check-label fw-bold text-muted" for="kt_modal_connected_accounts_slack"></span>
+                <!--end::Label-->
+              </label>
+              <!--end::Switch-->
+            </div>
+          </div>
+          <!--end::Item-->
+          {{ form_widget(score_forms[score.id], {'attr': {'data-score-id': score.id}}) }}
+          <div id="socere-error-message_{{ score.id }}" class="text-danger fs-3 text-end pb-5"></div>
+        {{ form_end(score_forms[score.id]) }}
+      {% endfor %}
+    </div>
+    <!--end::Items-->
+  </div>
+  <!--end::Card body-->
+  <!--begin::Card footer-->
+  <div class="card-footer border-0 d-flex justify-content-center pt-0">
+    <button id="scores-edition-btn" class="btn btn-sm btn-light-primary">Enregistrer</button>
+  </div>
+  <!--end::Card footer-->
+</div>
+
+<input type="hidden" name="student_id" value="{{ student.id }}" />
+<input type="hidden" name="score_update" value="{{ path('score_update') }}" />
+<script src="{{ asset('assets/js/custom/student/change-elements.js?v=002') }}"></script>

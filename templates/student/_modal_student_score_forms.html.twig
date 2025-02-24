@@ -5,9 +5,9 @@
     <!--begin::Modal content-->
     <div class="modal-content">
       <!--begin::Modal header-->
-      <div class="modal-header" style="justify-content: flex-end;">
+      <div class="modal-header" style="justify-content: center;">
         <!--begin::Modal title-->
-        {# <h2>Editer la note en {{ score.subject.name }}</h2> #}
+        <h2>Editer les notes de {{ student.name }}</h2>
         <!--end::Modal title-->
         <!--begin::Close-->
         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -24,12 +24,8 @@
       </div>
       <!--end::Modal header-->
       <!--begin::Modal body-->
-      <div class="modal-body py-lg-10 px-lg-10">
+      <div class="modal-body">
         {% include "student/_student_score_form_field.html.twig" %}
-        <div class="text-center">
-          {# <button id="score_edit" data-student-score="{{ score.id }}" data-score-id="{{ score.id }}" type="submit" class="btn btn-primary fw-bold px-6">Valider</button> #}
-          <button id="scores-edition" type="submit" class="btn btn-primary fw-bold px-6">Valider</button>
-        </div>
       </div>
       <!--end::Modal body-->
     </div>
