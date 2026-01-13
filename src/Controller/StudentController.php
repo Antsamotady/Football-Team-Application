@@ -46,6 +46,7 @@ class StudentController extends AbstractController
 		StudentRepository $studentRepo, 
 		ScoreRepository $scoreRepo): Response
 	{
+    $session = $request->getSession();
 		$data = new StudentSearchData();
 		$form = $this->createForm(StudentSearchFormType::class, $data);
 		$form->handleRequest($request);
@@ -57,15 +58,24 @@ class StudentController extends AbstractController
 		$students = [];
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$name = $data->getName();
-
-			if (!isset($name)) $students = $studentRepo->findAll();
-			else $students = $studentRepo->findSearch($data);
-
-		} elseif ($filterForm->isSubmitted() && $filterForm->isValid()) 
+			$students = $studentRepo->findSearch($data);
+			// Store search criteria in session
+			$session->set('student_search_criteria', [
+					'type' => 'search',
+					'data' => $data
+			]);
+		} elseif ($filterForm->isSubmitted() && $filterForm->isValid()) {
 			$students = $studentRepo->findFiltered($filteredData);
-		else
+			// Store filter criteria in session
+			$session->set('student_search_criteria', [
+					'type' => 'filter',
+					'data' => $filteredData
+			]);
+		} else {
 			$students = $studentRepo->findAll();
+			// Clear stored criteria
+			$session->remove('student_search_criteria');
+		}
 
 		$result = count($students);
 		$studentsScores = []; 
@@ -91,26 +101,53 @@ class StudentController extends AbstractController
 			'students' 			=> $students,
 			'result'				=> $result,
 			'students_scores' => $studentsScores,
+			'has_filters' => $form->isSubmitted() || $filterForm->isSubmitted(), // Add this
 		]);
 	}
 
 	#[Route('/export-all', name: 'student_export', methods: ['GET'])]
-	public function exportStudentCsv(): Response
+	public function exportStudentCsv(Request $request, StudentRepository $studentRepo): Response
 	{
-		$students = $this->em->getRepository(Student::class)->findAll();
+		$session = $request->getSession();
+		$criteria = $session->get('student_search_criteria', null);
+		$timestamp = date('Y-m-d_H-i');
+		
+		if (!$criteria) {
+			// No filters stored, export all
+			$students = $studentRepo->findAll();
+			$fileName = "etudiants_complet_{$timestamp}.csv";
+		} else {
+			// Apply stored filters
+			if ($criteria['type'] === 'search') {
+				$students = $studentRepo->findSearch($criteria['data']);
+				$searchTerm = $criteria['data']->getName() ?? '';
+				$fileName = "etudiants_recherche_{$searchTerm}_{$timestamp}.csv";
+			} else {
+				$students = $studentRepo->findFiltered($criteria['data']);
+				$fileName = "etudiants_filtre_{$timestamp}.csv";
+			}
+		}
+		
+		// Clean filename (remove special characters)
+		$fileName = preg_replace('/[^\w\-\.]/', '_', $fileName);
 
 		$response = new StreamedResponse(function () use ($students) {
 			$output = fopen('php://output', 'w');
+			// UTF-8 BOM for Excel
+			fwrite($output, "\xEF\xBB\xBF");
 			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
 
 			foreach ($students as $student) {
-				fputcsv($output, $student->getExport(), ';');
+					fputcsv($output, $student->getExport(), ';');
 			}
 			fclose($output);
 		});
 
-		$response->headers->set('Content-type', 'text/csv');
-		$response->headers->set('Content-Disposition', 'attachement; filename="export_etudiants.csv"');
+		$response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+		$response->headers->set('Content-Disposition', sprintf(
+			'attachment; filename="%s"',
+			$fileName
+		));
 
 		return $response;
 	}
