@@ -62,9 +62,11 @@
                     <!--begin::Label-->
                     <!--begin::Label-->
                     <div class="col-lg-8 d-flex align-items-center">
-                        <div class="form-check form-check-solid form-switch fv-row">
-                            {{ form_widget(form.gender, {'attr': {'class': 'form-check-input w-45px h-30px'}}) }}
-                        </div>
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row fv-plugins-icon-container">
+                            {{ form_widget(form.gender, {'attr': {'class': 'form-control form-control-lg form-control-solid'}})}}
+                        <div class="fv-plugins-message-container invalid-feedback"></div></div>
+                        <!--end::Col-->
                     </div>
                     <!--begin::Label-->
                 </div>

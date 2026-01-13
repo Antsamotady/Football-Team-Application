@@ -1,0 +1,12 @@
+{% extends 'dashboard-base.html.twig' %}
+
+{% block title %}Edition{% endblock %}
+
+{% block body %}
+    {{ include('teacher/_form.html.twig', {'button_label': 'Update'}) }}
+    <hr>
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('teacher_index') }}" class="btn btn-secondary w-66">Liste des enseignants</a>
+        {{ include('teacher/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

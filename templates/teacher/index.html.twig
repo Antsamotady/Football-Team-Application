@@ -1,6 +1,6 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}Subject index{% endblock %}
+{% block title %}Teacher index{% endblock %}
 
 {% block body %}
     <!--begin::Tables Widget 9-->
@@ -8,12 +8,12 @@
         <!--begin::Header-->
         <div class="card-header border-0 pt-5">
             <h3 class="card-title align-items-start flex-column">
-                <span class="card-label fw-bolder fs-3 mb-1">Liste des matières</span>
-                <span class="text-muted mt-1 fw-bold fs-7">au nombre de {{ subjects|length }}</span>
+                <span class="card-label fw-bolder fs-3 mb-1">Liste des enseignants</span>
+                <span class="text-muted mt-1 fw-bold fs-7">au nombre de {{ teachers|length }}</span>
             </h3>
             <div class="card-toolbar" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="" data-bs-original-title="Click to add a user">
-                {# <a href="{{ path('subject_new') }}" class="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends"> #}
-                <a href="{{ path('subject_new') }}" class="btn btn-sm btn-light btn-active-primary">
+                {# <a href="{{ path('teacher_new') }}" class="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends"> #}
+                <a href="{{ path('teacher_new') }}" class="btn btn-sm btn-light btn-active-primary">
                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
                 <span class="svg-icon svg-icon-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -21,7 +21,7 @@
                         <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black"></rect>
                     </svg>
                 </span>
-                <!--end::Svg Icon-->Créer une matière</a>
+                <!--end::Svg Icon-->Créer une enseignant</a>
             </div>
         </div>
         <!--end::Header-->
@@ -39,32 +39,36 @@
                                     <input class="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check">
                                 </div>
                             </th>
-                            <th class="min-w-200px">Id</th>
+                            <th class="min-w-70px">Id</th>
+                            <th class="min-w-80px">Sexe</th>
                             <th class="min-w-150px">Nom</th>
-                            <th class="min-w-150px">Coefficient</th>
-                            <th class="min-w-150px">Enseignant(e)</th>
+                            <th class="min-w-150px">Matières</th>
                             <th class="min-w-100px text-end">Actions</th>
                         </tr>
                     </thead>
                     <!--end::Table head-->
                     <!--begin::Table body-->
                     <tbody>
-                    {% for subject in subjects %}
+                    {% for teacher in teachers %}
                         <tr>
                             <td>
                                 <div class="form-check form-check-sm form-check-custom form-check-solid">
                                     <input class="form-check-input widget-9-check" type="checkbox" value="1">
                                 </div>
                             </td>
-                            <td>{{ subject.id }}</td>
-                            <td>{{ subject.name }}</td>
-                            <td>{{ subject.coefficient }}</td>
+                            <td>{{ teacher.id }}</td>
+                            <td>{{ teacher.gender }}</td>
+                            <td><a href="{{ path('teacher_edit', {'id': teacher.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ teacher.firstname }} {{ teacher.lastname }}</a></td>
                             <td>
-                                <a href="{{ path('teacher_show', {'id': subject.teacher.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ subject.teacher.firstname }} {{ subject.teacher.lastname }}</a>
+                                {% for subject in teacher.subjects %}
+                                    <span>{{ subject.name }}</span>,
+                                {% else %}
+                                    <span></span>
+                                {% endfor %}
                             </td>
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">
-                                    <a href="{{ path('subject_show', {'id': subject.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="{{ path('teacher_show', {'id': teacher.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <!--begin::Svg Icon | path: icons/duotune/general/gen019.svg-->
                                         <span class="svg-icon svg-icon-3">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -74,7 +78,7 @@
                                         </span>
                                         <!--end::Svg Icon-->
                                     </a>
-                                    <a href="{{ path('subject_edit', {'id': subject.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="{{ path('teacher_edit', {'id': teacher.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                         <span class="svg-icon svg-icon-3">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -84,7 +88,7 @@
                                         </span>
                                         <!--end::Svg Icon-->
                                     </a>
-                                    <a href="{{ path('subject_delete', {'id': subject.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                    <a href="{{ path('teacher_delete', {'id': teacher.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
                                         <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
                                         <span class="svg-icon svg-icon-3">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -100,7 +104,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="4">Vous n'avez pas encore de matière.</td>
+                            <td colspan="4">Vous n'avez pas encore de enseignant.</td>
                         </tr>
                     {% endfor %}
                     </tbody>

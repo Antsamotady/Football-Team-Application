@@ -31,12 +31,11 @@ class StudentType extends AbstractType
             ->add('gender', ChoiceType::class, [
                 'required'    => true,
                 'label'       => 'Sexe',
-                'placeholder' => 'Choisir la civilité',
+                'placeholder' => 'Veuiller sélectionner',
                 'choices'     => [
-                    'Mr' => 'Mr',
-                    'Me' => 'Me'
+                    'Masculin' => 'M',
+                    'Féminin' => 'Me',
                 ],
-                'expanded' => true,
             ])
             ->add('classe', EntityType::class, [
                 'class'         => Classe::class,
