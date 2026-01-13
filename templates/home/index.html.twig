@@ -9,7 +9,9 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Bonjour {{ app.user.name }}!</h1>
+    <h1>
+    Bonjour {% if app.user %}{{ app.user.name }}{% endif %}!
+    </h1>
 
     <div>Bienvenue sur votre application de gestion d'étudiants.</div>
     Veuillez suivres les liens ci-dessous, selon ce que vous souhaitez faire : 

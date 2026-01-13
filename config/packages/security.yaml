@@ -32,9 +32,47 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # No page available except for the login one if not authenticated
-        - { path: ^(?!/login), roles: ROLE_USER }
-        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Authentication
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/verify/email, roles: PUBLIC_ACCESS }
+        - { path: ^/logout$, roles: PUBLIC_ACCESS }
+        
+        # Static pages
+        - { path: ^/about, roles: PUBLIC_ACCESS }
+        - { path: ^/contact, roles: PUBLIC_ACCESS }
+        - { path: ^/privacy-policy, roles: PUBLIC_ACCESS }
+        - { path: ^/terms-of-service, roles: PUBLIC_ACCESS }
+        - { path: ^/faq, roles: PUBLIC_ACCESS }
+        - { path: ^/features, roles: PUBLIC_ACCESS }
+        - { path: ^/pricing, roles: PUBLIC_ACCESS }
+        
+        # Public API/documentation
+        - { path: ^/api, roles: PUBLIC_ACCESS }
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
+        - { path: ^/api/swagger, roles: PUBLIC_ACCESS }
+        - { path: ^/api.json$, roles: PUBLIC_ACCESS }
+        
+        # Assets and files
+        - { path: ^/build/, roles: PUBLIC_ACCESS }
+        - { path: ^/uploads/public/, roles: PUBLIC_ACCESS }
+        - { path: ^/favicon.ico$, roles: PUBLIC_ACCESS }
+        - { path: ^/robots.txt$, roles: PUBLIC_ACCESS }
+        - { path: ^/sitemap.xml$, roles: PUBLIC_ACCESS }
+        
+        # Homepage and landing pages
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/landing, roles: PUBLIC_ACCESS }
+        - { path: ^/welcome, roles: PUBLIC_ACCESS }
+        
+        # Blog/public content (if applicable)
+        - { path: ^/blog/, roles: PUBLIC_ACCESS }
+        - { path: ^/news/, roles: PUBLIC_ACCESS }
+        - { path: ^/articles/, roles: PUBLIC_ACCESS }
+        
+        # Everything else requires authentication
+        - { path: ^/, roles: ROLE_USER }
         
 
 when@test:

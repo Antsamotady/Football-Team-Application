@@ -2,29 +2,47 @@
 
 namespace App\Entity;
 
-use App\Repository\ClasseRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ClasseRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: ClasseRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['classe:read']],
+    denormalizationContext: ['groups' => ['classe:write']],
+    collectionOperations: ['get', 'post'],
+    itemOperations: ['get', 'put', 'patch', 'delete']
+)]
 class Classe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[ApiProperty(identifier: true)]
+    #[Groups(['classe:read', 'student:read', 'teacher:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['classe:read', 'classe:write', 'student:read', 'teacher:read'])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['classe:read', 'classe:write'])]
     private $location;
 
     #[ORM\OneToMany(mappedBy: 'classe', targetEntity: Student::class)]
+    #[Groups(['classe:read'])]
+    #[MaxDepth(1)]
     private $students;
 
-    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classe')]
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classes')]
+    #[Groups(['classe:read'])]
+    #[MaxDepth(1)]
     private $teachers;
 
     public function __construct()

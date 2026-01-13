@@ -2,29 +2,40 @@
 
 namespace App\Entity;
 
-use App\Repository\TeacherRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TeacherRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['teacher:read']],
+    denormalizationContext: ['groups' => ['teacher:write']]
+)]
 class Teacher
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['teacher:read', 'classe:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 64)]
+    #[Groups(['teacher:read', 'classe:read'])]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    #[Groups(['teacher:read', 'classe:read'])]
     private $lastname;
 
     #[ORM\Column(type: 'string', length: 11)]
+    #[Groups(['teacher:read', 'classe:read'])]
     private $gender;
 
     #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'teachers')]
+    #[Groups(['teacher:read', 'classe:read'])]
     private $classe;
 
     #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: Subject::class)]
