@@ -37,10 +37,10 @@ class StudentRepository extends ServiceEntityRepository
                 ->setParameter('firstname', "%{$search->getName()}%");
         }
 
+        /** @var Student[] $result */
         $result = $qb->getQuery()->getResult();
 
         return $result;
-
     }
 
     /**
@@ -82,9 +82,9 @@ class StudentRepository extends ServiceEntityRepository
         }
         // dump($qb->getQuery()->getSQL());
 
+        /** @var Student[] $result */
         $result = $qb->getQuery()->getResult();
         
         return $result;
-
     }
 }

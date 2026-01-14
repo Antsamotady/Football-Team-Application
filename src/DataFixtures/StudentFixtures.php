@@ -20,8 +20,16 @@ class StudentFixtures extends Fixture
             $student = new Student();
             $student->setFirstname($faker->firstName);
             $student->setLastname($faker->lastName);
-            $student->setGender($faker->randomElement(['Me', 'Mr']));
-            $student->setClasse($faker->randomElement($classes));
+            $gender = $faker->randomElement(['Me', 'Mr']);
+
+            if (!is_string($gender)) {
+                $gender = 'Mr'; // default fallback
+            }
+            $student->setGender($gender);
+
+            /** @var Classe|null $classe */
+            $classe = $faker->randomElement($classes);
+            $student->setClasse($classe);
 
             $manager->persist($student);
         }

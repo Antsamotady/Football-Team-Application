@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Score;
 use App\Entity\Student;
 use App\Entity\Subject;
+use App\Entity\Classe;
 use App\Form\StudentType;
 use App\Service\ScoreService;
 use App\Data\StudentFilterData;
@@ -110,23 +111,27 @@ class StudentController extends AbstractController
 	{
 		$session = $request->getSession();
 		$criteria = $session->get('student_search_criteria', null);
-		$timestamp = date('Y-m-d_H-i');
-		
-		if (!$criteria) {
-			// No filters stored, export all
-			$students = $studentRepo->findAll();
-			$fileName = "etudiants_complet_{$timestamp}.csv";
-		} else {
-			// Apply stored filters
-			if ($criteria['type'] === 'search') {
-				$students = $studentRepo->findSearch($criteria['data']);
-				$searchTerm = $criteria['data']->getName() ?? '';
-				$fileName = "etudiants_recherche_{$searchTerm}_{$timestamp}.csv";
-			} else {
-				$students = $studentRepo->findFiltered($criteria['data']);
-				$fileName = "etudiants_filtre_{$timestamp}.csv";
-			}
-		}
+		$students = [];
+        $fileName = '';
+        $timestamp = date('Y-m-d_H-i');
+
+        if (is_array($criteria)) {  // <-- type narrowing
+            if (isset($criteria['type'], $criteria['data'])) {
+                if ($criteria['type'] === 'search' && $criteria['data'] instanceof \App\Data\StudentSearchData) {
+                    $students = $studentRepo->findSearch($criteria['data']);
+                    $searchTerm = $criteria['data']->getName() ?? '';
+                    $fileName = "etudiants_recherche_{$searchTerm}_{$timestamp}.csv";
+                } elseif ($criteria['data'] instanceof \App\Data\StudentFilterData) {
+                    $students = $studentRepo->findFiltered($criteria['data']);
+                    $fileName = "etudiants_filtre_{$timestamp}.csv";
+                }
+            }
+        }
+
+        if (empty($students)) {
+            $students = $studentRepo->findAll();
+            $fileName = "etudiants_complet_{$timestamp}.csv";
+        }
 		
 		// Clean filename (remove special characters)
 		$fileName = preg_replace('/[^\w\-\.]/', '_', $fileName);
@@ -139,13 +144,13 @@ class StudentController extends AbstractController
             }
 
 			// UTF-8 BOM for Excel
-			fwrite($output, "\xEF\xBB\xBF");	// Parameter #1 $stream of function fwrite expects resource, resource|false given.
-			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');	// Parameter #1 $stream of function fputcsv expects resource, resource|false given.
+			fwrite($output, "\xEF\xBB\xBF");
+			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
 
 			foreach ($students as $student) {
-					fputcsv($output, $student->getExport(), ';');	// Parameter #1 $stream of function fputcsv expects resource, resource|false given.
+					fputcsv($output, $student->getExport(), ';');
 			}
-			fclose($output);	// Parameter #1 $stream of function fclose expects resource, resource|false given.
+			fclose($output);
 		});
 
 		$response->headers->set('Content-Type', 'text/csv; charset=utf-8');
@@ -157,55 +162,94 @@ class StudentController extends AbstractController
 		return $response;
 	}
 
-	#[Route('/import', name: 'student_import', methods: ['POST'])]
-	public function import(Request $request, EntityManagerInterface $em, StudentRepository $studentRepo, ClasseRepository $classeRepo): Response
-	{
-		$header = array('firstname' => 0, 'lastname' => 1, 'gender' => 2, 'classe' => 3);
-		$path = __DIR__ . '/../../public/upload/student/';
-		$file = $request->files->get('student-import');
-		$file->move($path, "tmp.csv");
+    #[Route('/import', name: 'student_import', methods: ['POST'])]
+    public function import(
+        Request $request,
+        EntityManagerInterface $em,
+        StudentRepository $studentRepo,
+        ClasseRepository $classeRepo
+    ): Response {
+        $header = ['firstname' => 0, 'lastname' => 1, 'gender' => 2, 'classe' => 3];
+        $uploadDir = __DIR__ . '/../../public/upload/student/';
 
-		$row = 1;
-		
-		if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
-			while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-				$data = $this->decrypteinutf8($data); // Parameter #1 $datas of method App\Controller\StudentController::decrypteinutf8() expects array<string>, list<string|null> given.
+        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile|null $file */
+        $file = $request->files->get('student-import');
 
-				if ($row == 1) { // just skip the head title
-				} else {
-					if ($data[$header['firstname']] != '' && 
-							$data[$header['gender']] != '' ) {
-						$student = $studentRepo->findOneBy(['firstname' => $data[$header['firstname']] ]);
+        if (!$file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+            $this->addFlash('error', 'Fichier non trouvé ou invalide.');
+            return $this->redirectToRoute('student_list');
+        }
 
-						if (!$student) $student = new Student();
-						$student->setFirstname($data[$header['firstname']]);
-						$student->setlastname($data[$header['lastname']]);
-						$student->setGender($data[$header['gender']]);
-						$student->setClasse($classeRepo->findOneBy(['name' => $data[$header['classe']]]));
+        $tmpFileName = 'tmp.csv';
+        $filePath = $uploadDir . $tmpFileName;
 
-						$em->persist($student);
-					} else {
-						$this->addFlash('error', 'Erreur à la ligne : ' . $row);
+        // Ensure upload directory exists
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $uploadDir));
+        }
 
-						return $this->redirectToRoute('student_list');
-					}
-				}
-				$row++;
-			}
-			$em->flush();
+        // Move uploaded file
+        $file->move($uploadDir, $tmpFileName);
 
-			fclose($handle);
-			unlink($path . "tmp.csv");
+        $row = 1;
 
-			$this->addFlash('success', 'La liste a bien été importé.');
+        $handle = fopen($filePath, 'r');
+        if ($handle === false) {
+            $this->addFlash('error', "Impossible d'ouvrir le fichier CSV.");
+            return $this->redirectToRoute('student_list');
+        }
 
-			return $this->redirectToRoute('student_list');
-		} else {
-			$this->addFlash('error', 'Erreur: le fichier n\'est pas valide');
-		}
+        while (($data = fgetcsv($handle, 1000, ';')) !== false) {
+            // Ensure all CSV values are strings
+            $data = array_map(fn($value) => is_null($value) ? '' : (string) $value, $data);
 
-		return $this->redirectToRoute('student_list');
-	}
+            // Skip header row
+            if ($row === 1) {
+                $row++;
+                continue;
+            }
+
+            $firstname  = $data[$header['firstname']];
+            $lastname   = $data[$header['lastname']];
+            $gender     = $data[$header['gender']];
+            $classeName = $data[$header['classe']];
+
+            if ($firstname === '' || $gender === '') {
+                $this->addFlash('error', 'Erreur à la ligne : ' . $row);
+                fclose($handle);
+                unlink($filePath);
+                return $this->redirectToRoute('student_list');
+            }
+
+            /** @var Student|null $student */
+            $student = $studentRepo->findOneBy(['firstname' => $firstname]);
+            if (!$student) {
+                $student = new Student();
+            }
+
+            $student->setFirstname($firstname);
+            $student->setLastname($lastname);
+            $student->setGender($gender);
+
+            /** @var Classe|null $classe */
+            $classe = $classeRepo->findOneBy(['name' => $classeName]);
+            $student->setClasse($classe);
+
+            $em->persist($student);
+
+            $row++;
+        }
+
+        fclose($handle);
+        unlink($filePath);
+
+        $em->flush();
+
+        $this->addFlash('success', 'La liste a bien été importée.');
+
+        return $this->redirectToRoute('student_list');
+    }
+
 
 	#[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
 	public function new(Request $request, EntityManagerInterface $em): Response
@@ -269,40 +313,54 @@ class StudentController extends AbstractController
 		]);
 	}
 
-	#[Route('/ajax/update-score', name: 'score_update', methods: ['POST'])]
-	public function updateScore(Request $request, EntityManagerInterface $em, ScoreRepository $scoreRepo): JsonResponse
-	{
-		$content = $request->getContent();
-		$data = json_decode($content, true);
+    #[Route('/ajax/update-score', name: 'score_update', methods: ['POST'])]
+    public function updateScore(
+        Request $request,
+        EntityManagerInterface $em,
+        ScoreRepository $scoreRepo
+    ): JsonResponse 
+    {
+        $content = $request->getContent();
 
-		$scoreId = $data['scoreId'];
-		$newScore = (float) $data['newScore'];
+        /** @var array<string, mixed>|null $data */
+        $data = json_decode($content, true);
 
-		$score = $scoreRepo->find($scoreId);
+        if (!is_array($data) || !isset($data['scoreId'], $data['newScore'])) {
+            return new JsonResponse([
+                'status' => 'KO',
+                'message' => 'Invalid JSON payload',
+            ]);
+        }
+
+        $scoreId = $data['scoreId'];  
+        $newScore = $data['newScore'];
+
+        /** @var Score|null $score */
+        $score = $scoreRepo->find($scoreId);
 
         if (!$score) {
             return new JsonResponse([
                 'status' => 'KO',
                 'message' => 'Score not found',
-                'input' => $data['newScore']
+                'input' => $newScore,
             ]);
         }
 
-        $score->setValue($newScore);
+        $score->setValue($newScore);    // @phpstan-ignore-line
         $em->persist($score);
 
-		try {
-			$em->flush();
-		} catch (\Exception $e) {
-			return new JsonResponse([
-				'status' => 'KO',
-				'message' => $e->getMessage(),
-				'input' => $data['newScore']
-			]);
-		}
+        try {
+            $em->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => 'KO',
+                'message' => $e->getMessage(),
+                'input' => $newScore,
+            ]);
+        }
 
-		return new JsonResponse(['status' => 'OK']);
-	}
+        return new JsonResponse(['status' => 'OK']);
+    }
 	
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
 	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, SubjectRepository $subjectRepo, ScoreRepository $scoreRepo): Response

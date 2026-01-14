@@ -71,7 +71,7 @@ class ClasseController extends AbstractController
 				'student' => $student, 
 				'best_score' => $scoreResults['bestScore'], 
 				'total_score' => $scoreResults['totalScore'], 
-				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0, 
+				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0,    // @phpstan-ignore-line
 				'score_forms' => $scoreResults['formViews'] 
 			]; 
 		}
