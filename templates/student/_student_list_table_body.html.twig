@@ -10,6 +10,7 @@
 				<th class="min-w-50px">Prénom</th>
 				<th class="min-w-8px">Civilité</th>
 				<th class="min-w-60px">Classe</th>
+				<th class="min-w-60px">Centre</th>
 				<th class="text-center min-w-45px">Stats</th>
 				<th class="text-end min-w-70px">Actions</th>
 			</tr>
@@ -35,6 +36,7 @@
 						{{ student.classe.name }}
 					{% endif %}
 				</td>
+				<td>{{ student.location }}</td>
 				<td>
 					{% include 'student/_individual_student_score_stats.html.twig' with { 
 						student: students_scores[student.id].student, 

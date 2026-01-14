@@ -47,7 +47,7 @@
                                     <input class="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check">
                                 </div>
                             </th>
-                            <th class="min-w-200px">Id</th>
+                            <th class="min-w-70px">Id</th>
                             <th class="min-w-150px">Nom</th>
                             <th class="min-w-150px">Nb étudiants</th>
                             <th class="min-w-100px text-end">Actions</th>
@@ -64,7 +64,7 @@
                                 </div>
                             </td>
                             <td>{{ classe.id }}</td>
-                            <td>{{ classe.name }}</td>
+                            <td><a href="{{ path('classe_show', {'id': classe.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ classe.name }}</a></td>
                             <td>{{ classe.students|length }}</td>
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">

@@ -27,7 +27,7 @@ class TeacherType extends AbstractType
             ->add('gender', ChoiceType::class, [
                 'label' => 'Sexe',
                 'choices' => [
-                    'Masculin' => 'M',
+                    'Masculin' => 'Mr',
                     'Féminin' => 'Me',
                 ],
                 'placeholder' => 'Veuiller sélectionner',

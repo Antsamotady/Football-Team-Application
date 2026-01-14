@@ -43,10 +43,6 @@ class Classe
     #[Groups(['classe:read', 'classe:write', 'student:read', 'teacher:read'])]
     private string $name;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(['classe:read', 'classe:write'])]
-    private ?string $location = null;
-
     /**
      * @var Collection<int, Student>
      */
@@ -89,17 +85,6 @@ class Classe
     public function setName(string $name): self
     {
         $this->name = $name;
-        return $this;
-    }
-
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?string $location): self
-    {
-        $this->location = $location;
         return $this;
     }
 

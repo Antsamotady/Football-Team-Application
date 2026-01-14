@@ -37,6 +37,10 @@ class Student
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
     private ?Classe $classe = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['student:read', 'classe:read'])]
+    private ?string $location = null;
+
     /**
      * @var Collection<int, StudentSubject>
      */
@@ -108,6 +112,17 @@ class Student
     public function setClasse(?Classe $classe): self
     {
         $this->classe = $classe;
+        return $this;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
         return $this;
     }
 
