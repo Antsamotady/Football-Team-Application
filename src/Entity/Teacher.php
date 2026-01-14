@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TeacherRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
@@ -20,26 +20,32 @@ class Teacher
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['teacher:read', 'classe:read'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 64)]
     #[Groups(['teacher:read', 'classe:read'])]
-    private $firstname;
+    private string $firstname;
 
     #[ORM\Column(type: 'string', length: 64, nullable: true)]
     #[Groups(['teacher:read', 'classe:read'])]
-    private $lastname;
+    private ?string $lastname = null;
 
     #[ORM\Column(type: 'string', length: 11)]
     #[Groups(['teacher:read', 'classe:read'])]
-    private $gender;
+    private string $gender;
 
+    /**
+     * @var Collection<int, Classe>
+     */
     #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'teachers')]
     #[Groups(['teacher:read', 'classe:read'])]
-    private $classe;
+    private Collection $classe;
 
+    /**
+     * @var Collection<int, Subject>
+     */
     #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: Subject::class)]
-    private $subjects;
+    private Collection $subjects;
 
     public function __construct()
     {
@@ -52,7 +58,15 @@ class Teacher
         return $this->id;
     }
 
-    public function getFirstname(): ?string
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getFirstname(): string
     {
         return $this->firstname;
     }
@@ -76,7 +90,7 @@ class Teacher
         return $this;
     }
 
-    public function getGender(): ?string
+    public function getGender(): string
     {
         return $this->gender;
     }
@@ -89,7 +103,7 @@ class Teacher
     }
 
     /**
-     * @return Collection|Classe[]
+     * @return Collection<int, Classe>
      */
     public function getClasse(): Collection
     {
@@ -99,7 +113,7 @@ class Teacher
     public function addClasse(Classe $classe): self
     {
         if (!$this->classe->contains($classe)) {
-            $this->classe[] = $classe;
+            $this->classe->add($classe);
         }
 
         return $this;
@@ -113,7 +127,7 @@ class Teacher
     }
 
     /**
-     * @return Collection|Subject[]
+     * @return Collection<int, Subject>
      */
     public function getSubjects(): Collection
     {
@@ -123,7 +137,7 @@ class Teacher
     public function addSubject(Subject $subject): self
     {
         if (!$this->subjects->contains($subject)) {
-            $this->subjects[] = $subject;
+            $this->subjects->add($subject);
             $subject->setTeacher($this);
         }
 
@@ -133,7 +147,6 @@ class Teacher
     public function removeSubject(Subject $subject): self
     {
         if ($this->subjects->removeElement($subject)) {
-            // set the owning side to null (unless already changed)
             if ($subject->getTeacher() === $this) {
                 $subject->setTeacher(null);
             }

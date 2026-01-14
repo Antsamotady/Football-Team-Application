@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StudentRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
@@ -20,29 +20,34 @@ class Student
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['student:read', 'classe:read'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['student:read', 'classe:read'])]
-    private $firstname;
+    private string $firstname;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['student:read', 'classe:read'])]
-    private $lastname;
+    private ?string $lastname = null;
 
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
     #[Groups(['student:read', 'classe:read'])]
-    private $gender;
+    private ?string $gender = null;
 
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
-    #[Groups(['student:read', 'classe:read'])]
-    private $classe;
+    private ?Classe $classe = null;
 
+    /**
+     * @var Collection<int, StudentSubject>
+     */
     #[ORM\OneToMany(mappedBy: 'student', targetEntity: StudentSubject::class)]
-    private $subjects;
+    private Collection $subjects;
 
+    /**
+     * @var Collection<int, Score>
+     */
     #[ORM\OneToMany(mappedBy: 'student', targetEntity: Score::class)]
-    private $scores;
+    private Collection $scores;
 
     public function __construct()
     {
@@ -55,7 +60,14 @@ class Student
         return $this->id;
     }
 
-    public function getFirstname(): ?string
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getFirstname(): string
     {
         return $this->firstname;
     }
@@ -63,7 +75,6 @@ class Student
     public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
@@ -75,7 +86,6 @@ class Student
     public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -87,7 +97,6 @@ class Student
     public function setGender(?string $gender): self
     {
         $this->gender = $gender;
-
         return $this;
     }
 
@@ -99,12 +108,11 @@ class Student
     public function setClasse(?Classe $classe): self
     {
         $this->classe = $classe;
-
         return $this;
     }
 
     /**
-     * @return Collection|StudentSubject[]
+     * @return Collection<int, StudentSubject>
      */
     public function getSubjects(): Collection
     {
@@ -114,33 +122,24 @@ class Student
     public function addSubject(StudentSubject $subject): self
     {
         if (!$this->subjects->contains($subject)) {
-            $this->subjects[] = $subject;
+            $this->subjects->add($subject);
             $subject->setStudent($this);
         }
-
         return $this;
     }
 
     public function removeSubject(StudentSubject $subject): self
     {
         if ($this->subjects->removeElement($subject)) {
-            // set the owning side to null (unless already changed)
             if ($subject->getStudent() === $this) {
                 $subject->setStudent(null);
             }
         }
-
         return $this;
     }
 
-    public function __toString()
-    {
-        $name = $this->firstname . ' ' . $this->lastname;
-        return $name;
-    }
-
     /**
-     * @return Collection|Score[]
+     * @return Collection<int, Score>
      */
     public function getScores(): Collection
     {
@@ -150,44 +149,52 @@ class Student
     public function addScore(Score $score): self
     {
         if (!$this->scores->contains($score)) {
-            $this->scores[] = $score;
+            $this->scores->add($score);
             $score->setStudent($this);
         }
-
         return $this;
     }
 
     public function removeScore(Score $score): self
     {
         if ($this->scores->removeElement($score)) {
-            // set the owning side to null (unless already changed)
             if ($score->getStudent() === $this) {
                 $score->setStudent(null);
             }
         }
-
         return $this;
     }
 
-    public function getName(){
-        return $this->getFirstname() . ' ' . $this->getLastname();
+    public function __toString(): string
+    {
+        return $this->firstname . ' ' . ($this->lastname ?? '');
     }
 
-    public function getExport() 
+    public function getName(): string
+    {
+        return $this->__toString();
+    }
+
+    /**
+     * Export student data as array
+     *
+     * @return array<int, string|float>  PHPStan-friendly array type
+     */
+    public function getExport(): array
     {
         $result = [];
-        $result[] = $this->getGender();
+        $result[] = $this->gender ?? '';
         $result[] = $this->getName();
-        $result[] = $this->getClasse()->getName();
-        $scores = $this->getScores();
-        $sum=0;
+        $result[] = $this->classe?->getName() ?? '';
 
-        foreach($scores as $score) {
-            $sum += $score->getValue();
+        $scores = $this->getScores();
+        $sum = 0.0;
+        foreach ($scores as $score) {
+            $sum += $score->getValue() ?? 0;
         }
-        
-        $result[] = count($scores) ? $sum/count($scores) : 0;
+        $result[] = count($scores) ? $sum / count($scores) : 0.0;
 
         return $result;
     }
+
 }

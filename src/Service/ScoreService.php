@@ -2,18 +2,21 @@
 
 namespace App\Service;
 
+use App\Entity\Score;
 use App\Form\ScoreType;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class ScoreService
 {
-    private $formFactory;
-
-    public function __construct(FormFactoryInterface $formFactory)
+    public function __construct(
+        private FormFactoryInterface $formFactory)
     {
-        $this->formFactory = $formFactory;
     }
 
+    /**
+     * @param array<Score> $scores
+     * @return array<string, mixed>
+     */
     public function processScores(array $scores): array
     {
         $forms = [];

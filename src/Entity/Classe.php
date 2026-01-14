@@ -4,16 +4,15 @@ namespace App\Entity;
 
 use App\Entity\Student;
 use App\Entity\Teacher;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClasseRepository;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -37,27 +36,32 @@ class Classe
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[ApiProperty(identifier: true)]
     #[Groups(['classe:read', 'student:read', 'teacher:read'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['classe:read', 'classe:write', 'student:read', 'teacher:read'])]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(['classe:read', 'classe:write'])]
-    private $location;
+    private ?string $location = null;
 
+    /**
+     * @var Collection<int, Student>
+     */
     #[ORM\OneToMany(mappedBy: 'classe', targetEntity: Student::class)]
     #[Groups(['classe:read'])]
     #[MaxDepth(1)]
-    private $students;
+    private Collection $students;
 
-    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classes')]
+    /**
+     * @var Collection<int, Teacher>
+     */
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classe')]
     #[Groups(['classe:read'])]
     #[MaxDepth(1)]
-    private $teachers;
+    private Collection $teachers;
 
     public function __construct()
     {
@@ -70,7 +74,14 @@ class Classe
         return $this->id;
     }
 
-    public function getName(): ?string
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getName(): string
     {
         return $this->name;
     }
@@ -78,7 +89,6 @@ class Classe
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -90,12 +100,11 @@ class Classe
     public function setLocation(?string $location): self
     {
         $this->location = $location;
-
         return $this;
     }
 
     /**
-     * @return Collection|Student[]
+     * @return Collection<int, Student>
      */
     public function getStudents(): Collection
     {
@@ -105,27 +114,24 @@ class Classe
     public function addStudent(Student $student): self
     {
         if (!$this->students->contains($student)) {
-            $this->students[] = $student;
+            $this->students->add($student);
             $student->setClasse($this);
         }
-
         return $this;
     }
 
     public function removeStudent(Student $student): self
     {
         if ($this->students->removeElement($student)) {
-            // set the owning side to null (unless already changed)
             if ($student->getClasse() === $this) {
                 $student->setClasse(null);
             }
         }
-
         return $this;
     }
 
     /**
-     * @return Collection|Teacher[]
+     * @return Collection<int, Teacher>
      */
     public function getTeachers(): Collection
     {
@@ -135,10 +141,9 @@ class Classe
     public function addTeacher(Teacher $teacher): self
     {
         if (!$this->teachers->contains($teacher)) {
-            $this->teachers[] = $teacher;
+            $this->teachers->add($teacher);
             $teacher->addClasse($this);
         }
-
         return $this;
     }
 
@@ -147,8 +152,6 @@ class Classe
         if ($this->teachers->removeElement($teacher)) {
             $teacher->removeClasse($this);
         }
-
         return $this;
     }
-
 }

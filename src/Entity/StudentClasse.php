@@ -11,17 +11,24 @@ class StudentClasse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'studentClasses')]
-    private $classe;
+    private ?Classe $classe = null;
 
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'studentClasses')]
-    private $student;
+    private ?Student $student = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getClasse(): ?Classe
@@ -32,7 +39,6 @@ class StudentClasse
     public function setClasse(?Classe $classe): self
     {
         $this->classe = $classe;
-
         return $this;
     }
 
@@ -44,7 +50,6 @@ class StudentClasse
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
-
         return $this;
     }
 }

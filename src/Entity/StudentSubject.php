@@ -13,16 +13,19 @@ class StudentSubject
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
-    
-    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'subjects')]
-    private $student;
+    private ?int $id = null;
 
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'subjects')]
+    private ?Student $student = null;
+
+    /**
+     * @var Collection<int, Subject>
+     */
     #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'studentSubjects')]
-    private $subject;
+    private Collection $subject;
 
     #[ORM\ManyToOne(targetEntity: Score::class, inversedBy: 'studentSubject')]
-    private $score;
+    private ?Score $score = null;
 
     public function __construct()
     {
@@ -34,6 +37,13 @@ class StudentSubject
         return $this->id;
     }
 
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
     public function getStudent(): ?Student
     {
         return $this->student;
@@ -42,12 +52,11 @@ class StudentSubject
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
-
         return $this;
     }
 
     /**
-     * @return Collection|Subject[]
+     * @return Collection<int, Subject>
      */
     public function getSubject(): Collection
     {
@@ -57,16 +66,14 @@ class StudentSubject
     public function addSubject(Subject $subject): self
     {
         if (!$this->subject->contains($subject)) {
-            $this->subject[] = $subject;
+            $this->subject->add($subject);
         }
-
         return $this;
     }
 
     public function removeSubject(Subject $subject): self
     {
         $this->subject->removeElement($subject);
-
         return $this;
     }
 
@@ -78,7 +85,6 @@ class StudentSubject
     public function setScore(?Score $score): self
     {
         $this->score = $score;
-
         return $this;
     }
 }

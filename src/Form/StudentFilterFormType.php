@@ -41,12 +41,6 @@ class StudentFilterFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder'   => 'Choisir la classe',
             ])
-            ->add('location', EntityType::class, [
-                'class' => Classe::class,
-                'required' => false,
-                'choice_label' => 'location',
-                'placeholder'   => 'Choisir le centre',
-            ])
             ;
         }
 

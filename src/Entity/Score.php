@@ -13,19 +13,22 @@ class Score
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    private $value;
+    private ?float $value = null;
 
+    /**
+     * @var Collection<int, StudentSubject>
+     */
     #[ORM\OneToMany(mappedBy: 'score', targetEntity: StudentSubject::class)]
-    private $studentSubject;
+    private Collection $studentSubject;
 
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores', cascade: ['remove'])]
-    private $subject;
+    private ?Subject $subject = null;
 
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'scores')]
-    private $student;
+    private ?Student $student = null;
 
     public function __construct()
     {
@@ -37,6 +40,13 @@ class Score
         return $this->id;
     }
 
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
     public function getValue(): ?float
     {
         return $this->value;
@@ -45,12 +55,11 @@ class Score
     public function setValue(?float $value): self
     {
         $this->value = $value;
-
         return $this;
     }
 
     /**
-     * @return Collection|StudentSubject[]
+     * @return Collection<int, StudentSubject>
      */
     public function getStudentSubject(): Collection
     {
@@ -60,22 +69,19 @@ class Score
     public function addStudentSubject(StudentSubject $studentSubject): self
     {
         if (!$this->studentSubject->contains($studentSubject)) {
-            $this->studentSubject[] = $studentSubject;
+            $this->studentSubject->add($studentSubject);
             $studentSubject->setScore($this);
         }
-
         return $this;
     }
 
     public function removeStudentSubject(StudentSubject $studentSubject): self
     {
         if ($this->studentSubject->removeElement($studentSubject)) {
-            // set the owning side to null (unless already changed)
             if ($studentSubject->getScore() === $this) {
                 $studentSubject->setScore(null);
             }
         }
-
         return $this;
     }
 
@@ -87,7 +93,6 @@ class Score
     public function setSubject(?Subject $subject): self
     {
         $this->subject = $subject;
-
         return $this;
     }
 
@@ -99,7 +104,6 @@ class Score
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
-
         return $this;
     }
 }

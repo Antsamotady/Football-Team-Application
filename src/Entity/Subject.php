@@ -13,22 +13,28 @@ class Subject
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 128)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'integer')]
-    private $coefficient;
+    private int $coefficient;
 
+    /**
+     * @var Collection<int, StudentSubject>
+     */
     #[ORM\ManyToMany(targetEntity: StudentSubject::class, mappedBy: 'subject')]
-    private $studentSubjects;
+    private Collection $studentSubjects;
 
     #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'subjects')]
-    private $teacher;
+    private ?Teacher $teacher = null;
 
+    /**
+     * @var Collection<int, Score>
+     */
     #[ORM\OneToMany(mappedBy: 'subject', targetEntity: Score::class)]
-    private $scores;
+    private Collection $scores;
 
     public function __construct()
     {
@@ -41,7 +47,15 @@ class Subject
         return $this->id;
     }
 
-    public function getName(): ?string
+    /** @internal Doctrine only */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getName(): string
     {
         return $this->name;
     }
@@ -53,7 +67,7 @@ class Subject
         return $this;
     }
 
-    public function getCoefficient(): ?int
+    public function getCoefficient(): int
     {
         return $this->coefficient;
     }
@@ -66,7 +80,7 @@ class Subject
     }
 
     /**
-     * @return Collection|StudentSubject[]
+     * @return Collection<int, StudentSubject>
      */
     public function getStudentSubjects(): Collection
     {
@@ -76,7 +90,7 @@ class Subject
     public function addStudentSubject(StudentSubject $studentSubject): self
     {
         if (!$this->studentSubjects->contains($studentSubject)) {
-            $this->studentSubjects[] = $studentSubject;
+            $this->studentSubjects->add($studentSubject);
             $studentSubject->addSubject($this);
         }
 
@@ -105,29 +119,28 @@ class Subject
     }
 
     /**
-     * @return Collection|Score[]
+     * @return Collection<int, Score>
      */
     public function getScores(): Collection
     {
         return $this->scores;
     }
 
-    public function addScore(Score $scores): self
+    public function addScore(Score $score): self
     {
-        if (!$this->scores->contains($scores)) {
-            $this->scores[] = $scores;
-            $scores->setSubject($this);
+        if (!$this->scores->contains($score)) {
+            $this->scores->add($score);
+            $score->setSubject($this);
         }
 
         return $this;
     }
 
-    public function removeScore(Score $scores): self
+    public function removeScore(Score $score): self
     {
-        if ($this->scores->removeElement($scores)) {
-            // set the owning side to null (unless already changed)
-            if ($scores->getSubject() === $this) {
-                $scores->setSubject(null);
+        if ($this->scores->removeElement($score)) {
+            if ($score->getSubject() === $this) {
+                $score->setSubject(null);
             }
         }
 

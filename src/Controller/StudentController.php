@@ -347,38 +347,43 @@ class StudentController extends AbstractController
 		return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
 	}
 
-	/* Import csv */
-	protected function decrypteinutf8($datas) {
-		$datas_return = array();
-		foreach ($datas as $value) {
-			$datas_return[] = (preg_match('!!u', $value)) ? $value : utf8_encode($value);
-		}
-		return $datas_return;
-	}
-
-	private function ensureStudentScoresComplete(Student $student, $em)
-	{
-    $subjectRepository = $em->getRepository(Subject::class);
-    $subjects = $subjectRepository->findAll();
-		
-    $scoreRepository = $em->getRepository(Score::class);
-    $scores = $scoreRepository->findBy(['student' => $student]);
-
-    $existingScores = [];
-    foreach ($scores as $score) {
-			$existingScores[$score->getSubject()->getId()] = $score;
+    /**
+     * Converts all strings in the input array to UTF-8 if needed.
+     *
+     * @param string[] $datas Array of strings to check/convert
+     * @return string[] Array of UTF-8 strings
+     */
+    protected function decrypteinutf8(array $datas): array
+    {
+        $datas_return = [];
+        foreach ($datas as $value) {
+            $datas_return[] = (preg_match('!!u', $value)) ? $value : utf8_encode($value);
+        }
+        return $datas_return;
     }
 
-    foreach ($subjects as $subject) {
-			if (!isset($existingScores[$subject->getId()])) {
-				$newScore = new Score();
-				$newScore->setStudent($student);
-				$newScore->setSubject($subject);
-				$newScore->setValue(0);
-				$em->persist($newScore);
-			}
-    }
-    $em->flush();
-	}
+    private function ensureStudentScoresComplete(Student $student, EntityManagerInterface $em): void
+    {
+        $subjectRepository = $em->getRepository(Subject::class);
+        $subjects = $subjectRepository->findAll();
+            
+        $scoreRepository = $em->getRepository(Score::class);
+        $scores = $scoreRepository->findBy(['student' => $student]);
 
+        $existingScores = [];
+        foreach ($scores as $score) {
+                $existingScores[$score->getSubject()->getId()] = $score;
+        }
+
+        foreach ($subjects as $subject) {
+                if (!isset($existingScores[$subject->getId()])) {
+                    $newScore = new Score();
+                    $newScore->setStudent($student);
+                    $newScore->setSubject($subject);
+                    $newScore->setValue(0);
+                    $em->persist($newScore);
+                }
+        }
+        $em->flush();
+	}
 }

@@ -12,7 +12,6 @@ class ScoreFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $students = $manager->getRepository(Student::class)->findOneBy(['firstname' => 'Marisa']);
-        dd($students);
         // $product = new Product();
         // $manager->persist($product);
 

@@ -9,10 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
- * @method Student|null find($id, $lockMode = null, $lockVersion = null)
- * @method Student|null findOneBy(array $criteria, array $orderBy = null)
- * @method Student[]    findAll()
- * @method Student[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Student>
  */
 class StudentRepository extends ServiceEntityRepository
 {
@@ -83,14 +80,6 @@ class StudentRepository extends ServiceEntityRepository
                 ->andWhere('c.name LIKE :searchedString')
                 ->setParameter('searchedString', $search->getClasse()->getName());
         }
-
-        if (!empty($search->getLocation())) {
-            $qb = $qb
-                ->join('u.classe', 'l')
-                ->andWhere('l.location LIKE :searchedLocationString')
-                ->setParameter('searchedLocationString', $search->getLocation()?->getLocation());
-        }
-
         // dump($qb->getQuery()->getSQL());
 
         $result = $qb->getQuery()->getResult();

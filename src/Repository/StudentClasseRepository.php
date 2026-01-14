@@ -2,15 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Student;
 use App\Entity\StudentClasse;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method StudentClasse|null find($id, $lockMode = null, $lockVersion = null)
- * @method StudentClasse|null findOneBy(array $criteria, array $orderBy = null)
- * @method StudentClasse[]    findAll()
- * @method StudentClasse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<StudentClasse>
  */
 class StudentClasseRepository extends ServiceEntityRepository
 {

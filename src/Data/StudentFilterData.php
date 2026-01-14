@@ -2,111 +2,68 @@
 
 namespace App\Data;
 
+use App\Entity\Classe;
+
 class StudentFilterData
 {
-  private $firstname;
-  private $lastname;
-  private $gender;
-  private $classe;
-  private $location;
+    private ?string $firstname = null;
+    private ?string $lastname = null;
+    private ?string $gender = null;
+    private ?Classe $classe = null;
 
-  /**
-   * Get the value of firstname
-   */ 
-  public function getFirstname()
-  {
-    return $this->firstname;
-  }
+    // -------------------------
+    // Firstname
+    // -------------------------
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
 
-  /**
-   * Set the value of firstname
-   *
-   * @return  self
-   */ 
-  public function setFirstname($firstname)
-  {
-    $this->firstname = $firstname;
+    public function setFirstname(?string $firstname): self
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
 
-    return $this;
-  }
+    // -------------------------
+    // Lastname
+    // -------------------------
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
 
-  /**
-   * Get the value of lastname
-   */ 
-  public function getLastname()
-  {
-    return $this->lastname;
-  }
+    public function setLastname(?string $lastname): self
+    {
+        $this->lastname = $lastname;
+        return $this;
+    }
 
-  /**
-   * Set the value of lastname
-   *
-   * @return  self
-   */ 
-  public function setLastname($lastname)
-  {
-    $this->lastname = $lastname;
+    // -------------------------
+    // Classe
+    // -------------------------
+    public function getClasse(): ?Classe
+    {
+        return $this->classe;
+    }
 
-    return $this;
-  }
+    public function setClasse(?Classe $classe): self
+    {
+        $this->classe = $classe;
+        return $this;
+    }
 
-  /**
-   * Get the value of classe
-   */ 
-  public function getClasse()
-  {
-    return $this->classe;
-  }
+    // -------------------------
+    // Gender
+    // -------------------------
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
 
-  /**
-   * Set the value of classe
-   *
-   * @return  self
-   */ 
-  public function setClasse($classe)
-  {
-    $this->classe = $classe;
-
-    return $this;
-  }
-
-  /**
-   * Get the value of gender
-   */ 
-  public function getGender()
-  {
-    return $this->gender;
-  }
-
-  /**
-   * Set the value of gender
-   *
-   * @return  self
-   */ 
-  public function setGender($gender)
-  {
-    $this->gender = $gender;
-
-    return $this;
-  }
-
-  /**
-   * Get the value of location
-   */ 
-  public function getLocation()
-  {
-    return $this->location;
-  }
-
-  /**
-   * Set the value of location
-   *
-   * @return  self
-   */ 
-  public function setLocation($location)
-  {
-    $this->location = $location;
-
-    return $this;
-  }
+    public function setGender(?string $gender): self
+    {
+        $this->gender = $gender;
+        return $this;
+    }
 }
