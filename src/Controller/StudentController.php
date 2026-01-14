@@ -133,14 +133,19 @@ class StudentController extends AbstractController
 
 		$response = new StreamedResponse(function () use ($students) {
 			$output = fopen('php://output', 'w');
+
+            if ($output === false) {
+                throw new \RuntimeException('Cannot open output stream');
+            }
+
 			// UTF-8 BOM for Excel
-			fwrite($output, "\xEF\xBB\xBF");
-			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
+			fwrite($output, "\xEF\xBB\xBF");	// Parameter #1 $stream of function fwrite expects resource, resource|false given.
+			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');	// Parameter #1 $stream of function fputcsv expects resource, resource|false given.
 
 			foreach ($students as $student) {
-					fputcsv($output, $student->getExport(), ';');
+					fputcsv($output, $student->getExport(), ';');	// Parameter #1 $stream of function fputcsv expects resource, resource|false given.
 			}
-			fclose($output);
+			fclose($output);	// Parameter #1 $stream of function fclose expects resource, resource|false given.
 		});
 
 		$response->headers->set('Content-Type', 'text/csv; charset=utf-8');
@@ -164,7 +169,7 @@ class StudentController extends AbstractController
 		
 		if (($handle = fopen($path . "tmp.csv", "r")) !== FALSE) {
 			while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-				$data = $this->decrypteinutf8($data); // put in utf8;
+				$data = $this->decrypteinutf8($data); // Parameter #1 $datas of method App\Controller\StudentController::decrypteinutf8() expects array<string>, list<string|null> given.
 
 				if ($row == 1) { // just skip the head title
 				} else {
@@ -274,9 +279,17 @@ class StudentController extends AbstractController
 		$newScore = (float) $data['newScore'];
 
 		$score = $scoreRepo->find($scoreId);
-		$score->setValue($newScore);
 
-		$em->persist($score);
+        if (!$score) {
+            return new JsonResponse([
+                'status' => 'KO',
+                'message' => 'Score not found',
+                'input' => $data['newScore']
+            ]);
+        }
+
+        $score->setValue($newScore);
+        $em->persist($score);
 
 		try {
 			$em->flush();
@@ -334,30 +347,33 @@ class StudentController extends AbstractController
 		]);
 	}
 
-	#[Route('/{id}', name: 'student_delete', methods: ['POST'])]
-	public function delete(Request $request, Student $student, EntityManagerInterface $em): Response
-	{
-		if ($this->isCsrfTokenValid('delete'.$student->getId(), $request->request->get('_token'))) {
-			$em->remove($student);
-			$em->flush();
+    #[Route('/{id}', name: 'student_delete', methods: ['POST'])]
+    public function delete(Request $request, Student $student, EntityManagerInterface $em): Response
+    {
+        $tokenRaw = $request->request->get('_token');
+        $token = $tokenRaw !== null ? (string) $tokenRaw : null;
 
-			$this->addFlash('success', 'Suppression réussie.');
-		}
+        if ($this->isCsrfTokenValid('delete'.$student->getId(), $token)) {
+            $em->remove($student);
+            $em->flush();
 
-		return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
-	}
+            $this->addFlash('success', 'Suppression réussie.');
+        }
+
+        return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
+    }
 
     /**
-     * Converts all strings in the input array to UTF-8 if needed.
+     * Convert all strings in CSV row to UTF-8
      *
-     * @param string[] $datas Array of strings to check/convert
-     * @return string[] Array of UTF-8 strings
+     * @param list<string|null> $datas
+     * @return list<string>
      */
     protected function decrypteinutf8(array $datas): array
     {
         $datas_return = [];
         foreach ($datas as $value) {
-            $datas_return[] = (preg_match('!!u', $value)) ? $value : utf8_encode($value);
+            $datas_return[] = (preg_match('!!u', (string) $value)) ? (string) $value : utf8_encode((string) $value);
         }
         return $datas_return;
     }
@@ -372,8 +388,13 @@ class StudentController extends AbstractController
 
         $existingScores = [];
         foreach ($scores as $score) {
-                $existingScores[$score->getSubject()->getId()] = $score;
+            $subject = $score->getSubject();
+            if (!$subject) {
+                throw new \LogicException('Score without subject detected');
+            }
+            $existingScores[$subject->getId()] = $score;
         }
+
 
         foreach ($subjects as $subject) {
                 if (!isset($existingScores[$subject->getId()])) {

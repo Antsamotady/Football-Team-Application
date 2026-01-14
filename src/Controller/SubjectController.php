@@ -71,11 +71,15 @@ class SubjectController extends AbstractController
     #[Route('/{id}', name: 'subject_delete', methods: ['POST'])]
     public function delete(Request $request, Subject $subject, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$subject->getId(), $request->request->get('_token'))) {
+        $tokenRaw = $request->request->get('_token');
+        $token = $tokenRaw !== null ? (string) $tokenRaw : null;
+
+        if ($this->isCsrfTokenValid('delete'.$subject->getId(), $token)) {
             $entityManager->remove($subject);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('subject_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

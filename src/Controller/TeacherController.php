@@ -78,11 +78,15 @@ class TeacherController extends AbstractController
     #[Route('/{id}', name: 'teacher_delete', methods: ['POST'])]
     public function delete(Request $request, Teacher $teacher): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$teacher->getId(), $request->request->get('_token'))) {
+        $tokenRaw = $request->request->get('_token');
+        $token = $tokenRaw !== null ? (string) $tokenRaw : null;
+
+        if ($this->isCsrfTokenValid('delete'.$teacher->getId(), $token)) {
             $this->entityManager->remove($teacher);
             $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('teacher_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

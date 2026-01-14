@@ -28,7 +28,12 @@ class ScoreService
         $weightedAverageScore = 0;
 
         foreach ($scores as $score) {
-            $weight = $score->getSubject()->getCoefficient();
+            $subject = $score->getSubject();
+            if ($subject === null) {
+                throw new \LogicException('Score has no subject assigned');
+            }
+
+            $weight = $subject->getCoefficient();
             $scoreValue = $score->getValue();
             $sumWeightedMarks += $scoreValue * $weight;
             $sumCoefficient += $weight;
