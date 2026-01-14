@@ -1,16 +1,16 @@
 {
-    "api-platform/core": {
-        "version": "2.7",
+    "api-platform/symfony": {
+        "version": "3.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "2.5",
-            "ref": "b86557ce5677fa855b1b2608f4a4bc4a8fed8be7"
+            "version": "3.3",
+            "ref": "74b45ac570c57eb1fbe56c984091a9ff87e18bab"
         },
         "files": [
             "config/packages/api_platform.yaml",
             "config/routes/api_platform.yaml",
-            "src/Entity/.gitignore"
+            "src/ApiResource/.gitignore"
         ]
     },
     "beberlei/assert": {
@@ -137,6 +137,18 @@
     },
     "myclabs/deep-copy": {
         "version": "1.10.2"
+    },
+    "nelmio/cors-bundle": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.5",
+            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
+        ]
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
@@ -610,6 +622,18 @@
             "templates/base.html.twig"
         ]
     },
+    "symfony/uid": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.2",
+            "ref": "d294ad4add3e15d7eb1bae0221588ca89b38e558"
+        },
+        "files": [
+            "config/packages/uid.yaml"
+        ]
+    },
     "symfony/validator": {
         "version": "6.0",
         "recipe": {
@@ -663,8 +687,5 @@
     },
     "webmozart/assert": {
         "version": "1.10.0"
-    },
-    "willdurand/negotiation": {
-        "version": "3.1.0"
     }
 }
