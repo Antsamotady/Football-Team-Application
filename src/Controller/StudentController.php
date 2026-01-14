@@ -101,7 +101,7 @@ class StudentController extends AbstractController
 			'students' 			=> $students,
 			'result'				=> $result,
 			'students_scores' => $studentsScores,
-			'has_filters' => $form->isSubmitted() || $filterForm->isSubmitted(), // Add this
+			'has_filters' => $form->isSubmitted() || $filterForm->isSubmitted(), // Add this and todo in view
 		]);
 	}
 

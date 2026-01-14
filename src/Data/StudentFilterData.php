@@ -8,6 +8,7 @@ class StudentFilterData
   private $lastname;
   private $gender;
   private $classe;
+  private $location;
 
   /**
    * Get the value of firstname
@@ -85,6 +86,26 @@ class StudentFilterData
   public function setGender($gender)
   {
     $this->gender = $gender;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of location
+   */ 
+  public function getLocation()
+  {
+    return $this->location;
+  }
+
+  /**
+   * Set the value of location
+   *
+   * @return  self
+   */ 
+  public function setLocation($location)
+  {
+    $this->location = $location;
 
     return $this;
   }

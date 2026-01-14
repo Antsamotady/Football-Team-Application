@@ -84,6 +84,13 @@ class StudentRepository extends ServiceEntityRepository
                 ->setParameter('searchedString', $search->getClasse()->getName());
         }
 
+        if (!empty($search->getLocation())) {
+            $qb = $qb
+                ->join('u.classe', 'l')
+                ->andWhere('l.location LIKE :searchedLocationString')
+                ->setParameter('searchedLocationString', $search->getLocation()?->getLocation());
+        }
+
         // dump($qb->getQuery()->getSQL());
 
         $result = $qb->getQuery()->getResult();

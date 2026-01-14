@@ -29,7 +29,7 @@ class StudentFilterFormType extends AbstractType
             ->add('gender', ChoiceType::class, [
                 'required' => false,
                 'label' => 'Civilité',
-                'placeholder'   => 'Choisir la civilité',
+                'placeholder'   => 'Choisir le sexe',
                 'choices' => [
                     'Mr' => 'Mr',
                     'Me' => 'Me'
@@ -40,6 +40,12 @@ class StudentFilterFormType extends AbstractType
                 'required' => false,
                 'choice_label' => 'name',
                 'placeholder'   => 'Choisir la classe',
+            ])
+            ->add('location', EntityType::class, [
+                'class' => Classe::class,
+                'required' => false,
+                'choice_label' => 'location',
+                'placeholder'   => 'Choisir le centre',
             ])
             ;
         }

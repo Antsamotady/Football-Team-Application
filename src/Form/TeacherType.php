@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Classe;
+use App\Entity\Subject;
 use App\Entity\Teacher;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,7 +46,21 @@ class TeacherType extends AbstractType
                     'data-allow-clear' => 'true',
                 ],
             ])
-            ;
+            ->add('subjects', EntityType::class, [
+                'label' => 'Matière(s)',
+                'class' => Subject::class,
+                'choice_label' => 'name', // Display class name
+                'multiple' => true, // Allow multiple selection
+                'expanded' => false, // false = select dropdown, true = checkboxes
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-select form-select-lg form-select-solid',
+                    'data-control' => 'select2',
+                    'data-placeholder' => 'Sélectionnez les matières',
+                    'data-allow-clear' => 'true',
+                ],
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
