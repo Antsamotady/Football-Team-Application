@@ -1,89 +1,68 @@
 security:
     enable_authenticator_manager: true
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
         App\Entity\User:
             algorithm: auto
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
+    
     firewalls:
-        # dev:
-        #     pattern: ^/(_(profiler|wdt)|css|images|js)/
-        #     security: false
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        
+        # API FIREWALL - MUST BE STATELESS
+        api:
+            pattern: ^/api
+            stateless: true  # ← CRITICAL: No sessions for API
+            provider: app_user_provider
+            # If you want public API access (no auth):
+            security: false  # ← Disable authentication for /api routes
+            # OR if you want JWT/token auth:
+            # jwt: ~
+            # custom_authenticators:
+            #     - App\Security\ApiTokenAuthenticator
+        
+        # WEB FIREWALL - Can use sessions
         main:
+            pattern: ^/
+            stateless: false  # ← Web can use sessions
             provider: app_user_provider
             custom_authenticator: App\Security\AppCustomAuthenticator
             logout:
                 path: app_logout
-                # where to redirect after logout
                 target: app_login
-
-            # two_factor:
-            #     auth_form_path: 2fa_login    # The route name you have used in the routes.yaml
-            #     check_path: 2fa_login_check  # The route name you have used in the routes.yaml
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    
     access_control:
-        # Authentication
+        # API endpoints - all public
+        - { path: ^/api, roles: PUBLIC_ACCESS }
+        
+        # Web authentication
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register$, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
         - { path: ^/verify/email, roles: PUBLIC_ACCESS }
         - { path: ^/logout$, roles: PUBLIC_ACCESS }
         
-        # Static pages
+        # Static pages (keep your existing list)
         - { path: ^/about, roles: PUBLIC_ACCESS }
         - { path: ^/contact, roles: PUBLIC_ACCESS }
-        - { path: ^/privacy-policy, roles: PUBLIC_ACCESS }
-        - { path: ^/terms-of-service, roles: PUBLIC_ACCESS }
-        - { path: ^/faq, roles: PUBLIC_ACCESS }
-        - { path: ^/features, roles: PUBLIC_ACCESS }
-        - { path: ^/pricing, roles: PUBLIC_ACCESS }
-        
-        # Public API/documentation
-        - { path: ^/api, roles: PUBLIC_ACCESS }
-        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
-        - { path: ^/api/swagger, roles: PUBLIC_ACCESS }
-        - { path: ^/api.json$, roles: PUBLIC_ACCESS }
-        
-        # Assets and files
-        - { path: ^/build/, roles: PUBLIC_ACCESS }
-        - { path: ^/uploads/public/, roles: PUBLIC_ACCESS }
-        - { path: ^/favicon.ico$, roles: PUBLIC_ACCESS }
-        - { path: ^/robots.txt$, roles: PUBLIC_ACCESS }
-        - { path: ^/sitemap.xml$, roles: PUBLIC_ACCESS }
-        
-        # Homepage and landing pages
-        - { path: ^/$, roles: PUBLIC_ACCESS }
-        - { path: ^/landing, roles: PUBLIC_ACCESS }
-        - { path: ^/welcome, roles: PUBLIC_ACCESS }
-        
-        # Blog/public content (if applicable)
-        - { path: ^/blog/, roles: PUBLIC_ACCESS }
-        - { path: ^/news/, roles: PUBLIC_ACCESS }
-        - { path: ^/articles/, roles: PUBLIC_ACCESS }
+        # ... rest of your static pages
         
         # Everything else requires authentication
         - { path: ^/, roles: ROLE_USER }
-        
 
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

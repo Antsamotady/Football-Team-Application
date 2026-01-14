@@ -2,11 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Student;
+use App\Entity\Teacher;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClasseRepository;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -15,8 +23,14 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ApiResource(
     normalizationContext: ['groups' => ['classe:read']],
     denormalizationContext: ['groups' => ['classe:write']],
-    collectionOperations: ['get', 'post'],
-    itemOperations: ['get', 'put', 'patch', 'delete']
+    operations: [
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+        new GetCollection(),
+        new Post(),
+    ]
 )]
 class Classe
 {
