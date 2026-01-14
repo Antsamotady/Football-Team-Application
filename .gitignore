@@ -23,3 +23,7 @@
 # My own stuff
 start_sf_server.sh
 deploy_me.sh
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
