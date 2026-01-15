@@ -60,7 +60,9 @@
                             <td>{{ subject.name }}</td>
                             <td>{{ subject.coefficient }}</td>
                             <td>
-                                <a href="{{ path('teacher_show', {'id': subject.teacher.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ subject.teacher.firstname }} {{ subject.teacher.lastname }}</a>
+                                {% if subject.teacher is not null %}
+                                    <a href="{{ path('teacher_show', {'id': subject.teacher.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ subject.teacher.firstname }} {{ subject.teacher.lastname }}</a>
+                                {% endif %}
                             </td>
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">

@@ -83,6 +83,11 @@ class Teacher
         return $this->lastname;
     }
 
+    public function getName(): ?string
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
     public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
