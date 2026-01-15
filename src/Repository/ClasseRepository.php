@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Classe;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Data\GeneralSearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Classe|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,32 +23,30 @@ class ClasseRepository extends ServiceEntityRepository
         parent::__construct($registry, Classe::class);
     }
 
-    // /**
-    //  * @return Classe[] Returns an array of Classe objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Classe linked to search
+     *
+     * @return Classe[]
+     */
+    public function findSearch(GeneralSearchData $search): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('u')
+            ->leftJoin('u.location', 'l')
+            ->addSelect('l');
 
-    /*
-    public function findOneBySomeField($value): ?Classe
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if (!empty($search->getName())) {
+            $qb
+                ->andWhere(
+                    'UPPER(u.name) LIKE UPPER(:term)
+                    OR UPPER(l.name) LIKE UPPER(:term)'
+                )
+                ->setParameter('term', '%' . $search->getName() . '%');
+        }
+
+        /** @var Classe[] $result */
+        $result = $qb->getQuery()->getResult();
+        
+        return $result;
     }
-    */
+
 }

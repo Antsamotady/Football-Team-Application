@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Classe;
+use App\Entity\Location;
 use App\Form\ClasseType;
 use App\Service\ScoreService;
+use App\Data\GeneralSearchData;
+use App\Form\ClasseSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
@@ -18,17 +21,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ClasseController extends AbstractController
 {
 	public function __construct(
+        private ClasseRepository $classeRepository,
 		public EntityManagerInterface $em,
-		private ScoreService $scoreService
+		private ScoreService $scoreService,
 	) {
 	}
     
     #[Route('/', name: 'classe_index', methods: ['GET'])]
-    public function index(ClasseRepository $classeRepository): Response
+    public function index(Request $request): Response
     {
+        $session = $request->getSession();
+        $data = new GeneralSearchData();
+        $form = $this->createForm(ClasseSearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $classes = [];
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			$classes = $this->classeRepository->findSearch($data);
+			// Store search criteria in session
+			$session->set('classe_search_criteria', [
+					'type' => 'search',
+					'data' => $data
+			]);
+		} else {
+			$classes = $this->classeRepository->findAll();
+			// Clear stored criteria
+			$session->remove('classe_search_criteria');
+		}
+
         return $this->render('classe/index.html.twig', [
-            'template_title' => 'Classes existantes',
-            'classes' => $classeRepository->findAll(),
+            'template_title'    => 'Classes',
+			'form'              => $form->createView(),
+            'classes'           => $classes,
+			'total'             => count($this->classeRepository->findAll())
         ]);
     }
 
@@ -53,6 +79,40 @@ class ClasseController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/new/location/{id}', name: 'classe_new_from_location', methods: ['GET', 'POST'])]
+    public function newFromLocation(
+        Location $location,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $classe = new Classe();
+        $classe->setLocation($location);
+
+        $form = $this->createForm(ClasseType::class, $classe, [
+            'location_locked' => true,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($classe);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Nouvelle classe enregistrée.');
+
+            return $this->redirectToRoute('location_show', [
+                'id' => $location->getId(),
+            ]);
+        }
+
+        return $this->render('classe/new.html.twig', [
+            'classe' => $classe,
+            'form' => $form,
+            'location' => $location,
+        ]);
+    }
+
 
     #[Route('/{id}', name: 'classe_show', methods: ['GET'])]
     public function show(

@@ -15,20 +15,30 @@ class ClasseType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('location', EntityType::class, [
+        ;
+            
+        if (!$options['location_locked']) {
+            $builder->add('location', EntityType::class, [
                 'class'         => Location::class,
                 'required'      => true,
                 'label'         => 'Centre',
                 'choice_label'  => 'name',
                 'placeholder'   => 'Choisir le centre',
-            ])
-        ;
+            ]);
+        } else {
+            $builder->add('location', EntityType::class, [
+                'class' => Location::class,
+                'choice_label' => 'name',
+                'disabled' => true,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Classe::class,
+            'location_locked' => false
         ]);
     }
 }
