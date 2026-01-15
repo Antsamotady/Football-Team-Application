@@ -1,9 +1,9 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}Subject{% endblock %}
+{% block title %}Matière{% endblock %}
 
 {% block body %}
-    <h1>Subject</h1>
+    <h1>Détaille de la matière</h1>
 
     <table class="table">
         <tbody>
@@ -26,9 +26,11 @@
         </tbody>
     </table>
 
-    <a href="{{ path('subject_index') }}">back to list</a>
-
-    <a href="{{ path('subject_edit', {'id': subject.id}) }}">edit</a>
-
-    {{ include('subject/_delete_form.html.twig') }}
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('subject_index') }}" class="btn btn-secondary w-66">Voir toutes les matières</a>
+        <div class="d-flex justify-content-end">
+            <a href="{{ path('subject_edit', {'id': subject.id}) }}" class="btn btn-primary w-66 me-2">Editer</a>
+            {{ include('subject/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

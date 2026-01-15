@@ -26,9 +26,12 @@
         </tbody>
     </table>
 
-    <a href="{{ path('teacher_index') }}">back to list</a>
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('teacher_index') }}" class="btn btn-secondary w-66">Voir toutes les enseignants</a>
+        <div class="d-flex justify-content-end">
+            <a href="{{ path('teacher_edit', {'id': teacher.id}) }}" class="btn btn-primary w-66 me-2">Editer</a>
+            {{ include('teacher/_delete_form.html.twig') }}
+        </div>
+    </div>
 
-    <a href="{{ path('teacher_edit', {'id': teacher.id}) }}">edit</a>
-
-    {{ include('teacher/_delete_form.html.twig') }}
 {% endblock %}

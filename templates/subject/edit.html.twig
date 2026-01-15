@@ -3,7 +3,7 @@
 {% block title %}Edition{% endblock %}
 
 {% block body %}
-    {{ include('subject/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('subject/_form.html.twig', {'button_label': 'Update', 'is_edit': true}) }}
     <hr>
     <div class="d-flex justify-content-between">
         <a href="{{ path('subject_index') }}" class="btn btn-secondary w-66">Liste des matières</a>

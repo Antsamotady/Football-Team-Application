@@ -57,7 +57,8 @@
                                 </div>
                             </td>
                             <td>{{ subject.id }}</td>
-                            <td>{{ subject.name }}</td>
+                            <td><a href="{{ path('subject_show', {'id': subject.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ subject.name }}</a>
+                            </td>
                             <td>{{ subject.coefficient }}</td>
                             <td>
                                 {% if subject.teacher is not null %}

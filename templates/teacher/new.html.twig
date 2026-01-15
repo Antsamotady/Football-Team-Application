@@ -1,10 +1,8 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}New Subject{% endblock %}
+{% block title %}Création{% endblock %}
 
 {% block body %}
-    <h1>Create new Subject</h1>
-
     {{ include('teacher/_form.html.twig') }}
 
     <a href="{{ path('teacher_index') }}">back to list</a>
