@@ -43,6 +43,7 @@
                             <th class="min-w-150px">Nom</th>
                             <th class="min-w-200px">Addresse</th>
                             <th class="min-w-150px">Directeur</th>
+                            <th class="min-w-50px">Nb de classes</th>
                             <th class="min-w-150px">Mise à jour le</th>
                             <th class="min-w-100px text-end">Actions</th>
                         </tr>
@@ -63,6 +64,7 @@
                             </td>
                             <td>{{ location.address }}</td>
                             <td>{{ location.director }}</td>
+                            <td>{{ location.classes|length }}</td>
                             <td>{{ location.updatedAt|date('Y-m-d H:i:s') }}</td>
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">

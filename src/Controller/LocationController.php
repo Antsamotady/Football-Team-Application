@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Location;
 use App\Form\LocationType;
+use App\Repository\ClasseRepository;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/location')]
 final class LocationController extends AbstractController
 {
+    public function __construct(
+        private ClasseRepository $classeRepository
+    ) {
+    }
+
     #[Route(name: 'location_index', methods: ['GET'])]
     public function index(LocationRepository $locationRepository): Response
     {
@@ -47,8 +53,11 @@ final class LocationController extends AbstractController
     #[Route('/{id}', name: 'location_show', methods: ['GET'])]
     public function show(Location $location): Response
     {
+        $classes = $this->classeRepository->findBy(['location' => $location]);
+
         return $this->render('location/show.html.twig', [
             'location' => $location,
+            'classes'   => $classes
         ]);
     }
 
