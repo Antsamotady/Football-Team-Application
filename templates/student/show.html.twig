@@ -206,7 +206,7 @@
                                 <!--end::Icon-->
                                 <!--begin::Title-->
                                 <div class="flex-grow-1 me-2">
-                                    <a href="#" class="fw-bolder text-gray-800 text-hover-primary fs-6">{{ score.subject.name }}</a>
+                                    <a href="{{ path('subject_show', {'id': score.subject.id}) }}" class="fw-bolder text-gray-800 text-hover-primary fs-6">{{ score.subject.name }}</a>
                                     <span class="text-muted fw-bold d-block">Appréciation : </span>
                                 </div>
                                 <!--end::Title-->

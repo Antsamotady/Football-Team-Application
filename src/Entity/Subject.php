@@ -33,7 +33,12 @@ class Subject
     /**
      * @var Collection<int, Score>
      */
-    #[ORM\OneToMany(mappedBy: 'subject', targetEntity: Score::class)]
+    #[ORM\OneToMany(
+        mappedBy: 'subject',
+        targetEntity: Score::class,
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     private Collection $scores;
 
     public function __construct()

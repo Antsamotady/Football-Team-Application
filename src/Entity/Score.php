@@ -24,7 +24,8 @@ class Score
     #[ORM\OneToMany(mappedBy: 'score', targetEntity: StudentSubject::class)]
     private Collection $studentSubject;
 
-    #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores', cascade: ['remove'])]
+    #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Subject $subject = null;
 
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'scores')]

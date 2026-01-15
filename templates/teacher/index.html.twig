@@ -61,11 +61,12 @@
                             <td><a href="{{ path('teacher_edit', {'id': teacher.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ teacher.firstname }} {{ teacher.lastname }}</a></td>
                             <td>
                                 {% for subject in teacher.subjects %}
-                                    <span>{{ subject.name }}</span>,
+                                    <span>{{ subject.name }}</span>{% if not loop.last %}, {% endif %}
                                 {% else %}
                                     <span></span>
                                 {% endfor %}
                             </td>
+
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">
                                     <a href="{{ path('teacher_show', {'id': teacher.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
