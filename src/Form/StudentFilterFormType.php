@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Classe;
+use App\Entity\Location;
 use App\Data\StudentFilterData;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,8 +32,8 @@ class StudentFilterFormType extends AbstractType
                 'label' => 'Civilité',
                 'placeholder'   => 'Choisir le sexe',
                 'choices' => [
-                    'Mr' => 'Mr',
-                    'Me' => 'Me'
+                    'Masculin' => 'Mr',
+                    'Féminin' => 'Me'
                 ],
             ])
             ->add('classe', EntityType::class, [
@@ -40,6 +41,13 @@ class StudentFilterFormType extends AbstractType
                 'required' => false,
                 'choice_label' => 'name',
                 'placeholder'   => 'Choisir la classe',
+            ])
+            ->add('location', EntityType::class, [
+                'class' => Location::class,
+                'required' => false,
+                'choice_label' => 'name',
+                'placeholder' => 'Choisir le centre',
+                'label' => 'Salle',
             ])
             ;
         }

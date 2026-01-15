@@ -3,6 +3,7 @@
 namespace App\Data;
 
 use App\Entity\Classe;
+use App\Entity\Location;
 
 class StudentFilterData
 {
@@ -10,6 +11,7 @@ class StudentFilterData
     private ?string $lastname = null;
     private ?string $gender = null;
     private ?Classe $classe = null;
+    private ?Location $location = null;
 
     // -------------------------
     // Firstname
@@ -66,4 +68,17 @@ class StudentFilterData
         $this->gender = $gender;
         return $this;
     }
+
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
+        return $this;
+    }
+
 }

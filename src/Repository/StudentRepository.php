@@ -80,6 +80,22 @@ class StudentRepository extends ServiceEntityRepository
                 ->andWhere('c.name LIKE :searchedString')
                 ->setParameter('searchedString', $search->getClasse()->getName());
         }
+
+        if (!empty($search->getClasse()) || !empty($search->getLocation())) {
+            $qb->join('u.classe', 'c2'); // Classe join
+
+            if (!empty($search->getClasse())) {
+                $qb->andWhere('c2.id = :classeId')
+                ->setParameter('classeId', $search->getClasse()->getId());
+            }
+
+            if (!empty($search->getLocation())) {
+                $qb->join('c2.location', 'l'); // join Location
+                $qb->andWhere('l.id = :locationId')
+                ->setParameter('locationId', $search->getLocation()->getId());
+            }
+        }
+
         // dump($qb->getQuery()->getSQL());
 
         /** @var Student[] $result */
