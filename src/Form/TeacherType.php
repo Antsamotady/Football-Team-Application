@@ -53,6 +53,7 @@ class TeacherType extends AbstractType
                 'multiple' => true, // Allow multiple selection
                 'expanded' => false, // false = select dropdown, true = checkboxes
                 'required' => false,
+                'by_reference' => false, // CRITICAL for $teacher->addSubject($subject);
                 'attr' => [
                     'class' => 'form-select form-select-lg form-select-solid',
                     'data-control' => 'select2',

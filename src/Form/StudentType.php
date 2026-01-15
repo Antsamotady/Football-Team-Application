@@ -33,8 +33,8 @@ class StudentType extends AbstractType
                 'label'       => 'Sexe',
                 'placeholder' => 'Veuiller sélectionner',
                 'choices'     => [
-                    'Homme' => 'Mr',
-                    'Femme' => 'Me',
+                    'Masculin' => 'Mr',
+                    'Féminin' => 'Me',
                 ],
             ])
             ->add('location', TextType::class, [
