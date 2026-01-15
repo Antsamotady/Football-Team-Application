@@ -71,6 +71,19 @@ License: For each use you must have a valid license purchased only from above li
 					</div>
 					<!--end::Brand-->
 					<!--begin::Aside menu-->
+					{% set studentRoutes = ['student_list', 'student_new'] %}
+					{% set subjectRoutes  = ['subject_new', 'subject_index'] %}
+					{% set teacherRoutes  = ['teacher_new', 'teacher_index'] %}
+					{% set classeRoutes   = ['classe_new', 'classe_index'] %}
+					{% set locationRoutes = ['location_index'] %}
+
+					{% set currentRoute = app.request.attributes.get('_route') %}
+					{% set isStudentActive = currentRoute in studentRoutes %}
+					{% set isSubjectActive = currentRoute in subjectRoutes %}
+					{% set isTeacherActive = currentRoute in teacherRoutes %}
+					{% set isClasseActive = currentRoute in classeRoutes %}
+					{% set isLocationActive = currentRoute in locationRoutes %}
+
 					<div class="aside-menu flex-column-fluid">
 						<!--begin::Aside Menu-->
 						<div class="hover-scroll-overlay-y my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="0">
@@ -82,7 +95,7 @@ License: For each use you must have a valid license purchased only from above li
 										<span class="menu-section text-muted text-uppercase fs-8 ls-1">Menu</span>
 									</div>
 								</div>
-								<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+								<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ isStudentActive ? 'here show' : '' }}">
 									<span class="menu-link">
 										<span class="menu-icon">
 											<!--begin::Svg Icon | path: icons/duotune/ecommerce/ecm007.svg-->
@@ -99,7 +112,7 @@ License: For each use you must have a valid license purchased only from above li
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('student_list') }}">
+											<a class="menu-link {{ app.request.attributes.get('_route') == 'student_list' ? 'active' : '' }}" href="{{ path('student_list') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
@@ -107,7 +120,7 @@ License: For each use you must have a valid license purchased only from above li
 											</a>
 										</div>
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('student_new') }}">
+											<a class="menu-link {{ app.request.attributes.get('_route') == 'student_new' ? 'active' : '' }}" href="{{ path('student_new') }}">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
@@ -116,7 +129,7 @@ License: For each use you must have a valid license purchased only from above li
 										</div>
 									</div>
 								</div>
-								<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+								<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ isClasseActive ? 'here show' : '' }}">
 									<span class="menu-link">
 										<span class="menu-icon">
 											<!--begin::Svg Icon | path: icons/duotune/communication/com013.svg-->
@@ -133,26 +146,22 @@ License: For each use you must have a valid license purchased only from above li
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('classe_index') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
+											<a class="menu-link {{ currentRoute == 'classe_index' ? 'active' : '' }}" href="{{ path('classe_index') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
 												<span class="menu-title">Liste des classes</span>
 											</a>
 										</div>
 									</div>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('classe_index') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
-												<span class="menu-title">Actions sur les classes</span>
+											<a class="menu-link {{ currentRoute == 'classe_new' ? 'active' : '' }}" href="{{ path('classe_new') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+												<span class="menu-title">Ajouter une classe</span>
 											</a>
 										</div>
 									</div>
 								</div>
-								<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+								<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ isLocationActive ? 'here show' : '' }}">
 									<span class="menu-link">
 										<span class="menu-icon">
 											<!--begin::Svg Icon | path: icons/duotune/communication/com013.svg-->
@@ -169,27 +178,22 @@ License: For each use you must have a valid license purchased only from above li
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('location_index') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
-												<span class="menu-title">Liste des classes</span>
+											<a class="menu-link {{ currentRoute == 'location_index' ? 'active' : '' }}" href="{{ path('location_index') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+												<span class="menu-title">Liste des centres</span>
 											</a>
 										</div>
 									</div>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a href="" lass="menu-link" >
-											<a class="menu-link" href="{{ path('location_index') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
-												<span class="menu-title">Nouveau centre</span>
+											<a class="menu-link {{ currentRoute == 'location_new' ? 'active' : '' }}" href="{{ path('location_new') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+												<span class="menu-title">Ajouter un centre</span>
 											</a>
 										</div>
 									</div>
 								</div>
-								<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+								<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ isTeacherActive ? 'here show' : '' }}">
 									<span class="menu-link">
 										<span class="menu-icon">
 											<!--begin::Svg Icon | path: /home/tsilavina/Documents/CELANEO/metronic_v8.0.37_html_demo6/demo6/src/media/icons/duotune/communication/com014.svg -->
@@ -208,24 +212,20 @@ License: For each use you must have a valid license purchased only from above li
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('teacher_index') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
+											<a class="menu-link {{ currentRoute == 'teacher_index' ? 'active' : '' }}" href="{{ path('teacher_index') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
 												<span class="menu-title">Liste des enseignants</span>
 											</a>
 										</div>
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('teacher_new') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
-												<span class="menu-title">Ajout nouvel enseignant</span>
+											<a class="menu-link {{ currentRoute == 'teacher_new' ? 'active' : '' }}" href="{{ path('teacher_new') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+												<span class="menu-title">Ajouter un enseignant</span>
 											</a>
 										</div>
 									</div>
 								</div>
-								<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+								<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ isSubjectActive ? 'here show' : '' }}">
 									<span class="menu-link">
 										<span class="menu-icon">
 											<!--begin::Svg Icon | path: icons/duotune/technology/teh004.svg-->
@@ -242,19 +242,15 @@ License: For each use you must have a valid license purchased only from above li
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('subject_index') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
+											<a class="menu-link {{ currentRoute == 'subject_index' ? 'active' : '' }}" href="{{ path('subject_index') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
 												<span class="menu-title">Liste des matières</span>
 											</a>
 										</div>
 										<div class="menu-item">
-											<a class="menu-link" href="{{ path('subject_new') }}">
-												<span class="menu-bullet">
-													<span class="bullet bullet-dot"></span>
-												</span>
-												<span class="menu-title">Ajout nouvelle matière</span>
+											<a class="menu-link {{ currentRoute == 'subject_new' ? 'active' : '' }}" href="{{ path('subject_new') }}">
+												<span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+												<span class="menu-title">Ajouter une matière</span>
 											</a>
 										</div>
 									</div>

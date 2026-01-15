@@ -47,7 +47,7 @@ class StudentController extends AbstractController
 		StudentRepository $studentRepo, 
 		ScoreRepository $scoreRepo): Response
 	{
-    $session = $request->getSession();
+        $session = $request->getSession();
 		$data = new StudentSearchData();
 		$form = $this->createForm(StudentSearchFormType::class, $data);
 		$form->handleRequest($request);
