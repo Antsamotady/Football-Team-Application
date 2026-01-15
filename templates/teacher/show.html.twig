@@ -1,9 +1,9 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}Teacher{% endblock %}
+{% block title %}Enseignant{% endblock %}
 
 {% block body %}
-    <h1>Teacher</h1>
+    <h1>Détails sur l'enseignant</h1>
 
     <table class="table">
         <tbody>
@@ -21,7 +21,17 @@
             </tr>
             <tr>
                 <th>Sexe</th>
-                <td>{{ teacher.gender }}</td>
+                <td>{{ teacher.gender == 'Mr' ? 'Masculin' : 'Féminin' }}</td>
+            </tr>
+            <tr>
+                <th>Matière(s) enseignée(s)</th>
+                <td>
+                    {% for subject in teacher.subjects %}
+                        {{ subject.name }}{% if not loop.last %}, {% endif %}
+                    {% else %}
+                        --aucune--
+                    {% endfor %}
+                </td>
             </tr>
         </tbody>
     </table>

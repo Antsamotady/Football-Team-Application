@@ -28,8 +28,8 @@
                 <td>{{ classe.students|length }}</td>
             </tr>
             <tr>
-                <th>Adresse</th>
-                <td>...</td>
+                <th>Centre</th>
+                <td>{% if classe.location %}{{ classe.location.name }}{% else %}--inconnu--{% endif %}</td>
             </tr>
         </tbody>
     </table>

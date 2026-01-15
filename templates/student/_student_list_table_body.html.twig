@@ -30,13 +30,16 @@
 				<!--begin::Billing=-->
 				<td>{{ student.lastname }}</td>
 				<td>{{ student.gender }}</td>
-				{# <td>{% if student.studentClasses %}<a href="{{ path('classe_show', {'id': student.studentClasses.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.studentClasses.name }}</a>{% endif %}</td> #}
 				<td>
 					{% if student.classe %}
-						{{ student.classe.name }}
+						<a href="{{ path('classe_show', {'id': student.classe.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.classe.name }}</a>
 					{% endif %}
 				</td>
-				<td>{{ student.classe.location }}</td>
+				<td>
+					{% if student.classe.location %}
+						<a href="{{ path('location_show', {'id': student.classe.location.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.classe.location.name }}</a>
+					{% endif %}
+				</td>
 				<td>
 					{% include 'student/_individual_student_score_stats.html.twig' with { 
 						student: students_scores[student.id].student, 

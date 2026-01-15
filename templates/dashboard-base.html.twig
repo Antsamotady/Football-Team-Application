@@ -71,11 +71,40 @@ License: For each use you must have a valid license purchased only from above li
 					</div>
 					<!--end::Brand-->
 					<!--begin::Aside menu-->
-					{% set studentRoutes = ['student_list', 'student_new'] %}
-					{% set subjectRoutes  = ['subject_new', 'subject_index'] %}
-					{% set teacherRoutes  = ['teacher_new', 'teacher_index'] %}
-					{% set classeRoutes   = ['classe_new', 'classe_index'] %}
-					{% set locationRoutes = ['location_index'] %}
+					{% set studentRoutes = [
+						'student_list', 
+						'student_new', 
+						'student_show', 
+						'student_edit'
+					] %}
+
+					{% set subjectRoutes = [
+						'subject_index', 
+						'subject_new', 
+						'subject_show', 
+						'subject_edit'
+					] %}
+
+					{% set teacherRoutes = [
+						'teacher_index', 
+						'teacher_new', 
+						'teacher_show', 
+						'teacher_edit'
+					] %}
+
+					{% set classeRoutes = [
+						'classe_index', 
+						'classe_new', 
+						'classe_show', 
+						'classe_edit'
+					] %}
+
+					{% set locationRoutes = [
+						'location_index',
+						'location_new',
+						'location_show', 
+						'location_edit'
+					] %}
 
 					{% set currentRoute = app.request.attributes.get('_route') %}
 					{% set isStudentActive = currentRoute in studentRoutes %}

@@ -59,8 +59,10 @@ class Classe
     #[MaxDepth(1)]
     private Collection $teachers;
 
-    #[ORM\ManyToOne(inversedBy: 'classes')]
+    #[ORM\ManyToOne(inversedBy: 'classes', cascade: [], fetch: 'LAZY')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Location $location = null;
+
 
     public function __construct()
     {
