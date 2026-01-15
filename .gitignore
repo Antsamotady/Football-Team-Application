@@ -27,3 +27,5 @@ deploy_me.sh
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+/docs
