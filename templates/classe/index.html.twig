@@ -49,6 +49,7 @@
                             </th>
                             <th class="min-w-70px">Id</th>
                             <th class="min-w-150px">Nom</th>
+                            <th class="min-w-150px">Centre</th>
                             <th class="min-w-150px">Nb étudiants</th>
                             <th class="min-w-100px text-end">Actions</th>
                         </tr>
@@ -65,6 +66,7 @@
                             </td>
                             <td>{{ classe.id }}</td>
                             <td><a href="{{ path('classe_show', {'id': classe.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ classe.name }}</a></td>
+                            <td>{% if classe.location is not null %}{{ classe.location.name }}{% endif %}</td>
                             <td>{{ classe.students|length }}</td>
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">

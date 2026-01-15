@@ -59,6 +59,9 @@ class Classe
     #[MaxDepth(1)]
     private Collection $teachers;
 
+    #[ORM\ManyToOne(inversedBy: 'classes')]
+    private ?Location $location = null;
+
     public function __construct()
     {
         $this->students = new ArrayCollection();
@@ -137,6 +140,18 @@ class Classe
         if ($this->teachers->removeElement($teacher)) {
             $teacher->removeClasse($this);
         }
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
+
         return $this;
     }
 }

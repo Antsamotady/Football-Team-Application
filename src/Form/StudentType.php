@@ -37,11 +37,6 @@ class StudentType extends AbstractType
                     'Féminin' => 'Me',
                 ],
             ])
-            ->add('location', TextType::class, [
-                'label' => 'Centre',
-                'required' => false,
-                'attr' => ['placeholder' => 'Centre']
-            ])
             ->add('classe', EntityType::class, [
                 'class'         => Classe::class,
                 'required'      => true,
@@ -49,11 +44,6 @@ class StudentType extends AbstractType
                 'choice_label'  => 'name',
                 'placeholder'   => 'Choisir la classe',
             ])
-            // ->add('scores', CollectionType::class, [
-            //     'entry_type'    => ScoreType::class,
-            //     'label'         => 'Notes',
-            //     'required'      => false
-            // ])
         ;
     }
 

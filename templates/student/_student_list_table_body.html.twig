@@ -36,7 +36,7 @@
 						{{ student.classe.name }}
 					{% endif %}
 				</td>
-				<td>{{ student.location }}</td>
+				<td>{{ student.classe.location }}</td>
 				<td>
 					{% include 'student/_individual_student_score_stats.html.twig' with { 
 						student: students_scores[student.id].student, 
