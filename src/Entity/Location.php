@@ -25,7 +25,7 @@ class Location
     private ?string $director = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * @var Collection<int, Classe>
@@ -86,14 +86,14 @@ class Location
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->createdAt;
+        return $this->updatedAt;
     }
 
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
-        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
