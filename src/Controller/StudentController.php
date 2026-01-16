@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Score;
+use App\Entity\Classe;
 use App\Entity\Student;
 use App\Entity\Subject;
-use App\Entity\Classe;
+use App\Form\ClasseType;
 use App\Form\StudentType;
 use App\Service\ScoreService;
 use App\Data\StudentFilterData;
@@ -250,7 +251,6 @@ class StudentController extends AbstractController
         return $this->redirectToRoute('student_list');
     }
 
-
 	#[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
 	public function new(Request $request, EntityManagerInterface $em): Response
 	{
@@ -272,6 +272,40 @@ class StudentController extends AbstractController
 			'form' => $form,
 		]);
 	}
+
+    #[Route('/new/classe/{id}', name: 'student_new_from_classe', methods: ['GET', 'POST'])]
+    public function newFromClasse(
+        Classe $classe,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $student = new Student();
+        $student->setClasse($classe);
+
+        $form = $this->createForm(StudentType::class, $student, [
+            'classe_locked' => true,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($student);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Nouvel étudiant enregistré');
+
+            return $this->redirectToRoute('classe_show', [
+                'id' => $classe->getId(),
+            ]);
+        }
+
+        return $this->render('classe/new.html.twig', [
+            'classe'        => $classe,
+            'form'          => $form,
+            'student'       => $student,
+            'is_from_classe' => true
+        ]);
+    }
 
 	#[Route('/{id}', name: 'student_show', methods: ['GET'])]
 	public function show(

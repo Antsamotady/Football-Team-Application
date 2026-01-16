@@ -37,20 +37,30 @@ class StudentType extends AbstractType
                     'Féminin' => 'Me',
                 ],
             ])
-            ->add('classe', EntityType::class, [
+        ;
+
+        if (!$options['classe_locked']) {
+            $builder->add('classe', EntityType::class, [
                 'class'         => Classe::class,
                 'required'      => true,
                 'label'         => 'Classe',
                 'choice_label'  => 'name',
                 'placeholder'   => 'Choisir la classe',
-            ])
-        ;
+            ]);
+        } else {
+            $builder->add('classe', EntityType::class, [
+                'class' => Classe::class,
+                'choice_label' => 'name',
+                'disabled' => true
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'    => Student::class
+            'data_class'    => Student::class,
+            'classe_locked' => false
         ]);
     }
 }

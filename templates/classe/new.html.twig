@@ -1,9 +1,15 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}New Classe{% endblock %}
+{% block title %}Ajouter{% endblock %}
 
 {% block body %}
-    <h1>Renseignement de la classe</h1>
+    <h1>
+        {% if is_from_classe is defined and is_from_classe == true %}
+            {{ classe.name }}: Détails du nouvel étudiant
+        {% else %}
+            Renseignement de la classe
+        {% endif %}
+    </h1>
 
     {% for notice in app.flashes('success') %}
         <div class="alert alert-success" role="alert">{{ notice }}</div>
