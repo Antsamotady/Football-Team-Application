@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Classe;
+use App\Data\ClasseFilterData;
 use App\Data\GeneralSearchData;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -49,4 +50,36 @@ class ClasseRepository extends ServiceEntityRepository
         return $result;
     }
 
+    /**
+    * User linked to search
+    *
+    * @return Classe[]
+    */
+    public function findFiltered(ClasseFilterData $search): array
+    {
+        $em = $this->getEntityManager();
+
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u');
+
+        if (!empty($search->getName())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.name) LIKE UPPER(:name)')
+                ->setParameter('name', "%{$search->getName()}%");
+        }
+
+        if (!empty($search->getLocation())) {
+            $qb->join('u.location', 'l');
+            $qb->andWhere('l.id = :locationId')
+            ->setParameter('locationId', $search->getLocation()->getId());
+        }
+
+        // dump($qb->getQuery()->getSQL());
+
+        /** @var Classe[] $result */
+        $result = $qb->getQuery()->getResult();
+        
+        return $result;
+    }
 }

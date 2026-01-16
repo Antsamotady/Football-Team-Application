@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Data\ClasseFilterData;
 use App\Entity\Classe;
 use App\Entity\Location;
 use App\Form\ClasseType;
 use App\Service\ScoreService;
 use App\Data\GeneralSearchData;
+use App\Form\ClasseFilterFormType;
 use App\Form\ClasseSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Repository\ClasseRepository;
@@ -35,24 +37,33 @@ class ClasseController extends AbstractController
         $form = $this->createForm(ClasseSearchFormType::class, $data);
         $form->handleRequest($request);
 
+        $filteredData = new ClasseFilterData();
+        $filterForm = $this->createForm(ClasseFilterFormType::class, $filteredData);
+        $filterForm->handleRequest($request);
+
         $classes = [];
 
 		if ($form->isSubmitted() && $form->isValid()) {
 			$classes = $this->classeRepository->findSearch($data);
-			// Store search criteria in session
 			$session->set('classe_search_criteria', [
 					'type' => 'search',
 					'data' => $data
 			]);
-		} else {
+		} elseif ($filterForm->isSubmitted() && $filterForm->isValid()) {
+            $classes = $this->classeRepository->findFiltered($filteredData);
+            $session->set('classe_search_criteria', [
+                'type'  => 'filter',
+                'data'  => $filteredData
+            ]);
+        } else {
 			$classes = $this->classeRepository->findAll();
-			// Clear stored criteria
 			$session->remove('classe_search_criteria');
 		}
 
         return $this->render('classe/index.html.twig', [
             'template_title'    => 'Classes',
 			'form'              => $form->createView(),
+			'filter_form' 	    => $filterForm->createView(),
             'classes'           => $classes,
 			'total'             => count($this->classeRepository->findAll())
         ]);
