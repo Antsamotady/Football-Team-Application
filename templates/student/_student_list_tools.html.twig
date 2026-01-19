@@ -1,26 +1,33 @@
-
 <div class="card-header border-0 pt-6">
-	<!--begin::Card title-->
-	<div class="card-title">
-		<!--begin::Search-->
-		<div class="d-flex align-items-center position-relative my-1">
-			<!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-			<span class="svg-icon svg-icon-1 position-absolute ms-6">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-					<rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="black" />
-					<path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="black" />
-				</svg>
-			</span>
-			<!--end::Svg Icon-->
-			{# <input type="text" data-kt-subscription-table-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search Subscriptions" /> #}
-			{{ form_start(form) }}
-				{{ form_widget(form.name, {'attr': {'class': 'form-control form-control-solid w-350px ps-14'}}) }}
-			{{ form_end(form) }}
+
+	{% if is_from_student is defined and is_from_student == true %}
+		<!--begin::Card title-->
+		<div class="card-title">
+			<!--begin::Search-->
+			<div class="d-flex align-items-center position-relative my-1">
+				<!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+				<span class="svg-icon svg-icon-1 position-absolute ms-6">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+						<rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="black" />
+						<path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="black" />
+					</svg>
+				</span>
+				<!--end::Svg Icon-->
+				{# <input type="text" data-kt-subscription-table-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search Subscriptions" /> #}
+				{{ form_start(form) }}
+					{{ form_widget(form.name, {'attr': {'class': 'form-control form-control-solid w-350px ps-14'}}) }}
+				{{ form_end(form) }}
+			</div>
+			<!--end::Search-->
+			<div style="margin-left: 10px;"><span class="text-muted mt-1 fw-bold fs-7">{{ result }} résultats</span></div>
 		</div>
-		<!--end::Search-->
-		<div style="margin-left: 10px;"><span class="text-muted mt-1 fw-bold fs-7">{{ result }} résultats</span></div>
-	</div>
-	<!--begin::Card title-->
+		<!--begin::Card title-->
+	{% else %}
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bolder fs-3 mb-1">Les étudiants de cette classe</span>
+        </h3>
+	{% endif %}
+
 	<!--begin::Card toolbar-->
 	<div class="card-toolbar">
 		<!--begin::Toolbar-->
@@ -44,7 +51,6 @@
 
 			<!--end::Filter-->
 			<!--begin::Export-->
-			{# <button type="button" class="btn btn-light-primary me-3" data-bs-toggle="modal" data-bs-target="#kt_subscriptions_export_modal"> #}
 			<a type="button" class="btn btn-light-primary me-3" href="{{ path('student_export') }}">
 				<!--begin::Svg Icon | path: icons/duotune/arrows/arr078.svg-->
 				<span class="svg-icon svg-icon-2">
@@ -56,10 +62,9 @@
 				</span>
 				<!--end::Svg Icon-->Export CSV
 			</a>
-			{# </button> #}
 			<!--end::Export-->
 			<!--begin::Add subscription-->
-			<a type="button" class="btn btn-primary me-3" href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_new_student">
+			<a type="button" class="btn {% if is_from_student is defined and is_from_student == true %}btn-primary{% else %}btn-light btn-active-primary{% endif %} me-3" href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_new_student">
 				<!--begin::Svg Icon | path: icons/duotune/arrows/arr078.svg-->
 				<span class="svg-icon svg-icon-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -70,16 +75,29 @@
 				</span>
 				<!--end::Svg Icon-->Import CSV
 			</a>
-			<a href="{{ path('student_new') }}" class="btn btn-primary">
-				<!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
-				<span class="svg-icon svg-icon-2">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-						<rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
-						<rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
-					</svg>
-				</span>
-			<!--end::Svg Icon-->Ajouter un étudiant
-			</a>
+
+			{% if is_from_student is defined and is_from_student == true %}
+				<a href="{{ path('student_new') }}" class="btn btn-primary">
+					<!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+					<span class="svg-icon svg-icon-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
+							<rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
+						</svg>
+					</span>
+				<!--end::Svg Icon-->Ajouter un étudiant
+				</a>
+			{% else %}
+				<a href="{{ path('student_new_from_classe', { id: classe.id }) }}" class="btn btn-light btn-active-primary"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="" data-bs-original-title="Un étudiant pour cette classe">
+					<span class="svg-icon svg-icon-3">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black"></rect>
+							<rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black"></rect>
+						</svg>
+					</span>
+					Ajouter un étudiant
+				</a>
+			{% endif %}
 			<!--end::Add subscription-->
 		</div>
 		<!--end::Toolbar-->

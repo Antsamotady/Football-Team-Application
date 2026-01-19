@@ -36,7 +36,10 @@ class StudentFilterFormType extends AbstractType
                     'Féminin' => 'Me'
                 ],
             ])
-            ->add('classe', EntityType::class, [
+        ;
+
+        if (!$options['classe_locked']) {
+            $builder->add('classe', EntityType::class, [
                 'class' => Classe::class,
                 'required' => false,
                 'choice_label' => 'name',
@@ -48,15 +51,16 @@ class StudentFilterFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choisir le centre',
                 'label' => 'Salle',
-            ])
-            ;
+            ]);
         }
+    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => StudentFilterData::class,
             'method' => 'GET',
+            'classe_locked' => false,
             'csrf_protection' => false
         ]);
     }

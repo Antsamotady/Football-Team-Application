@@ -8,8 +8,10 @@ use App\Entity\Location;
 use App\Form\ClasseType;
 use App\Service\ScoreService;
 use App\Data\GeneralSearchData;
+use App\Data\StudentFilterData;
 use App\Form\ClasseFilterFormType;
 use App\Form\ClasseSearchFormType;
+use App\Form\StudentFilterFormType;
 use App\Repository\ScoreRepository;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
@@ -24,8 +26,10 @@ class ClasseController extends AbstractController
 {
 	public function __construct(
         private ClasseRepository $classeRepository,
-		public EntityManagerInterface $em,
+        private StudentRepository $studentRepo,
+		private ScoreRepository $scoreRepo,
 		private ScoreService $scoreService,
+		public EntityManagerInterface $em
 	) {
 	}
     
@@ -127,15 +131,34 @@ class ClasseController extends AbstractController
 
     #[Route('/{id}', name: 'classe_show', methods: ['GET'])]
     public function show(
-        Classe $classe, 
-        StudentRepository $studentRepo, 
-		ScoreRepository $scoreRepo): Response
+        Request $request,
+        Classe $classe): Response
     {
-        $students = $studentRepo->findBy(['classe' => $classe]);
-		$studentsScores = []; 
+        $session = $request->getSession();
+		
+        $filteredData = new StudentFilterData();
+        $filterForm = $this->createForm(StudentFilterFormType::class, $filteredData, [
+            'classe_locked' => true,
+        ]);
+        $filterForm->handleRequest($request);
+
+		$students = [];
+
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+            $students = $this->studentRepo->findFilteredByClasse($classe, $filteredData);
+
+            $session->set('classe_search_criteria', [
+                'type'  => 'filter',
+                'data'  => $filteredData
+            ]);
+        } else {
+            $students = $this->studentRepo->findBy(['classe' => $classe]);
+        }
+        
+        $studentsScores = []; 
 
 		foreach ($students as $student) { 
-			$scores = $scoreRepo->findBy(['student' => $student], ['subject' => 'ASC']); 
+			$scores = $this->scoreRepo->findBy(['student' => $student], ['subject' => 'ASC']); 
 			$scoreResults = $this->scoreService->processScores($scores); 
 
 			$studentsScores[$student->getId()] = [
@@ -144,13 +167,14 @@ class ClasseController extends AbstractController
 				'total_score' => $scoreResults['totalScore'], 
 				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0,    // @phpstan-ignore-line
 				'score_forms' => $scoreResults['formViews'] 
-			]; 
+			];
 		}
 
         return $this->render('classe/show.html.twig', [
-            'classe'    => $classe,
-            'students'  => $students,
-			'students_scores' => $studentsScores,
+            'classe'            => $classe,
+            'students'          => $students,
+			'students_scores'   => $studentsScores,
+			'filter_form' 	    => $filterForm->createView()
         ]);
     }
 

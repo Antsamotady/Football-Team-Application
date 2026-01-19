@@ -23,7 +23,7 @@
 	<!--begin::Card-->
 	<div class="card">
 		<!--begin::Card header-->
-		{{ include('student/_student_list_tools.html.twig') }}
+		{{ include('student/_student_list_tools.html.twig', {'is_from_student': true}) }}
 		<!--end::Card header-->
 		{{ include('student/modal_import_student.html.twig') }}
 		<!--begin::Card body-->

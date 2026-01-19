@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Student;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
+use App\Entity\Classe;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -40,6 +41,46 @@ class StudentRepository extends ServiceEntityRepository
         /** @var Student[] $result */
         $result = $qb->getQuery()->getResult();
 
+        return $result;
+    }
+
+    /**
+    * User linked to search
+    *
+    * @return Student[]
+    */
+    public function findFilteredByClasse(Classe $classe, StudentFilterData $search): array
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u')
+            ->join('u.classe', 'c')
+            ->where('c.id = :searchedObjId')
+            ->setParameter('searchedObjId', $classe->getId());
+
+        if (!empty($search->getFirstname())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
+                ->setParameter('firstname', "%{$search->getFirstname()}%");
+        }
+
+        if (!empty($search->getLastname())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.lastname) LIKE UPPER(:lastname)')
+                ->setParameter('lastname', "%{$search->getLastname()}%");
+        }
+
+        if (!empty($search->getGender())) {
+            $qb = $qb
+                ->andWhere('UPPER(u.gender) LIKE UPPER(:gender)')
+                ->setParameter('gender', "{$search->getGender()}");
+        }
+
+        // dump($qb->getQuery()->getSQL());
+
+        /** @var Student[] $result */
+        $result = $qb->getQuery()->getResult();
+        
         return $result;
     }
 

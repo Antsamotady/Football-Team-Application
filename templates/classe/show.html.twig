@@ -11,7 +11,7 @@
         <div class="alert alert-danger" role="alert">{{ notice }}</div>
     {% endfor %}
 
-    <h1>Renseignement sur la classe</h1>
+    <h1>Renseignements sur la classe</h1>
 
     <table class="table">
         <tbody>
@@ -46,6 +46,8 @@
 
 	<!--begin::Card-->
 	<div class="card">
+    {{ include('student/_student_list_tools.html.twig', {'classe_obj': classe}) }}
+    
     {{ include('student/_student_list_table_body.html.twig', {'is_from_classe': true}) }}
     </div>
     <!--end::Card-->
