@@ -29,6 +29,7 @@ class Score
     private ?Subject $subject = null;
 
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'scores')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Student $student = null;
 
     public function __construct()

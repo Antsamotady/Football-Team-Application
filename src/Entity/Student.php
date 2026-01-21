@@ -46,8 +46,14 @@ class Student
     /**
      * @var Collection<int, Score>
      */
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Score::class)]
+    #[ORM\OneToMany(
+        mappedBy: 'student',
+        targetEntity: Score::class,
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     private Collection $scores;
+
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;

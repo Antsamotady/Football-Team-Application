@@ -7,11 +7,11 @@
 			<!--begin::Table row-->
 			<tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
 				<th class="min-w-8px"></th>
-				<th class="min-w-60px">Nom</th>
-				<th class="min-w-50px">Prénom</th>
-				<th class="min-w-60px">Classe</th>
-				<th class="min-w-60px">Centre</th>
-				<th class="text-center min-w-45px">Stats</th>
+				<th class="min-w-70px">Nom</th>
+				<th class="min-w-100px">Prénom</th>
+				<th class="min-w-30px">Classe</th>
+				<th class="min-w-40px">Centre</th>
+				<th class="text-center min-w-25px">Moyenne</th>
 				<th class="text-end min-w-70px">Actions</th>
 			</tr>
 			<!--end::Table row-->
@@ -34,18 +34,12 @@
 					{% endif %}
 				</td>
 				<td>
-					{% if student.classe.location %}
+					{% if student.classe and student.classe.location %}
 						<a href="{{ path('location_show', {'id': student.classe.location.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.classe.location.name }}</a>
 					{% endif %}
 				</td>
 				<td>
-					{% include 'student/_individual_student_score_stats.html.twig' with { 
-						student: students_scores[student.id].student, 
-						best_score: students_scores[student.id].best_score, 
-						total_score: students_scores[student.id].total_score, 
-						average_score: students_scores[student.id].average_score, 
-						score_forms: students_scores[student.id].score_forms } 
-					%} 
+					<span class="d-flex flex-wrap flex-center">{{ students_scores[student.id].average_score }}</span>
 				</td>
 				<td class="text-end">
 					<div class="d-flex justify-content-end flex-shrink-0">

@@ -14,6 +14,7 @@ use App\Service\StudentExporter;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
+use App\Service\StudentCsvImporter;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\SubjectRepository;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/student')]
@@ -149,94 +151,28 @@ class StudentController extends AbstractController
         ]);
     }
 
-
     #[Route('/import', name: 'student_import', methods: ['POST'])]
     public function import(
         Request $request,
-        EntityManagerInterface $em,
-        StudentRepository $studentRepo,
-        ClasseRepository $classeRepo
+        StudentCsvImporter $importer
     ): Response {
-        $header = ['firstname' => 0, 'lastname' => 1, 'gender' => 2, 'classe' => 3];
-        $uploadDir = __DIR__ . '/../../public/upload/student/';
-
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile|null $file */
         $file = $request->files->get('student-import');
 
-        if (!$file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+        if (!$file instanceof UploadedFile) {
             $this->addFlash('error', 'Fichier non trouvé ou invalide.');
             return $this->redirectToRoute('student_list');
         }
 
-        $tmpFileName = 'tmp.csv';
-        $filePath = $uploadDir . $tmpFileName;
-
-        // Ensure upload directory exists
-        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $uploadDir));
+        try {
+            $importer->import($file);
+            $this->addFlash('success', 'La liste a bien été importée.');
+        } catch (\Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
         }
-
-        // Move uploaded file
-        $file->move($uploadDir, $tmpFileName);
-
-        $row = 1;
-
-        $handle = fopen($filePath, 'r');
-        if ($handle === false) {
-            $this->addFlash('error', "Impossible d'ouvrir le fichier CSV.");
-            return $this->redirectToRoute('student_list');
-        }
-
-        while (($data = fgetcsv($handle, 1000, ';')) !== false) {
-            // Ensure all CSV values are strings
-            $data = array_map(fn($value) => is_null($value) ? '' : (string) $value, $data);
-
-            // Skip header row
-            if ($row === 1) {
-                $row++;
-                continue;
-            }
-
-            $firstname  = $data[$header['firstname']];
-            $lastname   = $data[$header['lastname']];
-            $gender     = $data[$header['gender']];
-            $classeName = $data[$header['classe']];
-
-            if ($firstname === '' || $gender === '') {
-                $this->addFlash('error', 'Erreur à la ligne : ' . $row);
-                fclose($handle);
-                unlink($filePath);
-                return $this->redirectToRoute('student_list');
-            }
-
-            /** @var Student|null $student */
-            $student = $studentRepo->findOneBy(['firstname' => $firstname]);
-            if (!$student) {
-                $student = new Student();
-            }
-
-            $student->setFirstname($firstname);
-            $student->setLastname($lastname);
-            $student->setGender($gender);
-
-            /** @var Classe|null $classe */
-            $classe = $classeRepo->findOneBy(['name' => $classeName]);
-            $student->setClasse($classe);
-
-            $em->persist($student);
-
-            $row++;
-        }
-
-        fclose($handle);
-        unlink($filePath);
-
-        $em->flush();
-
-        $this->addFlash('success', 'La liste a bien été importée.');
 
         return $this->redirectToRoute('student_list');
     }
+
 
 	#[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
 	public function new(Request $request, EntityManagerInterface $em): Response
@@ -441,7 +377,7 @@ class StudentController extends AbstractController
             $this->addFlash('success', 'Suppression réussie.');
         }
 
-        return $this->redirectToRoute('student_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
     }
 
     /**
