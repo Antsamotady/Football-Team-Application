@@ -10,6 +10,7 @@ use App\Form\StudentType;
 use App\Service\ScoreService;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
+use App\Service\StudentExporter;
 use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
@@ -106,61 +107,48 @@ class StudentController extends AbstractController
 		]);
 	}
 
-	#[Route('/export', name: 'student_export', methods: ['GET'])]
-	public function exportStudentCsv(Request $request, StudentRepository $studentRepo): Response
-	{
-		$session = $request->getSession();
-		$criteria = $session->get('student_search_criteria', null);
-		$students = [];
-        $fileName = '';
-        $timestamp = date('Y-m-d_H-i');
+    #[Route('/export', name: 'student_export', methods: ['GET'])]
+    public function exportStudentCsv(
+        Request $request,
+        StudentRepository $studentRepo,
+        StudentExporter $studentExporter
+    ): Response {
+        $session = $request->getSession();
+        $criteria = $session->get('student_search_criteria');
 
-        if (is_array($criteria)) {
-            if (isset($criteria['type'], $criteria['data'])) {
-                if ($criteria['type'] === 'search' && $criteria['data'] instanceof StudentSearchData) {
-                    $students = $studentRepo->findSearch($criteria['data']);
-                    $searchTerm = $criteria['data']->getName() ?? '';
-                    $fileName = "etudiants_recherche_{$searchTerm}_{$timestamp}.csv";
-                } elseif ($criteria['data'] instanceof StudentFilterData) {
-                    $students = $studentRepo->findFiltered($criteria['data']);
-                    $fileName = "etudiants_filtre_{$timestamp}.csv";
-                }
+        $students = [];
+        $exportCriteria = null;
+
+        if (
+            is_array($criteria)
+            && array_key_exists('type', $criteria)
+            && array_key_exists('data', $criteria)
+        ) {
+            if ($criteria['type'] === 'search' && $criteria['data'] instanceof StudentSearchData) {
+                $students = $studentRepo->findSearch($criteria['data']);
+                $exportCriteria = $criteria['data'];
+            } elseif ($criteria['data'] instanceof StudentFilterData) {
+                $students = $studentRepo->findFiltered($criteria['data']);
+                $exportCriteria = $criteria['data'];
             }
         }
 
-        if (empty($students)) {
+        if ($students === []) {
             $students = $studentRepo->findAll();
-            $fileName = "etudiants_complet_{$timestamp}.csv";
         }
-		
-		// Clean filename (remove special characters)
-		$fileName = preg_replace('/[^\w\-\.]/', '_', $fileName);
 
-		$response = new StreamedResponse(function () use ($students) {
-			$output = fopen('php://output', 'w');
+        $fileName = $studentExporter->generateFilename($exportCriteria);
+        $csvContent = $studentExporter->exportStudents($students);
 
-            if ($output === false) {
-                throw new \RuntimeException('Cannot open output stream');
-            }
+        return new Response($csvContent, 200, [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => sprintf(
+                'attachment; filename="%s"',
+                $fileName
+            ),
+        ]);
+    }
 
-			// UTF-8 BOM for Excel
-			fwrite($output, "\xEF\xBB\xBF");
-			fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
-
-			foreach ($students as $student) {
-					fputcsv($output, $student->getExport(), ';');
-			}
-			fclose($output);
-		});
-
-		$response->headers->set('Content-Type', 'text/csv; charset=utf-8');
-		$response->headers->set('Content-Disposition', sprintf(
-			'attachment; filename="%s"',
-			$fileName
-		));
-
-		return $response;
-	}
 
     #[Route('/import', name: 'student_import', methods: ['POST'])]
     public function import(

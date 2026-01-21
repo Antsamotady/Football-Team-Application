@@ -9,6 +9,7 @@ use App\Service\ScoreService;
 use App\Data\ClasseFilterData;
 use App\Data\GeneralSearchData;
 use App\Data\StudentFilterData;
+use App\Service\StudentExporter;
 use App\Form\ClasseFilterFormType;
 use App\Form\ClasseSearchFormType;
 use App\Form\StudentFilterFormType;
@@ -218,80 +219,35 @@ class ClasseController extends AbstractController
     public function exportClasseStudents(
         Classe $classe,
         Request $request,
-        StudentRepository $studentRepo
-    ): StreamedResponse {
+        StudentRepository $studentRepo,
+        StudentExporter $studentExporter
+    ): Response {
         $session = $request->getSession();
         $criteria = $session->get('classe_search_criteria');
-
         $students = [];
-        $timestamp = date('Y-m-d_H-i');
-        $fileName = '';
 
-        /**
-         * If filters/search exist in session → reuse them
-         * but force the current Classe
-         */
         if (
-            is_array($criteria)
-            && isset($criteria['data'])
+            is_array($criteria) 
+            && isset($criteria['data']) 
             && $criteria['data'] instanceof StudentFilterData
         ) {
-            /** @var StudentFilterData $filterData */
             $filterData = $criteria['data'];
-
-            // 🔥 Force classe context
             $filterData->setClasse($classe);
-
             $students = $studentRepo->findFiltered($filterData);
-            $fileName = sprintf(
-                'classe_%s_etudiants_filtres_%s.csv',
-                $classe->getName(),
-                $timestamp
-            );
         }
 
-        /**
-         * Fallback: export ALL students of this classe
-         */
         if (empty($students)) {
             $filterData = new StudentFilterData();
             $filterData->setClasse($classe);
-
             $students = $studentRepo->findFiltered($filterData);
-            $fileName = sprintf(
-                'classe_%s_etudiants_%s.csv',
-                $classe->getName(),
-                $timestamp
-            );
         }
 
-        // Clean filename (avoid special chars)
-        $fileName = preg_replace('/[^\w\-\.]/', '_', $fileName);
+        $fileName = $studentExporter->generateFilename($filterData ?? null, $classe->getName());
+        $csvContent = $studentExporter->exportStudents($students);
 
-        return new StreamedResponse(function () use ($students) {
-            $output = fopen('php://output', 'w');
-
-            if ($output === false) {
-                throw new \RuntimeException('Cannot open output stream');
-            }
-
-            // UTF-8 BOM for Excel compatibility
-            fwrite($output, "\xEF\xBB\xBF");
-
-            // CSV header
-            fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
-
-            foreach ($students as $student) {
-                fputcsv($output, $student->getExport(), ';');
-            }
-
-            fclose($output);
-        }, 200, [
+        return new Response($csvContent, 200, [
             'Content-Type' => 'text/csv; charset=utf-8',
-            'Content-Disposition' => sprintf(
-                'attachment; filename="%s"',
-                $fileName
-            ),
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
         ]);
     }
 }

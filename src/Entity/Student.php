@@ -178,7 +178,7 @@ class Student
     /**
      * Export student data as array
      *
-     * @return array<int, string|float>  PHPStan-friendly array type
+     * @return list<string|int|float|null>
      */
     public function getExport(): array
     {
