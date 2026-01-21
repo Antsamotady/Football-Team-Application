@@ -175,7 +175,8 @@ class ClasseController extends AbstractController
             'classe'            => $classe,
             'students'          => $students,
 			'students_scores'   => $studentsScores,
-			'filter_form' 	    => $filterForm->createView()
+			'filter_form' 	    => $filterForm->createView(),
+			'has_filters'       => $filterForm->isSubmitted()
         ]);
     }
 

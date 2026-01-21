@@ -1,6 +1,7 @@
-<div class="card-header border-0 pt-6">
+{% set isFromStudent = is_from_student|default(false) %}
 
-	{% if is_from_student is defined and is_from_student == true %}
+<div class="card-header border-0 pt-6">
+	{% if isFromStudent %}
 		<!--begin::Card title-->
 		<div class="card-title">
 			<!--begin::Search-->
@@ -33,7 +34,7 @@
 		<!--begin::Toolbar-->
 		<div class="d-flex justify-content-end" data-kt-subscription-table-toolbar="base">
 			<!--begin::Filter-->
-			<button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+			<button type="button" class="btn {{ has_filters|default(false) ? 'btn-light-primary' : 'btn-light btn-active-light-primary' }} me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
 				<!--begin::Svg Icon | path: icons/duotune/general/gen031.svg-->
 				<span class="svg-icon svg-icon-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -41,13 +42,10 @@
 					</svg>
 				</span>
 				<!--end::Svg Icon-->
-				Filtrer
+				{{ has_filters|default(false) ? 'Filtrée' : 'Filtrer' }}
 			</button>
-				{% if is_from_student is defined and is_from_student == true %}
-					<a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ path('student_list') }}">Tous</a>
-				{% else %}
-					<a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ path('classe_show', {'id': classe.id}) }}">Tous</a>
-				{% endif %}
+
+			<a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ isFromStudent ? path('student_list') : path('classe_show', {'id': classe.id}) }}">Tous</a>
 
 			<!--begin::Menu 1-->
 			{{ include('student/_student_filter_form.html.twig') }}
@@ -55,11 +53,7 @@
 
 			<!--end::Filter-->
 			<!--begin::Export-->
-			{% if is_from_student is defined and is_from_student == true %}
-				<a type="button" class="btn btn-light-primary me-3" href="{{ path('student_export') }}">
-			{% else %}
-				<a type="button" class="btn btn-light-primary me-3" href="{{ path('classe_student_export', {'id': classe.id}) }}">
-			{% endif %}
+			<a type="button" class="btn btn-light btn-active-light-primary me-3" href="{{ isFromStudent ? path('student_export') : path('classe_student_export', {'id': classe.id}) }}">
 				<!--begin::Svg Icon | path: icons/duotune/arrows/arr078.svg-->
 				<span class="svg-icon svg-icon-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -72,7 +66,7 @@
 			</a>
 			<!--end::Export-->
 			<!--begin::Add subscription-->
-			<a type="button" class="btn {% if is_from_student is defined and is_from_student == true %}btn-primary{% else %}btn-light btn-active-primary{% endif %} me-3" href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_new_student">
+			<a type="button" class="btn btn-light btn-active-light-primary me-3" href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_new_student">
 				<!--begin::Svg Icon | path: icons/duotune/arrows/arr078.svg-->
 				<span class="svg-icon svg-icon-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -84,7 +78,7 @@
 				<!--end::Svg Icon-->Import CSV
 			</a>
 
-			{% if is_from_student is defined and is_from_student == true %}
+			{% if isFromStudent %}
 				<a href="{{ path('student_new') }}" class="btn btn-primary">
 					<!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
 					<span class="svg-icon svg-icon-2">

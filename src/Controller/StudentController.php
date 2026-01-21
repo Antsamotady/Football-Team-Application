@@ -96,14 +96,14 @@ class StudentController extends AbstractController
 		}
 
 		return $this->render('student/list.html.twig', [
-			'template_title' => 'Liste des étudiants',
+			'template_title'    => 'Liste des étudiants',
 			'meth_name' 		=> 'list',
-			'form' 					=> $form->createView(),
-			'filter_form' 	=> $filterForm->createView(),
+            'result'			=> $result,
 			'students' 			=> $students,
-			'result'				=> $result,
-			'students_scores' => $studentsScores,
-			'has_filters' => $form->isSubmitted() || $filterForm->isSubmitted(), // Add this and todo in view
+			'students_scores'   => $studentsScores,
+            'form' 				=> $form->createView(),
+			'filter_form' 	    => $filterForm->createView(),
+			'has_filters'       => $form->isSubmitted() || $filterForm->isSubmitted(),
 		]);
 	}
 
