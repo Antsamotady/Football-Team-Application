@@ -6,7 +6,6 @@ use App\Entity\Score;
 use App\Entity\Classe;
 use App\Entity\Student;
 use App\Entity\Subject;
-use App\Form\ClasseType;
 use App\Form\StudentType;
 use App\Service\ScoreService;
 use App\Data\StudentFilterData;
@@ -107,7 +106,7 @@ class StudentController extends AbstractController
 		]);
 	}
 
-	#[Route('/export-all', name: 'student_export', methods: ['GET'])]
+	#[Route('/export', name: 'student_export', methods: ['GET'])]
 	public function exportStudentCsv(Request $request, StudentRepository $studentRepo): Response
 	{
 		$session = $request->getSession();
@@ -116,13 +115,13 @@ class StudentController extends AbstractController
         $fileName = '';
         $timestamp = date('Y-m-d_H-i');
 
-        if (is_array($criteria)) {  // <-- type narrowing
+        if (is_array($criteria)) {
             if (isset($criteria['type'], $criteria['data'])) {
-                if ($criteria['type'] === 'search' && $criteria['data'] instanceof \App\Data\StudentSearchData) {
+                if ($criteria['type'] === 'search' && $criteria['data'] instanceof StudentSearchData) {
                     $students = $studentRepo->findSearch($criteria['data']);
                     $searchTerm = $criteria['data']->getName() ?? '';
                     $fileName = "etudiants_recherche_{$searchTerm}_{$timestamp}.csv";
-                } elseif ($criteria['data'] instanceof \App\Data\StudentFilterData) {
+                } elseif ($criteria['data'] instanceof StudentFilterData) {
                     $students = $studentRepo->findFiltered($criteria['data']);
                     $fileName = "etudiants_filtre_{$timestamp}.csv";
                 }

@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Classe;
 use App\Entity\Student;
+use Doctrine\ORM\QueryBuilder;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
-use App\Entity\Classe;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 

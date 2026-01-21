@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Data\ClasseFilterData;
 use App\Entity\Classe;
 use App\Entity\Location;
 use App\Form\ClasseType;
 use App\Service\ScoreService;
+use App\Data\ClasseFilterData;
 use App\Data\GeneralSearchData;
 use App\Data\StudentFilterData;
 use App\Form\ClasseFilterFormType;
@@ -19,6 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/classe')]
@@ -128,7 +129,6 @@ class ClasseController extends AbstractController
         ]);
     }
 
-
     #[Route('/{id}', name: 'classe_show', methods: ['GET'])]
     public function show(
         Request $request,
@@ -212,5 +212,86 @@ class ClasseController extends AbstractController
         }
 
         return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/students/export', name: 'classe_student_export', methods: ['GET'])]
+    public function exportClasseStudents(
+        Classe $classe,
+        Request $request,
+        StudentRepository $studentRepo
+    ): StreamedResponse {
+        $session = $request->getSession();
+        $criteria = $session->get('classe_search_criteria');
+
+        $students = [];
+        $timestamp = date('Y-m-d_H-i');
+        $fileName = '';
+
+        /**
+         * If filters/search exist in session → reuse them
+         * but force the current Classe
+         */
+        if (
+            is_array($criteria)
+            && isset($criteria['data'])
+            && $criteria['data'] instanceof StudentFilterData
+        ) {
+            /** @var StudentFilterData $filterData */
+            $filterData = $criteria['data'];
+
+            // 🔥 Force classe context
+            $filterData->setClasse($classe);
+
+            $students = $studentRepo->findFiltered($filterData);
+            $fileName = sprintf(
+                'classe_%s_etudiants_filtres_%s.csv',
+                $classe->getName(),
+                $timestamp
+            );
+        }
+
+        /**
+         * Fallback: export ALL students of this classe
+         */
+        if (empty($students)) {
+            $filterData = new StudentFilterData();
+            $filterData->setClasse($classe);
+
+            $students = $studentRepo->findFiltered($filterData);
+            $fileName = sprintf(
+                'classe_%s_etudiants_%s.csv',
+                $classe->getName(),
+                $timestamp
+            );
+        }
+
+        // Clean filename (avoid special chars)
+        $fileName = preg_replace('/[^\w\-\.]/', '_', $fileName);
+
+        return new StreamedResponse(function () use ($students) {
+            $output = fopen('php://output', 'w');
+
+            if ($output === false) {
+                throw new \RuntimeException('Cannot open output stream');
+            }
+
+            // UTF-8 BOM for Excel compatibility
+            fwrite($output, "\xEF\xBB\xBF");
+
+            // CSV header
+            fputcsv($output, ['Civilité', 'Nom', 'Classe', 'Moyenne'], ';');
+
+            foreach ($students as $student) {
+                fputcsv($output, $student->getExport(), ';');
+            }
+
+            fclose($output);
+        }, 200, [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => sprintf(
+                'attachment; filename="%s"',
+                $fileName
+            ),
+        ]);
     }
 }

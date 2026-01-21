@@ -43,7 +43,11 @@
 				<!--end::Svg Icon-->
 				Filtrer
 			</button>
-			<a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ path('student_list') }}">Tous</a>
+				{% if is_from_student is defined and is_from_student == true %}
+					<a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ path('student_list') }}">Tous</a>
+				{% else %}
+					<a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ path('classe_show', {'id': classe.id}) }}">Tous</a>
+				{% endif %}
 
 			<!--begin::Menu 1-->
 			{{ include('student/_student_filter_form.html.twig') }}
@@ -51,7 +55,11 @@
 
 			<!--end::Filter-->
 			<!--begin::Export-->
-			<a type="button" class="btn btn-light-primary me-3" href="{{ path('student_export') }}">
+			{% if is_from_student is defined and is_from_student == true %}
+				<a type="button" class="btn btn-light-primary me-3" href="{{ path('student_export') }}">
+			{% else %}
+				<a type="button" class="btn btn-light-primary me-3" href="{{ path('classe_student_export', {'id': classe.id}) }}">
+			{% endif %}
 				<!--begin::Svg Icon | path: icons/duotune/arrows/arr078.svg-->
 				<span class="svg-icon svg-icon-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
