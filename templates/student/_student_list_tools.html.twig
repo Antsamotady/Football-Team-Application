@@ -26,6 +26,11 @@
 	{% else %}
         <h3 class="card-title align-items-start flex-column">
             <span class="card-label fw-bolder fs-3 mb-1">Les étudiants de cette classe</span>
+			{% if not isFromStudent %}
+				<span class="text-muted mt-1 fw-bold fs-7">
+					{{ has_filters|default(false) ? students|length ~ ' trouvés sur ' ~ classe.students|length : '' }}
+				</span>
+			{% endif %}
         </h3>
 	{% endif %}
 

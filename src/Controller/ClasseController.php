@@ -68,9 +68,9 @@ class ClasseController extends AbstractController
 
         return $this->render('classe/index.html.twig', [
             'template_title'    => 'Classes',
+            'classes'           => $classes,
 			'form'              => $form->createView(),
 			'filter_form' 	    => $filterForm->createView(),
-            'classes'           => $classes,
 			'total'             => count($this->classeRepository->findAll())
         ]);
     }

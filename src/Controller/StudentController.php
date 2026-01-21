@@ -323,11 +323,11 @@ class StudentController extends AbstractController
 
 		return $this->render('student/show.html.twig', [
 			'template_title' 	=> 'Détails étudiant',
-			'student' 				=> $student,
-			'scores'					=> $scores,
-			'previous' 				=> $previousStudent ? $previousStudent->getId() : null,
-			'next' 						=> $nextStudent ? $nextStudent->getId() : null,
-			'best_score' 			=> $scoreResults['bestScore'],
+			'student' 			=> $student,
+			'scores'			=> $scores,
+			'previous' 			=> $previousStudent ? $previousStudent->getId() : null,
+			'next' 				=> $nextStudent ? $nextStudent->getId() : null,
+			'best_score' 		=> $scoreResults['bestScore'],
 			'total_score' 		=> $scoreResults['totalScore'],
 			'average_score' 	=> $scoreResults['averageScore'],
 			'score_forms' 		=> $scoreResults['formViews']
