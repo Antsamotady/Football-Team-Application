@@ -246,6 +246,7 @@ class StudentController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
+            $student->setUpdatedAt(new \DateTimeImmutable());
 			$em->persist($student);
 			$em->flush();
 
@@ -401,6 +402,7 @@ class StudentController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
+            $student->setUpdatedAt(new \DateTimeImmutable());
 			$em->flush();
 
 			$this->addFlash('success', 'Modification réussie.');

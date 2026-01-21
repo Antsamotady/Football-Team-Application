@@ -49,6 +49,9 @@ class Student
     #[ORM\OneToMany(mappedBy: 'student', targetEntity: Score::class)]
     private Collection $scores;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
@@ -195,6 +198,18 @@ class Student
         $result[] = count($scores) ? $sum / count($scores) : 0.0;
 
         return $result;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
 }

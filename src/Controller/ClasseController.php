@@ -83,6 +83,7 @@ class ClasseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $classe->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->persist($classe);
             $entityManager->flush();
 
@@ -187,6 +188,7 @@ class ClasseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $classe->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
             $this->addFlash('success', 'Modification réussie.');
