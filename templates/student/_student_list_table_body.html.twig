@@ -1,13 +1,14 @@
 <div class="card-body pt-0">
 	<!--begin::Table-->
-	<table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_subscriptions_table">
+	<table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_subscriptions_table" data-kt-datatable="true" data-order="[]">
+
 		<!--begin::Table head-->
 		<thead>
 			<!--begin::Table row-->
 			<tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+				<th class="min-w-8px"></th>
 				<th class="min-w-60px">Nom</th>
 				<th class="min-w-50px">Prénom</th>
-				<th class="min-w-8px">Sexe</th>
 				<th class="min-w-60px">Classe</th>
 				<th class="min-w-60px">Centre</th>
 				<th class="text-center min-w-45px">Stats</th>
@@ -21,14 +22,12 @@
 
 		{% for student in students %}
 			<tr>
-				<!--begin::Customer=-->
+				<td>{{ student.gender }}</td>
 				<td>
 					<a href="{{ path('student_show', {'id': student.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.firstname }}</a>
 				</td>
-				<!--end::Customer=-->
 				<!--begin::Billing=-->
 				<td>{{ student.lastname }}</td>
-				<td>{{ student.gender }}</td>
 				<td>
 					{% if student.classe %}
 						<a href="{{ path('classe_show', {'id': student.classe.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.classe.name }}</a>

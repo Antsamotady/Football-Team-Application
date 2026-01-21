@@ -145,4 +145,14 @@ class StudentRepository extends ServiceEntityRepository
         
         return $result;
     }
+
+    /**
+     * Student linked to search
+     *
+     * @return Student[]
+     */
+    public function findAllOrderedByFirstName(): array
+    {
+        return $this->findBy([], ['firstname' => 'ASC']);
+    }
 }

@@ -74,7 +74,7 @@ class StudentController extends AbstractController
 					'data' => $filteredData
 			]);
 		} else {
-			$students = $studentRepo->findAll();
+			$students = $studentRepo->findAllOrderedByFirstName();
 			// Clear stored criteria
 			$session->remove('student_search_criteria');
 		}
