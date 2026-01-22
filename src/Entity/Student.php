@@ -35,6 +35,7 @@ class Student
     private ?string $gender = null;
 
     #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Classe $classe = null;
 
     /**
