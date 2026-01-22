@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\Classe;
 use App\Entity\Student;
-use App\Repository\StudentRepository;
 use App\Repository\ClasseRepository;
+use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -17,7 +18,10 @@ class StudentCsvImporter
     ) {
     }
 
-    public function import(UploadedFile $file): void
+    public function import(
+        UploadedFile $file,
+        ?Classe $forcedClasse = null
+    ): void
     {
         $csv = new \SplFileObject($file->getPathname());
         $csv->setFlags(
@@ -67,13 +71,14 @@ class StudentCsvImporter
             $student = $this->studentRepo->findOneBy(['firstname' => $firstname])
                 ?? new Student();
 
+            $classe = $forcedClasse
+                ?? $this->classeRepo->findOneBy(['name' => $classeName]);
+
             $student
                 ->setFirstname($firstname)
                 ->setLastname($lastname)
                 ->setGender($gender)
-                ->setClasse(
-                    $this->classeRepo->findOneBy(['name' => $classeName])
-                )
+                ->setClasse($classe)
                 ->setUpdatedAt(new \DateTimeImmutable());
 
             $this->em->persist($student);

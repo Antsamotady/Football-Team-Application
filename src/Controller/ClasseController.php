@@ -14,6 +14,7 @@ use App\Form\ClasseFilterFormType;
 use App\Form\ClasseSearchFormType;
 use App\Form\StudentFilterFormType;
 use App\Repository\ScoreRepository;
+use App\Service\StudentCsvImporter;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/classe')]
@@ -251,6 +253,31 @@ class ClasseController extends AbstractController
         return new Response($csvContent, 200, [
             'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+        ]);
+    }
+
+    #[Route('/{id}/students/import', name: 'classe_student_import', methods: ['POST'])]
+    public function importClasseStudents(
+        Classe $classe,
+        Request $request,
+        StudentCsvImporter $importer
+    ): Response {
+        $file = $request->files->get('student-import');
+
+        if (!$file instanceof UploadedFile) {
+            $this->addFlash('error', 'Fichier non trouvé ou invalide.');
+            return $this->redirectToRoute('classe_show', ['id' => $classe->getId()]);
+        }
+
+        try {
+            $importer->import($file, $classe);
+            $this->addFlash('success', 'Les étudiants ont bien été importés.');
+        } catch (\Throwable $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('classe_show', [
+            'id' => $classe->getId(),
         ]);
     }
 }

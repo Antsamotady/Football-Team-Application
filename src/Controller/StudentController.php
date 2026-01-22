@@ -165,7 +165,7 @@ class StudentController extends AbstractController
 
         try {
             $importer->import($file);
-            $this->addFlash('success', 'La liste a bien été importée.');
+            $this->addFlash('success', 'Les étudiants ont bien été importés.');
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
         }
