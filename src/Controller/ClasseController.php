@@ -153,7 +153,7 @@ class ClasseController extends AbstractController
                 'data'  => $filteredData
             ]);
         } else {
-            $students = $this->studentRepo->findBy(['classe' => $classe]);
+            $students = $this->studentRepo->findByClasseOrderedByFirstName($classe);
         }
         
         $studentsScores = $this->scoreService->buildStudentsScores($students);

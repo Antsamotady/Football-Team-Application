@@ -46,10 +46,10 @@ class StudentRepository extends ServiceEntityRepository
     }
 
     /**
-    * User linked to search
-    *
-    * @return Student[]
-    */
+     * User linked to search
+     *
+     * @return Student[]
+     */
     public function findFilteredByClasse(Classe $classe, StudentFilterData $search): array
     {
         $qb = $this
@@ -59,126 +59,11 @@ class StudentRepository extends ServiceEntityRepository
             ->where('c.id = :searchedObjId')
             ->setParameter('searchedObjId', $classe->getId());
 
-        if (!empty($search->getFirstname())) {
-            $qb = $qb
-                ->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
-                ->setParameter('firstname', "%{$search->getFirstname()}%");
-        }
+        $this->applyBasicFilters($qb, $search);
 
-        if (!empty($search->getLastname())) {
-            $qb = $qb
-                ->andWhere('UPPER(u.lastname) LIKE UPPER(:lastname)')
-                ->setParameter('lastname', "%{$search->getLastname()}%");
-        }
+        $this->applyScoreFilters($qb, $search);
 
-        if (!empty($search->getGender())) {
-            $qb = $qb
-                ->andWhere('UPPER(u.gender) LIKE UPPER(:gender)')
-                ->setParameter('gender', "{$search->getGender()}");
-        }
-
-        // dump($qb->getQuery()->getSQL());
-
-        /** @var Student[] $result */
-        $result = $qb->getQuery()->getResult();
-        
-        return $result;
-    }
-
-    /**
-    * User linked to search
-    *
-    * @return Student[]
-    */
-    public function findFilteredOld(StudentFilterData $search): array
-    {
-        $qb = $this
-            ->createQueryBuilder('u')
-            ->select('u');
-
-        if (!empty($search->getFirstname())) {
-            $qb = $qb
-                ->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
-                ->setParameter('firstname', "%{$search->getFirstname()}%");
-        }
-
-        if (!empty($search->getLastname())) {
-            $qb = $qb
-                ->andWhere('UPPER(u.lastname) LIKE UPPER(:lastname)')
-                ->setParameter('lastname', "%{$search->getLastname()}%");
-        }
-
-        if (!empty($search->getGender())) {
-            $qb = $qb
-                ->andWhere('UPPER(u.gender) LIKE UPPER(:gender)')
-                ->setParameter('gender', "{$search->getGender()}");
-        }
-
-        if (!empty($search->getClasse())) {
-            $qb = $qb
-                ->join('u.classe', 'c')
-                ->andWhere('c.name LIKE :searchedString')
-                ->setParameter('searchedString', $search->getClasse()->getName());
-        }
-
-        if (!empty($search->getClasse()) || !empty($search->getLocation())) {
-            $qb->join('u.classe', 'c2'); // Classe join
-
-            if (!empty($search->getClasse())) {
-                $qb->andWhere('c2.id = :classeId')
-                ->setParameter('classeId', $search->getClasse()->getId());
-            }
-
-            if (!empty($search->getLocation())) {
-                $qb->join('c2.location', 'l'); // join Location
-                $qb->andWhere('l.id = :locationId')
-                ->setParameter('locationId', $search->getLocation()->getId());
-            }
-        }
-
-        // Score filters
-        $scoreFilters = $search->getScoreFilters();
-
-        if ($scoreFilters->count() > 0) {
-            // Join scores table
-            $qb->leftJoin('u.scores', 'sc');
-            
-            // Group score conditions with OR if you want ANY score to match
-            // Use AND if you want ALL conditions to match
-            $scoreConditions = [];
-            
-            foreach ($scoreFilters as $index => $filter) {
-                $hasMin = $filter->getMin() !== null;
-                $hasMax = $filter->getMax() !== null;
-                
-                if ($hasMin || $hasMax) {
-                    $condition = '';
-                    
-                    if ($hasMin) {
-                        $condition .= "sc.value >= :min_$index";
-                        $qb->setParameter("min_$index", $filter->getMin());
-                    }
-                    
-                    if ($hasMin && $hasMax) {
-                        $condition .= ' AND ';
-                    }
-                    
-                    if ($hasMax) {
-                        $condition .= "sc.value <= :max_$index";
-                        $qb->setParameter("max_$index", $filter->getMax());
-                    }
-                    
-                    $scoreConditions[] = "($condition)";
-                }
-            }
-            
-            // If we have score conditions, add them to the query
-            if (!empty($scoreConditions)) {
-                // Use OR to match any of the score filters
-                // Change to AND if you want to match all filters
-                $qb->andWhere(implode(' OR ', $scoreConditions));
-            }
-        }
+        $qb->orderBy('u.firstname', 'ASC');
 
         // dump($qb->getQuery()->getSQL());
 
@@ -200,7 +85,50 @@ class StudentRepository extends ServiceEntityRepository
             ->select('u')
             ->distinct();
 
-        // Basic filters (firstname, lastname, gender)
+        $this->applyBasicFilters($qb, $search);
+
+        $this->applyClasseAndLocationFilters($qb, $search);
+
+        $this->applyScoreFilters($qb, $search);
+
+        // Optional: Order the results
+        $qb->orderBy('u.firstname', 'ASC');
+
+        // For debugging:
+        // dump($qb->getQuery()->getSQL());
+        // dump($qb->getQuery()->getParameters());
+
+        /** @var Student[] $result */
+        $result = $qb->getQuery()->getResult();
+        
+        return $result;
+    }
+
+    /**
+     * Student linked to search
+     *
+     * @return Student[]
+     */
+    public function findByClasseOrderedByFirstName(Classe $classe): array
+    {
+        return $this->findBy(
+            ['classe' => $classe], 
+            ['firstname' => 'ASC']
+        );
+    }
+
+    /**
+     * Student linked to search
+     *
+     * @return Student[]
+     */
+    public function findAllOrderedByFirstName(): array
+    {
+        return $this->findBy([], ['firstname' => 'ASC']);
+    }
+
+    private function applyBasicFilters(QueryBuilder $qb, StudentFilterData $search): void 
+    {
         if (!empty($search->getFirstname())) {
             $qb->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
                 ->setParameter('firstname', "%{$search->getFirstname()}%");
@@ -215,27 +143,33 @@ class StudentRepository extends ServiceEntityRepository
             $qb->andWhere('u.gender = :gender')
                 ->setParameter('gender', $search->getGender());
         }
+    }
 
-        // Classe and Location filters
+    private function applyClasseAndLocationFilters(QueryBuilder $qb, StudentFilterData $search): void 
+    {
         $classe = $search->getClasse();
         $location = $search->getLocation();
 
-        if ($classe !== null || $location !== null) {
-            $qb->leftJoin('u.classe', 'c');
-
-            if ($classe !== null) {
-                $qb->andWhere('c.id = :classeId')
-                ->setParameter('classeId', $classe->getId());
-            }
-
-            if ($location !== null) {
-                $qb->leftJoin('c.location', 'l')
-                ->andWhere('l.id = :locationId')
-                ->setParameter('locationId', $location->getId());
-            }
+        if ($classe === null && $location === null) {
+            return;
         }
 
+        $qb->leftJoin('u.classe', 'c');
 
+        if ($classe !== null) {
+            $qb->andWhere('c.id = :classeId')
+            ->setParameter('classeId', $classe->getId());
+        }
+
+        if ($location !== null) {
+            $qb->leftJoin('c.location', 'l')
+            ->andWhere('l.id = :locationId')
+            ->setParameter('locationId', $location->getId());
+        }
+    }
+
+    private function applyScoreFilters(QueryBuilder $qb, StudentFilterData $search): void 
+    {
         $scoreFilters = $search->getScoreFilters();
         if ($scoreFilters->count() > 0) {
             foreach ($scoreFilters as $index => $filter) {
@@ -265,27 +199,5 @@ class StudentRepository extends ServiceEntityRepository
                 }
             }
         }
-
-        // Optional: Order the results
-        $qb->orderBy('u.firstname', 'ASC');
-
-        // For debugging:
-        // dump($qb->getQuery()->getSQL());
-        // dump($qb->getQuery()->getParameters());
-
-        /** @var Student[] $result */
-        $result = $qb->getQuery()->getResult();
-        
-        return $result;
-    }
-
-    /**
-     * Student linked to search
-     *
-     * @return Student[]
-     */
-    public function findAllOrderedByFirstName(): array
-    {
-        return $this->findBy([], ['firstname' => 'ASC']);
     }
 }
