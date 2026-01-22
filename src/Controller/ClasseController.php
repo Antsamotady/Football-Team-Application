@@ -13,7 +13,6 @@ use App\Service\StudentExporter;
 use App\Form\ClasseFilterFormType;
 use App\Form\ClasseSearchFormType;
 use App\Form\StudentFilterFormType;
-use App\Repository\ScoreRepository;
 use App\Service\StudentCsvImporter;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
@@ -21,7 +20,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -31,7 +29,6 @@ class ClasseController extends AbstractController
 	public function __construct(
         private ClasseRepository $classeRepository,
         private StudentRepository $studentRepo,
-		private ScoreRepository $scoreRepo,
 		private ScoreService $scoreService,
 		public EntityManagerInterface $em
 	) {
@@ -159,20 +156,7 @@ class ClasseController extends AbstractController
             $students = $this->studentRepo->findBy(['classe' => $classe]);
         }
         
-        $studentsScores = []; 
-
-		foreach ($students as $student) { 
-			$scores = $this->scoreRepo->findBy(['student' => $student], ['subject' => 'ASC']); 
-			$scoreResults = $this->scoreService->processScores($scores); 
-
-			$studentsScores[$student->getId()] = [
-				'student' => $student, 
-				'best_score' => $scoreResults['bestScore'], 
-				'total_score' => $scoreResults['totalScore'], 
-				'average_score'=> count($scores) ? $scoreResults['totalScore'] / count($scores) : 0,    // @phpstan-ignore-line
-				'score_forms' => $scoreResults['formViews'] 
-			];
-		}
+        $studentsScores = $this->scoreService->buildStudentsScores($students);
 
         return $this->render('classe/show.html.twig', [
             'classe'            => $classe,

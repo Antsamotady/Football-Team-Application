@@ -48,7 +48,7 @@ class StudentController extends AbstractController
 	public function list(
 		Request $request, 
 		StudentRepository $studentRepo, 
-		ScoreRepository $scoreRepo): Response
+    ): Response
 	{
         $session = $request->getSession();
 		$data = new StudentSearchData();
@@ -82,20 +82,7 @@ class StudentController extends AbstractController
 		}
 
 		$result = count($students);
-		$studentsScores = []; 
-
-		foreach ($students as $student) { 
-			$scores = $scoreRepo->findBy(['student' => $student], ['subject' => 'ASC']); 
-			$scoreResults = $this->scoreService->processScores($scores); 
-
-			$studentsScores[$student->getId()] = [
-				'student' => $student, 
-				'best_score' => $scoreResults['bestScore'], 
-				'total_score' => $scoreResults['totalScore'], 
-				'average_score'=> $scoreResults['averageScore'],
-				'score_forms' => $scoreResults['formViews'] 
-			]; 
-		}
+		$studentsScores = $this->scoreService->buildStudentsScores($students);
 
 		return $this->render('student/list.html.twig', [
 			'template_title'    => 'Liste des étudiants',

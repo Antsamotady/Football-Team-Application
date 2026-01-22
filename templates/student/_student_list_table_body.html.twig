@@ -39,8 +39,22 @@
 					{% endif %}
 				</td>
 				<td>
-					<span class="d-flex flex-wrap flex-center">{{ students_scores[student.id].average_score }}</span>
+					{% set tooltip = students_scores[student.id].subjects_scores
+						| map(item => item.subject ~ ': ' ~ item.score)
+						| join(' | ')
+					%}
+
+					<span
+						class="d-flex flex-wrap flex-center"
+						data-bs-toggle="tooltip"
+						data-bs-original-title="{{ tooltip }}"
+					>
+						{{ students_scores[student.id].average_score }}
+					</span>
+
+
 				</td>
+				<!--begin::Action=-->
 				<td class="text-end">
 					<div class="d-flex justify-content-end flex-shrink-0">
 						<a href="{{ path('student_show', {'id': student.id}) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" title="Détails">
