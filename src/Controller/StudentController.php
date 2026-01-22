@@ -15,7 +15,6 @@ use App\Form\StudentFilterFormType;
 use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Service\StudentCsvImporter;
-use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 

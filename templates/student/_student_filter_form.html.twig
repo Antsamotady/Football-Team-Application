@@ -28,7 +28,27 @@
         {{ form_widget(filter_form.location, {'attr': {'class': 'form-control fw-bolder'}}) }}
       </div>
     {% endif %}
+
+    <h5>Filtres de notes</h5>
+    <div id="score-filters">
+        {% for scoreFilter in filter_form.scoreFilters %}
+            <div class="mb-3 border rounded p-3 score-filter-item">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        {{ form_widget(scoreFilter.subject, {'attr': {'class': 'form-select fw-bolder'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        {{ form_widget(scoreFilter.min, {'attr': {'class': 'form-control fw-bolder', 'placeholder': 'Min'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        {{ form_widget(scoreFilter.max, {'attr': {'class': 'form-control fw-bolder', 'placeholder': 'Max'}}) }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
     <!--end::Input group-->
+
     <!--begin::Actions-->
     <div class="d-flex justify-content-end">
       <a type="button" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6" href="{{ isFromStudent ? path('student_list') : path('classe_show', {'id': classe.id}) }}">Réinitialiser</a>

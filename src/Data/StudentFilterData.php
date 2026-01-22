@@ -4,6 +4,9 @@ namespace App\Data;
 
 use App\Entity\Classe;
 use App\Entity\Location;
+use App\Data\ScoreFilterData;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class StudentFilterData
 {
@@ -12,10 +15,17 @@ class StudentFilterData
     private ?string $gender = null;
     private ?Classe $classe = null;
     private ?Location $location = null;
+    /**
+     * @var Collection<int, ScoreFilterData>
+     */
+    private Collection $scoreFilters;
 
-    // -------------------------
-    // Firstname
-    // -------------------------
+    public function __construct()
+    {
+        $this->scoreFilters = new ArrayCollection();
+        $this->addScoreFilter(new ScoreFilterData());
+    }
+    
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -27,9 +37,6 @@ class StudentFilterData
         return $this;
     }
 
-    // -------------------------
-    // Lastname
-    // -------------------------
     public function getLastname(): ?string
     {
         return $this->lastname;
@@ -41,9 +48,6 @@ class StudentFilterData
         return $this;
     }
 
-    // -------------------------
-    // Classe
-    // -------------------------
     public function getClasse(): ?Classe
     {
         return $this->classe;
@@ -55,9 +59,6 @@ class StudentFilterData
         return $this;
     }
 
-    // -------------------------
-    // Gender
-    // -------------------------
     public function getGender(): ?string
     {
         return $this->gender;
@@ -81,4 +82,27 @@ class StudentFilterData
         return $this;
     }
 
+    /**
+     * Get scoreFilterData>
+     *
+     * @return Collection<int, ScoreFilterData>
+     */ 
+    public function getScoreFilters()
+    {
+        return $this->scoreFilters;
+    }
+
+    public function addScoreFilter(ScoreFilterData $scoreFilter): self
+    {
+        if (!$this->scoreFilters->contains($scoreFilter)) {
+            $this->scoreFilters->add($scoreFilter);
+        }
+        return $this;
+    }
+    
+    public function removeScoreFilter(ScoreFilterData $scoreFilter): self
+    {
+        $this->scoreFilters->removeElement($scoreFilter);
+        return $this;
+    }
 }

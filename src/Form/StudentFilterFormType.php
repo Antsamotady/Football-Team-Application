@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class StudentFilterFormType extends AbstractType
 {
@@ -53,6 +54,16 @@ class StudentFilterFormType extends AbstractType
                 'label' => 'Salle',
             ]);
         }
+
+        $builder
+            ->add('scoreFilters', CollectionType::class, [
+                'entry_type' => ScoreFilterFormType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'required' => false,
+                'label' => 'test---',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

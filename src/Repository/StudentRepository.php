@@ -90,10 +90,8 @@ class StudentRepository extends ServiceEntityRepository
     *
     * @return Student[]
     */
-    public function findFiltered(StudentFilterData $search): array
+    public function findFilteredOld(StudentFilterData $search): array
     {
-        $em = $this->getEntityManager();
-
         $qb = $this
             ->createQueryBuilder('u')
             ->select('u');
@@ -138,7 +136,142 @@ class StudentRepository extends ServiceEntityRepository
             }
         }
 
+        // Score filters
+        $scoreFilters = $search->getScoreFilters();
+
+        if ($scoreFilters->count() > 0) {
+            // Join scores table
+            $qb->leftJoin('u.scores', 'sc');
+            
+            // Group score conditions with OR if you want ANY score to match
+            // Use AND if you want ALL conditions to match
+            $scoreConditions = [];
+            
+            foreach ($scoreFilters as $index => $filter) {
+                $hasMin = $filter->getMin() !== null;
+                $hasMax = $filter->getMax() !== null;
+                
+                if ($hasMin || $hasMax) {
+                    $condition = '';
+                    
+                    if ($hasMin) {
+                        $condition .= "sc.value >= :min_$index";
+                        $qb->setParameter("min_$index", $filter->getMin());
+                    }
+                    
+                    if ($hasMin && $hasMax) {
+                        $condition .= ' AND ';
+                    }
+                    
+                    if ($hasMax) {
+                        $condition .= "sc.value <= :max_$index";
+                        $qb->setParameter("max_$index", $filter->getMax());
+                    }
+                    
+                    $scoreConditions[] = "($condition)";
+                }
+            }
+            
+            // If we have score conditions, add them to the query
+            if (!empty($scoreConditions)) {
+                // Use OR to match any of the score filters
+                // Change to AND if you want to match all filters
+                $qb->andWhere(implode(' OR ', $scoreConditions));
+            }
+        }
+
         // dump($qb->getQuery()->getSQL());
+
+        /** @var Student[] $result */
+        $result = $qb->getQuery()->getResult();
+        
+        return $result;
+    }
+
+    /**
+     * User linked to search
+     *
+     * @return Student[]
+     */
+    public function findFiltered(StudentFilterData $search): array
+    {
+        $qb = $this
+            ->createQueryBuilder('u')
+            ->select('u')
+            ->distinct();
+
+        // Basic filters (firstname, lastname, gender)
+        if (!empty($search->getFirstname())) {
+            $qb->andWhere('UPPER(u.firstname) LIKE UPPER(:firstname)')
+                ->setParameter('firstname', "%{$search->getFirstname()}%");
+        }
+
+        if (!empty($search->getLastname())) {
+            $qb->andWhere('UPPER(u.lastname) LIKE UPPER(:lastname)')
+                ->setParameter('lastname', "%{$search->getLastname()}%");
+        }
+
+        if (!empty($search->getGender())) {
+            $qb->andWhere('u.gender = :gender')
+                ->setParameter('gender', $search->getGender());
+        }
+
+        // Classe and Location filters
+        $classe = $search->getClasse();
+        $location = $search->getLocation();
+
+        if ($classe !== null || $location !== null) {
+            $qb->leftJoin('u.classe', 'c');
+
+            if ($classe !== null) {
+                $qb->andWhere('c.id = :classeId')
+                ->setParameter('classeId', $classe->getId());
+            }
+
+            if ($location !== null) {
+                $qb->leftJoin('c.location', 'l')
+                ->andWhere('l.id = :locationId')
+                ->setParameter('locationId', $location->getId());
+            }
+        }
+
+
+        $scoreFilters = $search->getScoreFilters();
+        if ($scoreFilters->count() > 0) {
+            foreach ($scoreFilters as $index => $filter) {
+                $hasMin = $filter->getMin() !== null;
+                $hasMax = $filter->getMax() !== null;
+                $hasSubject = $filter->getSubject() !== null;
+                
+                // Only create join if we have conditions
+                if ($hasMin || $hasMax || $hasSubject) {
+                    $joinAlias = "sc_$index";
+                    $qb->join('u.scores', $joinAlias);
+                    
+                    if ($hasMin) {
+                        $qb->andWhere("$joinAlias.value >= :min_$index")
+                        ->setParameter("min_$index", $filter->getMin());
+                    }
+                    
+                    if ($hasMax) {
+                        $qb->andWhere("$joinAlias.value <= :max_$index")
+                        ->setParameter("max_$index", $filter->getMax());
+                    }
+                    
+                    if ($hasSubject) {
+                        $qb->andWhere("$joinAlias.subject = :subject_$index")
+                        ->setParameter("subject_$index", $filter->getSubject());
+                    }
+                }
+            }
+        }
+
+        // Optional: Order the results
+        $qb->orderBy('u.firstname', 'ASC');
+
+        // For debugging:
+        // dump($qb->getQuery()->getSQL());
+        // dump($qb->getQuery()->getParameters());
 
         /** @var Student[] $result */
         $result = $qb->getQuery()->getResult();
