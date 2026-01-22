@@ -39,6 +39,38 @@
             <!--end::Col-->
         </div>
         <!--end::Row-->
+        <!--begin::Row-->
+        <div class="row g-0 mt-8">
+            {# <!--begin::Col-->
+            <div class="col mr-8">
+                <!--begin::Label-->
+                <div class="fs-7 text-muted fw-bold">ID</div>
+                <!--end::Label-->
+                <!--begin::Stat-->
+                <div class="fs-4 fw-bolder">{{ location.id }}</div>
+                <!--end::Stat-->
+            </div>
+            <!--end::Col--> #}
+            <!--begin::Col-->
+            <div class="col">
+                <!--begin::Label-->
+                <div class="fs-7 text-muted fw-bold">Classes</div>
+                <!--end::Label-->
+                <!--begin::Stat-->
+                <div class="d-flex align-items-center">
+                    <div class="fs-4 fw-bolder">
+                        {% for classe in teacher.classes %}
+                            {{ classe.name }}{% if not loop.last %}, {% endif %}
+                        {% else %}
+                            --aucune--
+                        {% endfor %}
+                    </div>
+                </div>
+                <!--end::Stat-->
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
     </div>
 
     <div class="d-flex justify-content-between">

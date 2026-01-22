@@ -54,7 +54,7 @@ class Classe
     /**
      * @var Collection<int, Teacher>
      */
-    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classe')]
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classes')]
     #[Groups(['classe:read'])]
     #[MaxDepth(1)]
     private Collection $teachers;
@@ -135,7 +135,7 @@ class Classe
     {
         if (!$this->teachers->contains($teacher)) {
             $this->teachers->add($teacher);
-            $teacher->addClasse($this);
+            $teacher->addClasses($this);
         }
         return $this;
     }
@@ -143,7 +143,7 @@ class Classe
     public function removeTeacher(Teacher $teacher): self
     {
         if ($this->teachers->removeElement($teacher)) {
-            $teacher->removeClasse($this);
+            $teacher->removeClasses($this);
         }
         return $this;
     }

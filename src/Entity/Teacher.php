@@ -39,7 +39,7 @@ class Teacher
      */
     #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'teachers')]
     #[Groups(['teacher:read', 'classe:read'])]
-    private Collection $classe;
+    private Collection $classes;
 
     /**
      * @var Collection<int, Subject>
@@ -47,9 +47,12 @@ class Teacher
     #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: Subject::class)]
     private Collection $subjects;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
-        $this->classe = new ArrayCollection();
+        $this->classes = new ArrayCollection();
         $this->subjects = new ArrayCollection();
     }
 
@@ -110,23 +113,23 @@ class Teacher
     /**
      * @return Collection<int, Classe>
      */
-    public function getClasse(): Collection
+    public function getClasses(): Collection
     {
-        return $this->classe;
+        return $this->classes;
     }
 
-    public function addClasse(Classe $classe): self
+    public function addClasses(Classe $classe): self
     {
-        if (!$this->classe->contains($classe)) {
-            $this->classe->add($classe);
+        if (!$this->classes->contains($classe)) {
+            $this->classes->add($classe);
         }
 
         return $this;
     }
 
-    public function removeClasse(Classe $classe): self
+    public function removeClasses(Classe $classe): self
     {
-        $this->classe->removeElement($classe);
+        $this->classes->removeElement($classe);
 
         return $this;
     }
@@ -163,5 +166,17 @@ class Teacher
     public function __toString(): string
     {
         return $this->firstname . ' ' . ($this->lastname ?? '');
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 }

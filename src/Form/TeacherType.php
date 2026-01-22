@@ -32,7 +32,7 @@ class TeacherType extends AbstractType
                 ],
                 'placeholder' => 'Veuiller sélectionner',
             ])
-            ->add('classe', EntityType::class, [
+            ->add('classes', EntityType::class, [
                 'label' => 'Classes',
                 'class' => Classe::class,
                 'choice_label' => 'name', // Display class name

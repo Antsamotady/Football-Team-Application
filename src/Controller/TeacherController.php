@@ -36,6 +36,8 @@ class TeacherController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $teacher->setUpdatedAt(new \DateTimeImmutable());
+
             $this->entityManager->persist($teacher);
             $this->entityManager->flush();
 
@@ -63,6 +65,8 @@ class TeacherController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $teacher->setUpdatedAt(new \DateTimeImmutable());
+            
             $this->entityManager->flush();
 
             return $this->redirectToRoute('teacher_index', [], Response::HTTP_SEE_OTHER);
