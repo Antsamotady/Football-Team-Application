@@ -18,12 +18,6 @@ class Score
     #[ORM\Column(type: 'float', nullable: true)]
     private ?float $value = null;
 
-    /**
-     * @var Collection<int, StudentSubject>
-     */
-    #[ORM\OneToMany(mappedBy: 'score', targetEntity: StudentSubject::class)]
-    private Collection $studentSubject;
-
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Subject $subject = null;
@@ -31,11 +25,6 @@ class Score
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'scores')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Student $student = null;
-
-    public function __construct()
-    {
-        $this->studentSubject = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -57,33 +46,6 @@ class Score
     public function setValue(?float $value): self
     {
         $this->value = $value;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, StudentSubject>
-     */
-    public function getStudentSubject(): Collection
-    {
-        return $this->studentSubject;
-    }
-
-    public function addStudentSubject(StudentSubject $studentSubject): self
-    {
-        if (!$this->studentSubject->contains($studentSubject)) {
-            $this->studentSubject->add($studentSubject);
-            $studentSubject->setScore($this);
-        }
-        return $this;
-    }
-
-    public function removeStudentSubject(StudentSubject $studentSubject): self
-    {
-        if ($this->studentSubject->removeElement($studentSubject)) {
-            if ($studentSubject->getScore() === $this) {
-                $studentSubject->setScore(null);
-            }
-        }
         return $this;
     }
 

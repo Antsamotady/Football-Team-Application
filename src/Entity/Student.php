@@ -39,12 +39,6 @@ class Student
     private ?Classe $classe = null;
 
     /**
-     * @var Collection<int, StudentSubject>
-     */
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: StudentSubject::class)]
-    private Collection $subjects;
-
-    /**
      * @var Collection<int, Score>
      */
     #[ORM\OneToMany(
@@ -61,7 +55,6 @@ class Student
 
     public function __construct()
     {
-        $this->subjects = new ArrayCollection();
         $this->scores = new ArrayCollection();
     }
 
@@ -118,33 +111,6 @@ class Student
     public function setClasse(?Classe $classe): self
     {
         $this->classe = $classe;
-        return $this;
-    }
-    
-    /**
-     * @return Collection<int, StudentSubject>
-     */
-    public function getSubjects(): Collection
-    {
-        return $this->subjects;
-    }
-
-    public function addSubject(StudentSubject $subject): self
-    {
-        if (!$this->subjects->contains($subject)) {
-            $this->subjects->add($subject);
-            $subject->setStudent($this);
-        }
-        return $this;
-    }
-
-    public function removeSubject(StudentSubject $subject): self
-    {
-        if ($this->subjects->removeElement($subject)) {
-            if ($subject->getStudent() === $this) {
-                $subject->setStudent(null);
-            }
-        }
         return $this;
     }
 
