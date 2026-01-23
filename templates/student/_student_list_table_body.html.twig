@@ -9,10 +9,11 @@
 				<th class="min-w-8px"></th>
 				<th class="min-w-70px">Nom</th>
 				<th class="min-w-100px">Prénom</th>
-				<th class="min-w-30px">Classe</th>
-				<th class="min-w-40px">Centre</th>
-				<th class="text-center min-w-25px">Moyenne</th>
-				<th class="text-end min-w-70px">Actions</th>
+				<th class="min-w-35px">Classe</th>
+				<th class="min-w-45px">Centre</th>
+				<th class="text-center min-w-15px">Moyenne</th>
+				<th class="text-center min-w-15px">Date</th>
+				<th class="text-end min-w-40px">Actions</th>
 			</tr>
 			<!--end::Table row-->
 		</thead>
@@ -51,9 +52,8 @@
 					>
 						{{ students_scores[student.id].average_score }}
 					</span>
-
-
 				</td>
+				<td class="text-center">{% if student.updatedAt %} {{ student.updatedAt|date('d-m-Y') }} {% endif %}</td>
 				<!--begin::Action=-->
 				<td class="text-end">
 					<div class="d-flex justify-content-end flex-shrink-0">

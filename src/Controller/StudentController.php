@@ -7,6 +7,7 @@ use App\Entity\Classe;
 use App\Entity\Student;
 use App\Entity\Subject;
 use App\Form\StudentType;
+use App\Event\StudentEvent;
 use App\Service\ScoreService;
 use App\Data\StudentFilterData;
 use App\Data\StudentSearchData;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/student')]
@@ -30,7 +32,8 @@ class StudentController extends AbstractController
 {
 	public function __construct(
 		public EntityManagerInterface $em,
-		private ScoreService $scoreService
+		private ScoreService $scoreService,
+        private EventDispatcherInterface $eventDispatcher
 	) {
 	}
 	
@@ -158,7 +161,6 @@ class StudentController extends AbstractController
         return $this->redirectToRoute('student_list');
     }
 
-
 	#[Route('/new', name: 'student_new', methods: ['GET', 'POST'])]
 	public function new(Request $request, EntityManagerInterface $em): Response
 	{
@@ -168,14 +170,18 @@ class StudentController extends AbstractController
 
 		if ($form->isSubmitted() && $form->isValid()) {
             $student->setUpdatedAt(new \DateTimeImmutable());
+
 			$em->persist($student);
 			$em->flush();
+
+            $event = new StudentEvent($student, StudentEvent::CREATED);
+            $this->eventDispatcher->dispatch($event, StudentEvent::CREATED);
 
 			$this->addFlash('success', 'Ajout étudiant réussi.');
 			return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
 		}
 
-		return $this->renderForm('student/new.html.twig', [
+		return $this->render('student/new.html.twig', [
 			'template_title' => 'Ajouter',
 			'student' => $student,
 			'form' => $form,
@@ -313,6 +319,13 @@ class StudentController extends AbstractController
 		$firstStudent = $studentRepo->findOneBy([], ['id' => 'ASC']);
 		$lastStudent = $studentRepo->findOneBy([], ['id' => 'DESC']);
 
+        /** @var array{firstName: string|null, lastName: string|null} $originalData */
+        $originalData = [
+            'firstName' => $student->getFirstName(),
+            'lastName' => $student->getLastName(),
+            // Add other fields you want to track
+        ];
+
 		if ($student != $firstStudent)
 			$previousStudent = $studentRepo->findOneBy(['id' => $student->getId() - 1]);
 
@@ -326,6 +339,11 @@ class StudentController extends AbstractController
             $student->setUpdatedAt(new \DateTimeImmutable());
 			$em->flush();
 
+            $changes = $this->getChangesForLogEvent($student, $originalData);
+
+            $event = new StudentEvent($student, StudentEvent::UPDATED, $changes);
+            $this->eventDispatcher->dispatch($event, StudentEvent::UPDATED);
+
 			$this->addFlash('success', 'Modification réussie.');
 
 			return $this->redirectToRoute('student_show', ['id' => $student->getId()], Response::HTTP_SEE_OTHER);
@@ -338,7 +356,7 @@ class StudentController extends AbstractController
 
 		$scoreResults = $this->scoreService->processScores($scores);
 
-		return $this->renderForm('student/edit.html.twig', [
+		return $this->render('student/edit.html.twig', [
 			'template_title' => 'Editer un étudiant',
 			'student' => $student,
 			'previous' => $previousStudent ? $previousStudent->getId() : null,
@@ -356,6 +374,9 @@ class StudentController extends AbstractController
         $token = $tokenRaw !== null ? (string) $tokenRaw : null;
 
         if ($this->isCsrfTokenValid('delete'.$student->getId(), $token)) {
+            $event = new StudentEvent($student, StudentEvent::DELETED);
+            $this->eventDispatcher->dispatch($event, StudentEvent::DELETED);
+            
             $em->remove($student);
             $em->flush();
 
@@ -409,4 +430,31 @@ class StudentController extends AbstractController
         }
         $em->flush();
 	}
+
+    /**
+     * @param array{
+     *     firstName: string|null,
+     *     lastName: string|null
+     * } $originalData
+     *
+     * @return array<string, array{old: string|null, new: string|null}>
+     */
+    private function getChangesForLogEvent(Student $student, array $originalData): array
+    {
+        $changes = [];
+        if ($originalData['firstName'] !== $student->getFirstName()) {
+            $changes['firstName'] = [
+                'old' => $originalData['firstName'],
+                'new' => $student->getFirstName()
+            ];
+        }
+        if ($originalData['lastName'] !== $student->getLastName()) {
+            $changes['lastName'] = [
+                'old' => $originalData['lastName'],
+                'new' => $student->getLastName()
+            ];
+        }
+
+        return $changes;
+    }
 }

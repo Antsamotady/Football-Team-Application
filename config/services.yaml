@@ -25,6 +25,12 @@ services:
     App\Service\ScoreService: 
         arguments: 
             $formFactory: '@form.factory'
-            
+    
+    App\Service\StudentLogger:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+    
+    App\EventSubscriber\StudentSubscriber:
+        tags: ['kernel.event_subscriber']
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
