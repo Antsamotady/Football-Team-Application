@@ -2,6 +2,10 @@
 
 {% block title %}{{ template_title }}{% endblock %}
 
+{% block head_script %}
+	<script src="../assets/js/jquery.min.js"></script>
+{% endblock %}
+
 {% block body %}
 	<style>
 			.example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
@@ -39,4 +43,5 @@
 	<script type="text/javascript">
 		$("#kt_subscriptions_table").DataTable();
 	</script>
+	<script src="{{ asset('assets/js/custom/student/list.js?v=01') }}"></script>
 {% endblock %}

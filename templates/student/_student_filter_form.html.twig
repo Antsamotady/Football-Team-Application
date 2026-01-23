@@ -1,4 +1,4 @@
-<div class="menu menu-sub menu-sub-dropdown w-370px w-md-370px" data-kt-menu="true">
+<div class="menu menu-sub menu-sub-dropdown w-400px w-md-400px" data-kt-menu="true" data-popper-placement="bottom-end">
   <!--begin::Header-->
   <div class="px-7 py-5">
     <div class="fs-5 text-dark fw-bolder">Options de filtrage</div>
@@ -11,11 +11,17 @@
   <!--begin::Content-->
   <div class="px-7 py-5" data-kt-subscription-table-filter="form">
     <!--begin::Input group-->
-    <div class="mb-3">
-      {{ form_widget(filter_form.firstname, {'attr': {'class': 'form-control fw-bolder'}}) }}
-    </div>
-    <div class="mb-3">
-      {{ form_widget(filter_form.lastname, {'attr': {'class': 'form-control fw-bolder'}}) }}
+    <div class="row mb-3">
+        <!--begin::Col-->
+        <div class="col-lg-6 fv-row">
+          {{ form_widget(filter_form.firstname, {'attr': {'class': 'form-control fw-bolder'}}) }}
+        </div>
+        <!--end::Col-->
+        <!--begin::Col-->
+        <div class="col-lg-6 fv-row">
+          {{ form_widget(filter_form.lastname, {'attr': {'class': 'form-control fw-bolder'}}) }}
+        </div>
+        <!--end::Col-->
     </div>
     <div class="mb-3">
       {{ form_widget(filter_form.gender, {'attr': {'class': 'form-control fw-bolder'}}) }}
@@ -29,18 +35,18 @@
       </div>
     {% endif %}
 
-    <h5>Filtres de notes</h5>
+    <h5 class="fs-5 text-dark fw-bolder py-3">Filtres de notes</h5>
     <div id="score-filters">
         {% for scoreFilter in filter_form.scoreFilters %}
             <div class="mb-3 border rounded p-3 score-filter-item">
                 <div class="row">
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-6 mb-2">
                         {{ form_widget(scoreFilter.subject, {'attr': {'class': 'form-select fw-bolder'}}) }}
                     </div>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                         {{ form_widget(scoreFilter.min, {'attr': {'class': 'form-control fw-bolder', 'placeholder': 'Min'}}) }}
                     </div>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                         {{ form_widget(scoreFilter.max, {'attr': {'class': 'form-control fw-bolder', 'placeholder': 'Max'}}) }}
                     </div>
                 </div>
