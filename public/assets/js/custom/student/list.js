@@ -17,10 +17,8 @@ $('.classe-student-search-name').on(
 
 $(document).on('click', '[data-kt-search-element="clear"]', function (e) {
     e.preventDefault();
-
     const $form = $(this).closest('form');
     const $input = $form.find('.classe-student-search-name');
-
     $input.val('');
     $input.trigger('focus');
     $form.trigger('submit');
