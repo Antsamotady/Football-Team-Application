@@ -17,7 +17,7 @@ class ClasseSearchFormType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Recherche par nom de la classe ou du centre'
+                    'placeholder' => 'classe ou centre'
                 ]
             ]);
     }

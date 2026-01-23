@@ -2,6 +2,10 @@
 
 {% block title %}{{ template_title }}{% endblock %}
 
+{% block head_script %}
+	<script src="../assets/js/jquery.min.js"></script>
+{% endblock %}
+
 {% block body %}
 
     {% for notice in app.flashes('success') %}
@@ -40,4 +44,12 @@
     </div>
     <!--end::Tables Widget 9-->
 
+{% endblock %}
+
+{% block foot_script %}
+	{{parent()}}
+	<script type="text/javascript">
+		$("#kt_subscriptions_table").DataTable();
+	</script>
+	<script src="{{ asset('assets/js/custom/student/list.js?v=01') }}"></script>
 {% endblock %}

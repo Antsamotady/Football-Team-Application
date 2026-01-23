@@ -1,3 +1,5 @@
+{% set isFromStudent = is_from_student|default(false) %}
+
 <div class="menu menu-sub menu-sub-dropdown w-400px w-md-400px" data-kt-menu="true" data-popper-placement="bottom-end">
   <!--begin::Header-->
   <div class="px-7 py-5">
@@ -26,6 +28,7 @@
     <div class="mb-3">
       {{ form_widget(filter_form.gender, {'attr': {'class': 'form-control fw-bolder'}}) }}
     </div>
+    
     {% if isFromStudent %}
       <div class="mb-3">
         {{ form_widget(filter_form.classe, {'attr': {'class': 'form-control fw-bolder'}}) }}
