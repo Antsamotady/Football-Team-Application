@@ -141,6 +141,18 @@ class Student
         return $this;
     }
 
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->firstname . ' ' . ($this->lastname ?? '');
@@ -173,16 +185,58 @@ class Student
         return $result;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    /**
+     * Export student data with subject scores
+     *
+     * @param Subject[] $subjects
+     * @return list<string|int|float|null>
+     */
+    public function getExportWithSubjects(array $subjects): array
     {
-        return $this->updatedAt;
+        $result = [];
+        
+        // Basic info
+        $result[] = $this->gender ?? '';
+        $result[] = $this->getName();
+        $result[] = $this->classe?->getName() ?? '';
+        
+        // Prepare student scores by subject ID
+        $studentScores = [];
+        foreach ($this->getScores() as $score) {
+            if ($score->getSubject()) {
+                $studentScores[$score->getSubject()->getId()] = $score->getValue();
+            }
+        }
+        
+        // Add subject scores first (with 2 decimal precision)
+        foreach ($subjects as $subject) {
+            $score = $studentScores[$subject->getId()] ?? null;
+            if ($score !== null) {
+                $result[] = number_format($score, 2, '.', '');
+            } else {
+                $result[] = '';
+            }
+        }
+        
+        // Calculate weighted average (with coefficients)
+        $totalWeightedSum = 0.0;
+        $totalCoefficient = 0;
+        
+        foreach ($this->getScores() as $score) {
+            $value = $score->getValue();
+            $subject = $score->getSubject();
+            
+            if ($value !== null && $subject !== null) {
+                $coefficient = $subject->getCoefficient();
+                $totalWeightedSum += $value * $coefficient;
+                $totalCoefficient += $coefficient;
+            }
+        }
+        
+        // Add weighted average at the end with 2 decimal precision
+        $average = $totalCoefficient > 0 ? $totalWeightedSum / $totalCoefficient : 0.0;
+        $result[] = number_format($average, 2, '.', '');
+        
+        return $result;
     }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
 }
