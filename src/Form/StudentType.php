@@ -54,13 +54,27 @@ class StudentType extends AbstractType
                 'disabled' => true
             ]);
         }
+
+        // Add scores collection
+        if ($options['include_scores']) {
+            $builder->add('scores', CollectionType::class, [
+                'entry_type' => ScoreType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => false,
+                'allow_delete' => false,
+                'by_reference' => false,
+                'label' => 'Notes',
+                'attr' => ['class' => 'scores-collection'],
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class'    => Student::class,
-            'classe_locked' => false
+            'classe_locked' => false,
+            'include_scores' => false
         ]);
     }
 }

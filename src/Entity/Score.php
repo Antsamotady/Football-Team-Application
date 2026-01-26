@@ -6,6 +6,7 @@ use App\Repository\ScoreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ScoreRepository::class)]
 class Score
@@ -16,6 +17,10 @@ class Score
     private ?int $id = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\Range(
+        max: 20,
+        maxMessage: 'The score must be less than or equal to {{ limit }}.'
+    )]
     private ?float $value = null;
 
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'scores')]

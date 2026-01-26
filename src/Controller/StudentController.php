@@ -17,7 +17,6 @@ use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Service\StudentCsvImporter;
 use App\Repository\StudentRepository;
-use App\Repository\SubjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -226,7 +225,6 @@ class StudentController extends AbstractController
 	public function show(
 		Student $student, 
 		StudentRepository $studentRepo, 
-		EntityManagerInterface $em, 
 		ScoreRepository $scoreRepo): Response
 	{
 		$previousStudent = null;
@@ -240,7 +238,7 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 
-		$this->ensureStudentScoresComplete($student, $em);
+		$this->ensureStudentScoresComplete($student);
 
 		$scores = $scoreRepo->findBy(
 			['student' => $student], 
@@ -312,7 +310,11 @@ class StudentController extends AbstractController
     }
 	
 	#[Route('/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
-	public function edit(Request $request, Student $student, EntityManagerInterface $em, StudentRepository $studentRepo, SubjectRepository $subjectRepo, ScoreRepository $scoreRepo): Response
+	public function edit(
+        Request $request, 
+        Student $student, 
+        StudentRepository $studentRepo, 
+        ScoreRepository $scoreRepo): Response
 	{
 		$previousStudent = null;
 		$nextStudent = null;
@@ -332,23 +334,42 @@ class StudentController extends AbstractController
 		if ($student != $lastStudent)
 			$nextStudent = $studentRepo->findOneBy(['id' => $student->getId() + 1]);
 		
-		$form = $this->createForm(StudentType::class, $student);
-		$form->handleRequest($request);
+        
+		$this->ensureStudentScoresComplete($student);
 
-		if ($form->isSubmitted() && $form->isValid()) {
+        $includeScores = true;
+        $form = $this->createForm(StudentType::class, $student, [
+            'classe_locked' => false, // or true if editing from class context
+            'include_scores' => $includeScores,
+        ]);
+
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
             $student->setUpdatedAt(new \DateTimeImmutable());
-			$em->flush();
 
             $changes = $this->getChangesForLogEvent($student, $originalData);
 
             $event = new StudentEvent($student, StudentEvent::UPDATED, $changes);
             $this->eventDispatcher->dispatch($event, StudentEvent::UPDATED);
 
-			$this->addFlash('success', 'Modification réussie.');
 
-			return $this->redirectToRoute('student_show', ['id' => $student->getId()], Response::HTTP_SEE_OTHER);
-		}
-
+            // Remove empty scores (where value is null)
+            foreach ($student->getScores() as $score) {
+                if ($score->getValue() === null) {
+                    $student->removeScore($score);
+                    $this->em->remove($score);
+                }
+            }
+            
+            $this->em->persist($student);
+            $this->em->flush();
+            
+            $this->addFlash('success', 'L\'étudiant a été mis à jour.');
+            
+            return $this->redirectToRoute('student_show', ['id' => $student->getId()], Response::HTTP_SEE_OTHER);
+        }
+        
 		$scores = $scoreRepo->findBy(
 			['student' => $student], 
 			['subject' => 'ASC']
@@ -357,13 +378,14 @@ class StudentController extends AbstractController
 		$scoreResults = $this->scoreService->processScores($scores);
 
 		return $this->render('student/edit.html.twig', [
-			'template_title' => 'Editer un étudiant',
-			'student' => $student,
-			'previous' => $previousStudent ? $previousStudent->getId() : null,
-			'next' => $nextStudent ? $nextStudent->getId() : null,
-			'form' => $form,
-			'scores' => $scores,
-			'score_forms' => $scoreResults['formViews']
+			'template_title'    => 'Editer un étudiant',
+			'student'           => $student,
+			'previous'          => $previousStudent ? $previousStudent->getId() : null,
+			'next'              => $nextStudent ? $nextStudent->getId() : null,
+			'form'              => $form,
+			'scores'            => $scores,
+			'score_forms'       => $scoreResults['formViews'],
+            'include_scores'    => $includeScores
 		]);
 	}
 
@@ -401,12 +423,12 @@ class StudentController extends AbstractController
         return $datas_return;
     }
 
-    private function ensureStudentScoresComplete(Student $student, EntityManagerInterface $em): void
+    private function ensureStudentScoresComplete(Student $student): void
     {
-        $subjectRepository = $em->getRepository(Subject::class);
+        $subjectRepository = $this->em->getRepository(Subject::class);
         $subjects = $subjectRepository->findAll();
             
-        $scoreRepository = $em->getRepository(Score::class);
+        $scoreRepository = $this->em->getRepository(Score::class);
         $scores = $scoreRepository->findBy(['student' => $student]);
 
         $existingScores = [];
@@ -418,17 +440,16 @@ class StudentController extends AbstractController
             $existingScores[$subject->getId()] = $score;
         }
 
-
         foreach ($subjects as $subject) {
                 if (!isset($existingScores[$subject->getId()])) {
                     $newScore = new Score();
                     $newScore->setStudent($student);
                     $newScore->setSubject($subject);
                     $newScore->setValue(0);
-                    $em->persist($newScore);
+                    $this->em->persist($newScore);
                 }
         }
-        $em->flush();
+        $this->em->flush();
 	}
 
     /**

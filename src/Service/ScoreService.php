@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Score;
 use App\Entity\Student;
-use App\Form\ScoreType;
+use App\Form\ScoreOnlyType;
 use App\Repository\ScoreRepository;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -85,7 +85,7 @@ class ScoreService
                 'score'   => $scoreValue,
             ];
 
-            $form = $this->formFactory->create(ScoreType::class, $score);
+            $form = $this->formFactory->create(ScoreOnlyType::class, $score);
             $formViews[$score->getId()] = $form->createView();
         }
 
