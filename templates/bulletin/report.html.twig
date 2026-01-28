@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulletin de Notes - {{ student.firstname }} {{ student.lastname }}</title>
+    <style>
+        @page {
+            margin: 2cm;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .header h2 {
+            margin: 5px 0 0 0;
+            font-size: 16px;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+        
+        .student-info {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .info-item {
+            margin-bottom: 5px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .grades-table th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .grades-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .grades-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .grades-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .score-cell {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .passed {
+            color: #27ae60;
+        }
+        
+        .failed {
+            color: #e74c3c;
+        }
+        
+        .coefficient-cell {
+            text-align: center;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .summary-item {
+            padding: 10px;
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .final-result {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .passed-bg {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+        
+        .failed-bg {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 10px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+        
+        .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .signature-line {
+            width: 200px;
+            border-top: 1px solid #333;
+            text-align: center;
+            padding-top: 5px;
+            font-size: 10px;
+        }
+        
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="watermark">BULLETIN</div>
+    
+    <div class="header">
+        <h1>BULLETIN DE NOTES</h1>
+        <h2>Année Scolaire {{ "now"|date("Y") }}</h2>
+    </div>
+    
+    <div class="student-info">
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Élève:</span>
+                {{ student.gender }} {{ student.firstname }} {{ student.lastname }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">Classe:</span>
+                {{ student.classe ? student.classe.name : 'Non assigné' }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">N° d'identification:</span>
+                {{ student.id }}
+            </div>
+        </div>
+    </div>
+    
+    {% if hasScores %}
+        <table class="grades-table">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Coefficient</th>
+                    <th>Note</th>
+                    <th>Note pondérée</th>
+                    <th>Résultat</th>
+                    <th>Remarques</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subjectData in subjectsData %}
+                    <tr>
+                        <td>{{ subjectData.subject.name }}</td>
+                        <td class="coefficient-cell">{{ subjectData.coefficient }}</td>
+                        <td class="score-cell">
+                            {% if subjectData.value is not null %}
+                                {{ subjectData.value|number_format(2, ',', ' ') }}/20
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="score-cell">
+                            {% if subjectData.weightedValue is not null %}
+                                {{ subjectData.weightedValue|number_format(2, ',', ' ') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="score-cell">
+                            {% if subjectData.value is not null %}
+                                <span class="{{ subjectData.passed ? 'passed' : 'failed' }}">
+                                    {{ subjectData.passed ? 'Admis' : 'Non admis' }}
+                                </span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            blabla blabla
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="summary">
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-value">{{ overallAverageFormatted }}/20</div>
+                    <div class="summary-label">Moyenne Générale</div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-value">{{ totalCoefficient }}</div>
+                    <div class="summary-label">Total des Coefficients</div>
+                </div>
+                
+                {% if classRank %}
+                    <div class="summary-item">
+                        <div class="summary-value">{{ classRank.rank }}/{{ classRank.total }}</div>
+                        <div class="summary-label">Classement dans la classe (top {{ classRank.percentage }}%)</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="final-result {{ overallPassed ? 'passed-bg' : 'failed-bg' }}">
+                {{ overallPassed ? 'ADMIS(E)' : 'NON ADMIS(E)' }}
+            </div>
+        </div>
+        
+        <div class="signature-section">
+            <div class="signature-line">
+                Le Directeur Pédagogique
+            </div>
+            <div class="signature-line">
+                Le Professeur Principal
+            </div>
+            <div class="signature-line">
+                Antananarivo, le {{ generatedAt|date('d/m/Y') }}
+            </div>
+        </div>
+    {% else %}
+        <div class="no-data">
+            <h3>Aucune note enregistrée pour cet élève</h3>
+            <p>Le bulletin ne peut être généré car l'élève n'a encore aucune note.</p>
+        </div>
+    {% endif %}
+    
+    <div class="footer">
+        Document généré le {{ generatedAt|date('d/m/Y à H:i') }}<br>
+        Ce document est confidentiel et à usage exclusif de l'élève et de son responsable légal.
+    </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends 'dashboard-base.html.twig' %}
+
+{% block title %}Prévisualisation du Bulletin - {{ student.firstname }} {{ student.lastname }}{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Prévisualisation du Bulletin</h1>
+        <div>
+            <a href="{{ path('bulletin_download', {'id': student.id}) }}" class="btn btn-success">
+                <i class="bi bi-download"></i> Télécharger le PDF
+            </a>
+            <a href="{{ path('student_show', {'id': student.id}) }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Retour à l'élève
+            </a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Ceci est une prévisualisation HTML. 
+                Le document PDF téléchargé sera formaté différemment.
+            </div>
+            
+            {# Include the same content as the PDF template #}
+            {% include 'bulletin/report.html.twig' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

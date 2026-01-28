@@ -66,7 +66,10 @@
                 {{ include('student/_individual_student_score_stats.html.twig') }}
                 <!--end::Info-->
                 <div class="d-flex justify-content-end pt-10">
-                    <a href="{{ path('dl_bulletin', {'id': student.id}) }}" class="btn btn-success w-66 me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="" data-bs-original-title="Télécharger son relevé de notes">
+                    <a href="{{ path('bulletin_preview', {'id': student.id}) }}" class="btn btn-secondary me-2">
+                        <i class="bi bi-eye"></i> Prévisualiser
+                    </a>
+                    <a href="{{ path('bulletin_download', {'id': student.id}) }}" class="btn btn-success w-66 me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="" data-bs-original-title="Télécharger son relevé de notes">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <rect opacity="0.3" x="12.75" y="4.25" width="12" height="2" rx="1" transform="rotate(90 12.75 4.25)" fill="black"></rect>
