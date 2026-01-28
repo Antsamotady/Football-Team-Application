@@ -31,6 +31,9 @@ class Score
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Student $student = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $feedback = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +76,18 @@ class Score
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
+        return $this;
+    }
+
+    public function getFeedback(): ?string
+    {
+        return $this->feedback;
+    }
+
+    public function setFeedback(?string $feedback): static
+    {
+        $this->feedback = $feedback;
+
         return $this;
     }
 }

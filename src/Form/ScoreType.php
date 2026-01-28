@@ -8,6 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ScoreType extends AbstractType
 {
@@ -25,6 +27,13 @@ class ScoreType extends AbstractType
                     'step' => 0.01,
                 ],
                 'html5' => true,
+            ])
+            ->add('feedback', TextareaType::class, [
+                'label'     => 'Test from formtype',
+                'required'  => false,
+                'attr'      => [
+                    'placeholder'   => 'Appréciations'
+                ]
             ])
             ->add('subject', HiddenType::class, [
                 'data' => $options['subject_id'],

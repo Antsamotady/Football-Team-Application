@@ -6,7 +6,10 @@
     <title>Bulletin de Notes - {{ student.firstname }} {{ student.lastname }}</title>
     <style>
         @page {
-            margin: 2cm;
+            margin-top: 0.5cm;
+            margin-right: 1cm;
+            margin-bottom: 0.5cm;
+            margin-left: 1cm;
         }
         
         * {
@@ -24,8 +27,8 @@
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #333;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
             padding-bottom: 15px;
         }
         
@@ -43,7 +46,7 @@
         }
         
         .student-info {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             padding: 15px;
             background-color: #f8f9fa;
             border-radius: 5px;
@@ -64,7 +67,7 @@
             color: #2c3e50;
         }
         
-        .grades-table {
+        .grades-table, .signature-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px;
@@ -76,6 +79,16 @@
             padding: 10px;
             text-align: left;
             font-weight: bold;
+        }
+
+        .signature-table {
+            margin-top: 20px;
+            margin-bottom: 60px;
+        }
+
+        .signature-table th {
+            font-weight: 400;
+            text-align: right;
         }
         
         .grades-table td {
@@ -107,55 +120,48 @@
         .coefficient-cell {
             text-align: center;
         }
-        
+
         .summary {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #ecf0f1;
-            border-radius: 5px;
+            margin-bottom: 20px;
         }
-        
+                
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-        
-        .summary-item {
-            padding: 10px;
+            gap: 0px;
         }
         
         .summary-value {
-            font-size: 24px;
+            font-size: 16px;
             font-weight: bold;
             color: #2c3e50;
         }
         
         .summary-label {
-            font-size: 14px;
+            font-size: 12px;
             color: #7f8c8d;
             margin-top: 5px;
         }
         
         .final-result {
             text-align: center;
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 10px;
             border-radius: 5px;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
         }
         
         .passed-bg {
             background-color: #d5f4e6;
             color: #27ae60;
-            border: 2px solid #27ae60;
+            border: 1px solid #27ae60;
         }
         
         .failed-bg {
             background-color: #fadbd8;
             color: #e74c3c;
-            border: 2px solid #e74c3c;
+            border: 1px solid #e74c3c;
         }
         
         .no-data {
@@ -180,9 +186,12 @@
             justify-content: space-between;
         }
         
+        .underline {
+            text-decoration: underline;
+        }
+        
         .signature-line {
             width: 200px;
-            border-top: 1px solid #333;
             text-align: center;
             padding-top: 5px;
             font-size: 10px;
@@ -211,21 +220,47 @@
     <div class="student-info">
         <div class="info-grid">
             <div class="info-item">
-                <span class="info-label">Élève:</span>
+                <span class="info-label">Etudiant:</span>
                 {{ student.gender }} {{ student.firstname }} {{ student.lastname }}
+            </div>
+            <div class="info-item">
+                <span class="info-label">N°:</span>
+                {{ student.id }}
             </div>
             <div class="info-item">
                 <span class="info-label">Classe:</span>
                 {{ student.classe ? student.classe.name : 'Non assigné' }}
             </div>
             <div class="info-item">
-                <span class="info-label">N° d'identification:</span>
-                {{ student.id }}
+                <span class="info-label">Centre:</span>
+                {{ student.classe ? student.classe.location.name : 'Non assigné' }}
             </div>
         </div>
     </div>
     
     {% if hasScores %}
+        <div class="summary">
+            <div class="final-result {{ overallPassed ? 'passed-bg' : 'failed-bg' }}">
+                {{ overallPassed ? 'ADMIS(E)' : 'NON ADMIS(E)' }}
+            </div>
+            <div class="summary-grid">
+                {% if classRank %}
+                    <div class="summary-item">
+                        <div class="summary-label">Rang (top {{ classRank.percentage }}%)</div>
+                        <div class="summary-value">{{ classRank.rank }}/{{ classRank.total }}</div>
+                    </div>
+                {% endif %}
+                <div class="summary-item">
+                    <div class="summary-label">Moyenne Générale</div>
+                    <div class="summary-value">{{ overallAverageFormatted }}/20</div>
+                </div>
+                {# <div class="summary-item">
+                    <div class="summary-label">Total des Coefficients</div>
+                    <div class="summary-value">{{ totalCoefficient }}</div>
+                </div> #}
+            </div>
+        </div>
+
         <table class="grades-table">
             <thead>
                 <tr>
@@ -234,7 +269,7 @@
                     <th>Note</th>
                     <th>Note pondérée</th>
                     <th>Résultat</th>
-                    <th>Remarques</th>
+                    <th>Appréciations</th>
                 </tr>
             </thead>
             <tbody>
@@ -266,49 +301,31 @@
                             {% endif %}
                         </td>
                         <td>
-                            blabla blabla
+                            {% if subjectData.score is not null %}
+                                {{ subjectData.score.feedback }}
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
         
-        <div class="summary">
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <div class="summary-value">{{ overallAverageFormatted }}/20</div>
-                    <div class="summary-label">Moyenne Générale</div>
-                </div>
-                
-                <div class="summary-item">
-                    <div class="summary-value">{{ totalCoefficient }}</div>
-                    <div class="summary-label">Total des Coefficients</div>
-                </div>
-                
-                {% if classRank %}
-                    <div class="summary-item">
-                        <div class="summary-value">{{ classRank.rank }}/{{ classRank.total }}</div>
-                        <div class="summary-label">Classement dans la classe (top {{ classRank.percentage }}%)</div>
-                    </div>
-                {% endif %}
-            </div>
-            
-            <div class="final-result {{ overallPassed ? 'passed-bg' : 'failed-bg' }}">
-                {{ overallPassed ? 'ADMIS(E)' : 'NON ADMIS(E)' }}
-            </div>
-        </div>
-        
-        <div class="signature-section">
-            <div class="signature-line">
-                Le Directeur Pédagogique
-            </div>
-            <div class="signature-line">
-                Le Professeur Principal
-            </div>
-            <div class="signature-line">
-                Antananarivo, le {{ generatedAt|date('d/m/Y') }}
-            </div>
-        </div>
+        <table class="signature-table">
+            <thead>
+                <tr>
+                    <th class="signature-line underline">Le Directeur Pédagogique</th>
+                    <th class="signature-line underline">Le Professeur Principal</th>
+                    <th class="signature-line">Antananarivo, le {{ generatedAt|date('d/m/Y') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     {% else %}
         <div class="no-data">
             <h3>Aucune note enregistrée pour cet élève</h3>
