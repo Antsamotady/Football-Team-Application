@@ -177,24 +177,49 @@ class StudentRepository extends ServiceEntityRepository
                 $hasMax = $filter->getMax() !== null;
                 $hasSubject = $filter->getSubject() !== null;
                 
-                // Only create join if we have conditions
                 if ($hasMin || $hasMax || $hasSubject) {
-                    $joinAlias = "sc_$index";
-                    $qb->join('u.scores', $joinAlias);
-                    
-                    if ($hasMin) {
-                        $qb->andWhere("$joinAlias.value >= :min_$index")
-                        ->setParameter("min_$index", $filter->getMin());
-                    }
-                    
-                    if ($hasMax) {
-                        $qb->andWhere("$joinAlias.value <= :max_$index")
-                        ->setParameter("max_$index", $filter->getMax());
-                    }
                     
                     if ($hasSubject) {
-                        $qb->andWhere("$joinAlias.subject = :subject_$index")
+                        // CASE 1: With subject
+                        $joinAlias = "sc_$index";
+                        $qb->join('u.scores', $joinAlias)
+                        ->andWhere("$joinAlias.subject = :subject_$index")
                         ->setParameter("subject_$index", $filter->getSubject());
+                        
+                        if ($hasMin) {
+                            $qb->andWhere("$joinAlias.value >= :min_$index")
+                            ->setParameter("min_$index", $filter->getMin());
+                        }
+                        
+                        if ($hasMax) {
+                            $qb->andWhere("$joinAlias.value <= :max_$index")
+                            ->setParameter("max_$index", $filter->getMax());
+                        }
+                        
+                    } else if ($hasMin || $hasMax) {
+                        // CASE 2: Global min/max without subject
+                        // Join scores and check all are within range
+                        $joinAlias = "sc_all_$index";
+                        $qb->leftJoin('u.scores', $joinAlias);
+                        
+                        // Group by student to use HAVING clause
+                        $qb->addGroupBy('u.id');
+                        
+                        $conditions = [];
+                        
+                        if ($hasMin) {
+                            // MIN condition: no score should be below min
+                            $conditions[] = "MIN($joinAlias.value) >= :global_min_$index";
+                            $qb->setParameter("global_min_$index", $filter->getMin());
+                        }
+                        
+                        if ($hasMax) {
+                            // MAX condition: no score should be above max
+                            $conditions[] = "MAX($joinAlias.value) <= :global_max_$index";
+                            $qb->setParameter("global_max_$index", $filter->getMax());
+                        }
+                        
+                        $qb->having(implode(' AND ', $conditions));
                     }
                 }
             }

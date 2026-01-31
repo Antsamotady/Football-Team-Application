@@ -3,8 +3,8 @@
 {% block title %}Editer la Classe{% endblock %}
 
 {% block body %}
-    <h1>Editer la classe</h1>
 
-    {{ include('classe/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+    {{ include('classe/_form.html.twig', {'button_label': 'Enregistrer', 'is_edit': true}) }}
 
+    <a href="{{ path('classe_index') }}" class="btn btn-secondary w-66">Voir toutes les classes</a>
 {% endblock %}

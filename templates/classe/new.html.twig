@@ -3,13 +3,6 @@
 {% block title %}Ajouter{% endblock %}
 
 {% block body %}
-    <h1>
-        {% if is_from_classe is defined and is_from_classe == true %}
-            {{ classe.name }}: Entrer les détails du nouvel étudiant
-        {% else %}
-            Renseignements de la classe
-        {% endif %}
-    </h1>
 
     {% for notice in app.flashes('success') %}
         <div class="alert alert-success" role="alert">{{ notice }}</div>
@@ -20,4 +13,5 @@
 
     {{ include('classe/_form.html.twig') }}
 
+    <a href="{{ path('classe_index') }}" class="btn btn-secondary w-66">Voir toutes les classes</a>
 {% endblock %}
