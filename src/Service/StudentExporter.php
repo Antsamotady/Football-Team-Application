@@ -53,11 +53,14 @@ class StudentExporter
     public function exportStudents(array $students): string
     {
         // Cache subjects (they don't change often)
-        $subjects = $this->cache->get('export_subjects_list', function(ItemInterface $item) {
-            $item->expiresAfter(3600); // 1 hour
-            return $this->em->getRepository(Subject::class)
+        // $subjects = $this->cache->get('export_subjects_list', function(ItemInterface $item) {
+        //     $item->expiresAfter(3600); // 1 hour
+        //     return $this->em->getRepository(Subject::class)
+        //         ->findBy([], ['name' => 'ASC']);
+        // });
+
+        $subjects = $this->em->getRepository(Subject::class)
                 ->findBy([], ['name' => 'ASC']);
-        });
         
         // Create headers - ranking first
         $headers = ['Classement', 'Sexe', 'Nom', 'Classe'];

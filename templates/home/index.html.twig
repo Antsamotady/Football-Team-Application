@@ -1,6 +1,6 @@
 {% extends 'dashboard-base.html.twig' %}
 
-{% block title %}Bienvenue !{% endblock %}
+{% block title %}Bienvenue!{% endblock %}
 
 {% block body %}
 
@@ -8,7 +8,7 @@
     <!-- begin::Wrapper-->
     <div class="mw-lg-950px mx-auto w-100">
         <!-- begin::Header-->
-        <div class="d-flex justify-content-between flex-column flex-sm-row mb-19">
+        <div class="d-flex justify-content-between flex-column flex-sm-row mb-10">
             <!--end::Logo-->
             <!--begin::Logo-->
             <a href="#">
@@ -19,7 +19,7 @@
                 <h4 class="fw-boldest text-gray-800 fs-2qx pe-5 pb-7">TABLEAU DE BORD</h4>
                 <!--begin::Text-->
                 <div class="text-sm-end fw-bold fs-4 text-muted mt-7">
-                    <div>Administration des étudiants, des centres, des classes et des notes.</div>
+                    <div>Administration des étudiants, des centres, des classes et des notes</div>
                     <div>Gestion des matières et des enseignants</div>
                 </div>
                 <!--end::Text-->
@@ -29,7 +29,7 @@
         <!--begin::Body-->
         <div class="border-bottom pb-12">
             <!--begin::Image-->
-            <div class="d-flex flex-row-fluid bgi-no-repeat bgi-position-x-center bgi-size-cover card-rounded h-150px h-lg-250px mb-lg-20" style="background-image: url(assets/media/misc/pattern-4.jpg)"></div>
+            <div class="d-flex flex-row-fluid bgi-no-repeat bgi-position-x-center bgi-size-cover card-rounded h-150px h-lg-250px mb-lg-10" style="background-image: url(assets/media/misc/pattern-4.jpg)"></div>
             <!--end::Image-->
             <!--begin::Wrapper-->
             <div class="d-flex justify-content-between flex-column flex-md-row">
@@ -47,9 +47,9 @@
                             </thead>
                             <tbody>
                                 <tr class="fw-bolder text-gray-700 fs-5 text-end">
-                                    <td class="d-flex align-items-center py-6">
+                                    <td class="d-flex align-items-center py-4">
                                         <i class="fa fa-genderless text-danger fs-1 me-2"></i>
-                                        Centres
+                                        <a href="{{ path('location_index') }}" class="text-gray-800 text-hover-primary">Centres</a>
                                     </td>
                                     <td></td>
                                     <td class="fs-5 pe-lg-6 text-dark fw-boldest">
@@ -58,9 +58,9 @@
                                 </tr>
 
                                 <tr class="fw-bolder text-gray-700 fs-5 text-end">
-                                    <td class="d-flex align-items-center py-6">
+                                    <td class="d-flex align-items-center py-4">
                                         <i class="fa fa-genderless text-success fs-1 me-2"></i>
-                                        Classes
+                                        <a href="{{ path('classe_index') }}" class="text-gray-800 text-hover-primary">Classes</a>
                                     </td>
                                     <td></td>
                                     <td class="fs-5 pe-lg-6 text-dark fw-boldest">
@@ -69,9 +69,9 @@
                                 </tr>
 
                                 <tr class="fw-bolder text-gray-700 fs-5 text-end">
-                                    <td class="d-flex align-items-center py-6">
+                                    <td class="d-flex align-items-center py-4">
                                         <i class="fa fa-genderless text-primary fs-1 me-2"></i>
-                                        Enseignants
+                                        <a href="{{ path('teacher_index') }}" class="text-gray-800 text-hover-primary">Enseignants</a>
                                     </td>
                                     <td></td>
                                     <td class="fs-5 pe-lg-6 text-dark fw-boldest">
@@ -81,9 +81,9 @@
 
                                 <!-- New row -->
                                 <tr class="fw-bolder text-gray-700 fs-5 text-end">
-                                    <td class="d-flex align-items-center py-6">
+                                    <td class="d-flex align-items-center py-4">
                                         <i class="fa fa-genderless text-warning fs-1 me-2"></i>
-                                        Matières
+                                        <a href="{{ path('subject_index') }}" class="text-gray-800 text-hover-primary">Matières</a>
                                     </td>
                                     <td></td>
                                     <td class="fs-5 pe-lg-6 text-dark fw-boldest">
@@ -141,8 +141,10 @@
                 <div class="text-end pt-10">
                     <!--begin::Total Amount-->
                     <div class="fs-3 fw-bolder text-muted mb-3">TOTAL DES ETUDIANTS</div>
-                    <div class="fs-xl-2x fs-2 fw-boldest">{{ nb_students }}</div>
                     <div class="text-muted fw-bold">(Tous centres et classes confondus)</div>
+                    <div class="fs-xl-2x fs-2 fw-boldest">
+                        <a href="{{ path('student_list') }}" class="text-gray-800 text-hover-primary">{{ nb_students }}</a>
+                    </div>
                     <!--end::Total Amount-->
                     <div class="border-bottom w-100 my-7 my-lg-16"></div>
                     <!--begin::Invoice To-->
