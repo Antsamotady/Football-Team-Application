@@ -12,7 +12,7 @@ $('.classe-student-search-name').on(
         console.log('Auto submitting on input debounce...');
         
         $(this).closest('form').trigger('submit');
-    }, 500)
+    }, 1500)
 );
 
 $(document).on('click', '[data-kt-search-element="clear"]', function (e) {

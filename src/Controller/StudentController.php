@@ -17,6 +17,7 @@ use App\Form\StudentSearchFormType;
 use App\Repository\ScoreRepository;
 use App\Service\StudentCsvImporter;
 use App\Repository\StudentRepository;
+use App\Service\BreadcrumbService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +33,7 @@ class StudentController extends AbstractController
 	public function __construct(
 		public EntityManagerInterface $em,
 		private ScoreService $scoreService,
+        private BreadcrumbService $breadcrumbs,
         private EventDispatcherInterface $eventDispatcher
 	) {
 	}
@@ -83,6 +85,11 @@ class StudentController extends AbstractController
 
 		$result = count($students);
 		$studentsScores = $this->scoreService->buildStudentsScores($students);
+
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Etudiants');
 
 		return $this->render('student/list.html.twig', [
 			'template_title'    => 'Liste des étudiants',
@@ -246,6 +253,11 @@ class StudentController extends AbstractController
 		);
 
 		$scoreResults = $this->scoreService->processScores($scores);
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Etudiants', $this->generateUrl('student_list'))
+            ->add('Etudiant #' . $student->getId());
 
 		return $this->render('student/show.html.twig', [
 			'template_title' 	=> 'Détails étudiant',

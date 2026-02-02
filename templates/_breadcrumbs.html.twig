@@ -1,0 +1,18 @@
+{% if breadcrumbs is not empty %}
+    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+        {% for item in breadcrumbs %}
+            {% if item.url and not loop.last %}
+                <li class="breadcrumb-item text-muted">
+                    <a class="text-muted text-hover-primary" href="{{ item.url }}">{{ item.label }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                </li>
+            {% else %}
+                <li class="breadcrumb-item text-dark" aria-current="page">
+                    {{ item.label }}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
