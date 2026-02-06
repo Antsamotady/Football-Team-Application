@@ -344,10 +344,16 @@ class StudentController extends AbstractController
 		$firstStudent = $studentRepo->findOneBy([], ['id' => 'ASC']);
 		$lastStudent = $studentRepo->findOneBy([], ['id' => 'DESC']);
 
-        /** @var array{firstName: string|null, lastName: string|null} $originalData */
+        /** @var array{
+         *   firstName: string|null, 
+         *   lastName: string|null, 
+         *   numero: int|null} 
+         * $originalData 
+         */
         $originalData = [
             'firstName' => $student->getFirstName(),
             'lastName' => $student->getLastName(),
+            'numero' => $student->getStudentNumber(),
             // Add other fields you want to track
         ];
 
@@ -483,10 +489,11 @@ class StudentController extends AbstractController
     /**
      * @param array{
      *     firstName: string|null,
-     *     lastName: string|null
+     *     lastName: string|null,
+     *     numero: int|null
      * } $originalData
      *
-     * @return array<string, array{old: string|null, new: string|null}>
+     * @return array<string, array{old: string|int|null, new: string|int|null}>
      */
     private function getChangesForLogEvent(Student $student, array $originalData): array
     {
@@ -501,6 +508,12 @@ class StudentController extends AbstractController
             $changes['lastName'] = [
                 'old' => $originalData['lastName'],
                 'new' => $student->getLastName()
+            ];
+        }
+        if ($originalData['numero'] !== $student->getStudentNumber()) {
+            $changes['numero'] = [
+                'old' => $originalData['numero'],
+                'new' => $student->getStudentNumber()
             ];
         }
 
