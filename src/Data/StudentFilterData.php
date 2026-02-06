@@ -13,6 +13,7 @@ class StudentFilterData
     private ?string $firstname = null;
     private ?string $lastname = null;
     private ?string $gender = null;
+    private ?int $studentNumber = null;
     private ?Classe $classe = null;
     private ?Location $location = null;
     /**
@@ -103,6 +104,26 @@ class StudentFilterData
     public function removeScoreFilter(ScoreFilterData $scoreFilter): self
     {
         $this->scoreFilters->removeElement($scoreFilter);
+        return $this;
+    }
+
+    /**
+     * Get the value of studentNumber
+     */ 
+    public function getStudentNumber(): ?int
+    {
+        return $this->studentNumber;
+    }
+
+    /**
+     * Set the value of studentNumber
+     *
+     * @return  self
+     */ 
+    public function setStudentNumber(?int $studentNumber): self
+    {
+        $this->studentNumber = $studentNumber;
+
         return $this;
     }
 }

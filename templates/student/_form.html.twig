@@ -75,6 +75,22 @@
                     <!--begin::Label-->
                 </div>
                 <!--end::Input group-->
+                <!--begin::Input group-->
+                <div class="row mb-0">
+                    <!--begin::Label-->
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">{{ form_label(form.studentNumber) }}</label>
+                    <!--begin::Label-->
+                    <!--begin::Label-->
+                    <div class="col-lg-8 d-flex align-items-center">
+                        <!--begin::Col-->
+                        <div class="col-lg-6 fv-row fv-plugins-icon-container">
+                            {{ form_widget(form.studentNumber, {'attr': {'class': 'form-control form-control-lg form-control-solid'}})}}
+                        <div class="fv-plugins-message-container invalid-feedback"></div></div>
+                        <!--end::Col-->
+                    </div>
+                    <!--begin::Label-->
+                </div>
+                <!--end::Input group-->
             </div>
             <!--end::Card body-->
 

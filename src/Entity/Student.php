@@ -53,6 +53,9 @@ class Student
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $studentNumber = null;
+
     public function __construct()
     {
         $this->scores = new ArrayCollection();
@@ -196,6 +199,7 @@ class Student
         $result = [];
         
         // Basic info
+        $result[] = $this->studentNumber ?? '';
         $result[] = $this->gender ?? '';
         $result[] = $this->getName();
         $result[] = $this->classe?->getName() ?? '';
@@ -238,5 +242,17 @@ class Student
         $result[] = number_format($average, 2, '.', '');
         
         return $result;
+    }
+
+    public function getStudentNumber(): ?int
+    {
+        return $this->studentNumber;
+    }
+
+    public function setStudentNumber(?int $studentNumber): static
+    {
+        $this->studentNumber = $studentNumber;
+
+        return $this;
     }
 }

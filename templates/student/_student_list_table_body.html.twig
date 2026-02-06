@@ -35,6 +35,7 @@
 		<thead>
 			<!--begin::Table row-->
 			<tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+				<th class="min-w-8px">#</th>
 				<th class="min-w-8px"></th>
 				<th class="min-w-70px">Nom</th>
 				<th class="min-w-100px">Prénom</th>
@@ -52,6 +53,7 @@
 
 		{% for student in students %}
 			<tr>
+				<td>{{ student.studentNumber }}</td>
 				<td>{{ student.gender }}</td>
 				<td>
 					<a href="{{ path('student_show', {'id': student.id}) }}" class="text-gray-800 text-hover-primary mb-1">{{ student.firstname }}</a>

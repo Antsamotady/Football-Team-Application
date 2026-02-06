@@ -25,8 +25,17 @@
         </div>
         <!--end::Col-->
     </div>
-    <div class="mb-3">
-      {{ form_widget(filter_form.gender, {'attr': {'class': 'form-control fw-bolder'}}) }}
+    <div class="row mb-3">
+        <!--begin::Col-->
+        <div class="col-lg-6 fv-row">
+          {{ form_widget(filter_form.studentNumber, {'attr': {'class': 'form-control fw-bolder'}}) }}
+        </div>
+        <!--end::Col-->
+        <!--begin::Col-->
+        <div class="col-lg-6 fv-row">
+          {{ form_widget(filter_form.gender, {'attr': {'class': 'form-control fw-bolder'}}) }}
+        </div>
+        <!--end::Col-->
     </div>
     
     {% if isFromStudent %}

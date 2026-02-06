@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class StudentType extends AbstractType
@@ -27,6 +28,11 @@ class StudentType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => ['placeholder' => 'Prénom']
+            ])
+            ->add('studentNumber', IntegerType::class, [
+                'label' => "Numéro",
+                'required' => false,
+                'attr' => ['placeholder' => 'Matricule']
             ])
             ->add('gender', ChoiceType::class, [
                 'required'    => true,

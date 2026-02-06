@@ -143,6 +143,11 @@ class StudentRepository extends ServiceEntityRepository
             $qb->andWhere('u.gender = :gender')
                 ->setParameter('gender', $search->getGender());
         }
+
+        if (!empty($search->getStudentNumber())) {
+            $qb->andWhere('u.studentNumber = :studentNumber')
+                ->setParameter('studentNumber', $search->getStudentNumber());
+        }
     }
 
     private function applyClasseAndLocationFilters(QueryBuilder $qb, StudentFilterData $search): void 

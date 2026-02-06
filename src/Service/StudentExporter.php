@@ -63,7 +63,7 @@ class StudentExporter
                 ->findBy([], ['name' => 'ASC']);
         
         // Create headers - ranking first
-        $headers = ['Classement', 'Sexe', 'Nom', 'Classe'];
+        $headers = ['Classement', 'Numéro', 'Sexe', 'Nom', 'Classe'];
         foreach ($subjects as $subject) {
             $headers[] = $subject->getName();
         }
