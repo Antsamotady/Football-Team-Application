@@ -10,6 +10,7 @@ class StudentEvent extends Event
     public const CREATED = 'student.created';
     public const UPDATED = 'student.updated';
     public const DELETED = 'student.deleted';
+    public const IMPORTED = 'student.imported';
 
     /**
      * @param array<string, mixed> $changes

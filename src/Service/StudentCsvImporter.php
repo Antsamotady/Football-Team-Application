@@ -4,29 +4,30 @@ namespace App\Service;
 
 use App\Entity\Classe;
 use App\Entity\Student;
+use App\Event\StudentEvent;
 use App\Repository\ClasseRepository;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class StudentCsvImporter
 {
     public function __construct(
         private EntityManagerInterface $em,
         private StudentRepository $studentRepo,
-        private ClasseRepository $classeRepo
-    ) {
-    }
+        private ClasseRepository $classeRepo,
+        private EventDispatcherInterface $eventDispatcher
+    ) {}
 
     public function import(
         UploadedFile $file,
         ?Classe $forcedClasse = null
-    ): void
-    {
+    ): void {
         $csv = new \SplFileObject($file->getPathname());
         $csv->setFlags(
             \SplFileObject::READ_CSV
-            | \SplFileObject::SKIP_EMPTY
+                | \SplFileObject::SKIP_EMPTY
         );
         $csv->setCsvControl(';');
 
@@ -49,7 +50,7 @@ class StudentCsvImporter
                 throw new \RuntimeException("CSV invalide à la ligne $row");
             }
 
-            [$firstname, $lastname, $gender, $classeName] = array_map(
+            [$studentNumber, $firstname, $lastname, $gender, $classeName] = array_map(
                 static function ($value): string {
                     if ($value === null) {
                         return '';
@@ -59,7 +60,7 @@ class StudentCsvImporter
                         return $value;
                     }
 
-                    return (string) $value; // @phpstan-ignore-line
+                    return $value; // @phpstan-ignore-line
                 },
                 $data
             );
@@ -75,6 +76,7 @@ class StudentCsvImporter
                 ?? $this->classeRepo->findOneBy(['name' => $classeName]);
 
             $student
+                ->setStudentNumber((int) $studentNumber)
                 ->setFirstname($firstname)
                 ->setLastname($lastname)
                 ->setGender($gender)
@@ -82,6 +84,9 @@ class StudentCsvImporter
                 ->setUpdatedAt(new \DateTimeImmutable());
 
             $this->em->persist($student);
+
+            $event = new StudentEvent($student, StudentEvent::IMPORTED);
+            $this->eventDispatcher->dispatch($event, StudentEvent::IMPORTED);
         }
 
         $this->em->flush();

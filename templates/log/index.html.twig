@@ -69,6 +69,8 @@
                                 <span class="badge badge-light-warning">Modification</span>
                             {% elseif log.action == 'DELETE' %}
                                 <span class="badge badge-light-danger">Suppression</span>
+                            {% elseif log.action == 'IMPORTED' %}
+                                <span class="badge badge-light-info">Import CSV</span>
                             {% else %}
                                 <span class="badge badge-light-info">{{ log.action }}</span>
                             {% endif %}

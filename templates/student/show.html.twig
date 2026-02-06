@@ -53,7 +53,10 @@
                     <!--begin::Badge-->
                     {% if student.classe %}
                         <div class="badge badge-lg d-inline text-muted">
-                            En <a href="{{ path('classe_show', { id: student.classe.id }) }}">{{ student.classe.name }}</a>
+                            {% if student.studentNumber %}
+                                Numéro {{ student.studentNumber }}, 
+                            {% endif %}
+                            en <a href="{{ path('classe_show', { id: student.classe.id }) }}">{{ student.classe.name }}</a>
                             {% if student.classe.location %}
                                 au centre <a href="{{ path('location_show', { id: student.classe.location.id }) }}">{{ student.classe.location.name }}</a>
                             {% endif %}

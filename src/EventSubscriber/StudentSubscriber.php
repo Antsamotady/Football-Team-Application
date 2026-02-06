@@ -18,6 +18,7 @@ class StudentSubscriber implements EventSubscriberInterface
             StudentEvent::CREATED => 'onStudentCreated',
             StudentEvent::UPDATED => 'onStudentUpdated',
             StudentEvent::DELETED => 'onStudentDeleted',
+            StudentEvent::IMPORTED => 'onStudentImported',
         ];
     }
 
@@ -34,5 +35,10 @@ class StudentSubscriber implements EventSubscriberInterface
     public function onStudentDeleted(StudentEvent $event): void
     {
         $this->studentLogger->log('DELETE', $event->getStudent());
+    }
+
+    public function onStudentImported(StudentEvent $event): void
+    {
+        $this->studentLogger->log('IMPORTED', $event->getStudent());
     }
 }
