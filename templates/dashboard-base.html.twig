@@ -383,14 +383,14 @@ License: For each use you must have a valid license purchased only from above li
 													<!--begin::Username-->
 													<div class="d-flex flex-column">
 														<div class="fw-bolder d-flex align-items-center fs-5">{{app.user.name}}
-														<span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">Type compte</span></div>
+														<span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">compte administrateur</span></div>
 														<a href="#" class="fw-bold text-muted text-hover-primary fs-7">{{app.user.email}}</a>
 													</div>
 													<!--end::Username-->
 												</div>
 											</div>
 											<!--end::Menu item-->
-											<!--begin::Menu separator-->
+											{# <!--begin::Menu separator-->
 											<div class="separator my-2"></div>
 											<!--end::Menu separator-->
 											<!--begin::Menu item-->
@@ -401,7 +401,7 @@ License: For each use you must have a valid license purchased only from above li
 											<!--begin::Menu item-->
 											<div class="menu-item px-5 my-1">
 												<a href="{{ path('student_edit', {'id': 1}) }}" class="menu-link px-5">Gestion du compte</a>
-											</div>
+											</div> #}
 											<!--begin::Menu separator-->
 											<div class="separator my-2"></div>
 											<!--end::Menu separator--><!--end::Menu item-->

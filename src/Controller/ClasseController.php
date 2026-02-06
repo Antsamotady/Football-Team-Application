@@ -12,6 +12,7 @@ use App\Data\StudentFilterData;
 use App\Service\StudentExporter;
 use App\Form\ClasseFilterFormType;
 use App\Form\ClasseSearchFormType;
+use App\Service\BreadcrumbService;
 use App\Form\StudentFilterFormType;
 use App\Service\StudentCsvImporter;
 use App\Repository\ClasseRepository;
@@ -29,6 +30,7 @@ class ClasseController extends AbstractController
 	public function __construct(
         private ClasseRepository $classeRepository,
         private StudentRepository $studentRepo,
+        private BreadcrumbService $breadcrumbs,
 		private ScoreService $scoreService,
 		public EntityManagerInterface $em
 	) {
@@ -65,6 +67,10 @@ class ClasseController extends AbstractController
 			$session->remove('classe_search_criteria');
 		}
 
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Classes');
+
         return $this->render('classe/index.html.twig', [
             'template_title'    => 'Classes',
             'classes'           => $classes,
@@ -90,6 +96,11 @@ class ClasseController extends AbstractController
             $this->addFlash('success', 'Nouvelle classe enregistrée.');
             return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Toutes les classes', $this->generateUrl('classe_index'))
+            ->add('Classe #' . $classe->getId());
 
         return $this->renderForm('classe/new.html.twig', [
             'classe' => $classe,
@@ -122,6 +133,12 @@ class ClasseController extends AbstractController
                 'id' => $location->getId(),
             ]);
         }
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Centres', $this->generateUrl('location_index'))
+            ->add('Centre ' . $location->getName(), $this->generateUrl('location_show', ['id' => $location->getId()]))
+            ->add('Ajout classe');
 
         return $this->render('classe/new.html.twig', [
             'classe' => $classe,
@@ -158,6 +175,11 @@ class ClasseController extends AbstractController
         
         $studentsScores = $this->scoreService->buildStudentsScores($students);
 
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Toutes les classes', $this->generateUrl('classe_index'))
+            ->add('Classe #' . $classe->getId());
+
         return $this->render('classe/show.html.twig', [
             'classe'            => $classe,
             'students'          => $students,
@@ -181,6 +203,11 @@ class ClasseController extends AbstractController
             
             return $this->redirectToRoute('classe_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Classes', $this->generateUrl('classe_index'))
+            ->add('Classes #' . $classe->getId());
 
         return $this->renderForm('classe/edit.html.twig', [
             'classe' => $classe,

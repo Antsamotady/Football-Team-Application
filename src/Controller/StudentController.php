@@ -187,6 +187,11 @@ class StudentController extends AbstractController
 			return $this->redirectToRoute('student_list', [], Response::HTTP_SEE_OTHER);
 		}
 
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Etudiants', $this->generateUrl('student_list'))
+            ->add('Etudiant #' . $student->getId());
+
 		return $this->render('student/new.html.twig', [
 			'template_title' => 'Ajouter',
 			'student' => $student,
@@ -219,6 +224,12 @@ class StudentController extends AbstractController
                 'id' => $classe->getId(),
             ]);
         }
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Toutes les classes', $this->generateUrl('classe_index'))
+            ->add('Classe ' . $classe->getName(), $this->generateUrl('classe_show', ['id' => $classe->getId()]))
+            ->add('Ajout étudiant');
 
         return $this->render('classe/new.html.twig', [
             'classe'        => $classe,
@@ -388,6 +399,11 @@ class StudentController extends AbstractController
 		);
 
 		$scoreResults = $this->scoreService->processScores($scores);
+
+        $this->breadcrumbs
+            ->add('Accueil', $this->generateUrl('home'))
+            ->add('Etudiants', $this->generateUrl('student_list'))
+            ->add('Etudiant #' . $student->getId());
 
 		return $this->render('student/edit.html.twig', [
 			'template_title'    => 'Editer un étudiant',
