@@ -345,15 +345,19 @@ class StudentController extends AbstractController
 		$lastStudent = $studentRepo->findOneBy([], ['id' => 'DESC']);
 
         /** @var array{
-         *   firstName: string|null, 
-         *   lastName: string|null, 
-         *   numero: int|null} 
-         * $originalData 
+         *   nom: string|null, 
+         *   prenom: string|null,
+         *   sexe: string|null,
+         *   numero: int|null,
+         *   classe: string|null
+         * } $originalData 
          */
         $originalData = [
-            'firstName' => $student->getFirstName(),
-            'lastName' => $student->getLastName(),
+            'nom' => $student->getFirstName(),
+            'prenom' => $student->getLastName(),
+            'sexe' => $student->getGender(),
             'numero' => $student->getStudentNumber(),
+            'classe' => $student->getClasse()?->getName()
             // Add other fields you want to track
         ];
 
@@ -488,9 +492,11 @@ class StudentController extends AbstractController
 
     /**
      * @param array{
-     *     firstName: string|null,
-     *     lastName: string|null,
-     *     numero: int|null
+     *     nom: string|null,
+     *     prenom: string|null,
+     *     sexe: string|null,
+     *     numero: int|null,
+     *     classe: string|null
      * } $originalData
      *
      * @return array<string, array{old: string|int|null, new: string|int|null}>
@@ -498,22 +504,34 @@ class StudentController extends AbstractController
     private function getChangesForLogEvent(Student $student, array $originalData): array
     {
         $changes = [];
-        if ($originalData['firstName'] !== $student->getFirstName()) {
-            $changes['firstName'] = [
-                'old' => $originalData['firstName'],
+        if ($originalData['nom'] !== $student->getFirstName()) {
+            $changes['nom'] = [
+                'old' => $originalData['nom'],
                 'new' => $student->getFirstName()
             ];
         }
-        if ($originalData['lastName'] !== $student->getLastName()) {
-            $changes['lastName'] = [
-                'old' => $originalData['lastName'],
+        if ($originalData['prenom'] !== $student->getLastName()) {
+            $changes['prenom'] = [
+                'old' => $originalData['prenom'],
                 'new' => $student->getLastName()
+            ];
+        }
+        if ($originalData['sexe'] !== $student->getGender()) {
+            $changes['sexe'] = [
+                'old' => $originalData['sexe'],
+                'new' => $student->getGender()
             ];
         }
         if ($originalData['numero'] !== $student->getStudentNumber()) {
             $changes['numero'] = [
                 'old' => $originalData['numero'],
                 'new' => $student->getStudentNumber()
+            ];
+        }
+        if ($originalData['classe'] !== $student->getClasse()?->getName()) {
+            $changes['classe'] = [
+                'old' => $originalData['classe'],
+                'new' => $student->getClasse()?->getName()
             ];
         }
 
