@@ -41,6 +41,7 @@ class TeacherController extends AbstractController
             $this->entityManager->persist($teacher);
             $this->entityManager->flush();
 
+            $this->addFlash('success', 'Ajout réussi!');
             return $this->redirectToRoute('teacher_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -69,6 +70,7 @@ class TeacherController extends AbstractController
             
             $this->entityManager->flush();
 
+            $this->addFlash('success', 'Modification réussie.');
             return $this->redirectToRoute('teacher_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -87,6 +89,8 @@ class TeacherController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$teacher->getId(), $token)) {
             $this->entityManager->remove($teacher);
             $this->entityManager->flush();
+            
+            $this->addFlash('success', 'Suppression réussie.');
         }
 
         return $this->redirectToRoute('teacher_index', [], Response::HTTP_SEE_OTHER);

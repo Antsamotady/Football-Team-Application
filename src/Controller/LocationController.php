@@ -41,6 +41,7 @@ final class LocationController extends AbstractController
             $entityManager->persist($location);
             $entityManager->flush();
 
+			$this->addFlash('success', 'Ajout réussi.');
             return $this->redirectToRoute('location_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -71,6 +72,7 @@ final class LocationController extends AbstractController
             $location->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
+			$this->addFlash('success', 'Modification réussie.');
             return $this->redirectToRoute('location_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -89,6 +91,8 @@ final class LocationController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$location->getId(), $token)) {
             $entityManager->remove($location);
             $entityManager->flush();
+            
+            $this->addFlash('success', 'Suppression réussie.');
         }
 
         return $this->redirectToRoute('location_index', [], Response::HTTP_SEE_OTHER);

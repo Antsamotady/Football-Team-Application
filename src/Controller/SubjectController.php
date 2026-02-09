@@ -33,6 +33,7 @@ class SubjectController extends AbstractController
             $entityManager->persist($subject);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Ajout réussi.');
             return $this->redirectToRoute('subject_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -59,6 +60,7 @@ class SubjectController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Modification réussie.');
             return $this->redirectToRoute('subject_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -77,9 +79,10 @@ class SubjectController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$subject->getId(), $token)) {
             $entityManager->remove($subject);
             $entityManager->flush();
+        
+            $this->addFlash('success', 'Suppression réussie.');
         }
 
         return $this->redirectToRoute('subject_index', [], Response::HTTP_SEE_OTHER);
     }
-
 }

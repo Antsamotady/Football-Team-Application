@@ -3,6 +3,14 @@
 {% block title %}Enseignants{% endblock %}
 
 {% block body %}
+
+	{% for notice in app.flashes('success') %}
+		<div class="alert alert-success" role="alert">{{ notice }}</div>
+	{% endfor %}
+	{% for notice in app.flashes('error') %}
+		<div class="alert alert-danger" role="alert">{{ notice }}</div>
+	{% endfor %}
+    
     <!--begin::Tables Widget 9-->
     <div class="card card-xl-stretch mb-5 mb-xl-8">
         <!--begin::Header-->
