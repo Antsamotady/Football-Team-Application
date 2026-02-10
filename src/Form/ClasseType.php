@@ -27,6 +27,7 @@ class ClasseType extends AbstractType
             ]);
         } else {
             $builder->add('location', EntityType::class, [
+                'label'         => 'Centre',
                 'class' => Location::class,
                 'choice_label' => 'name',
                 'disabled' => true,
